@@ -1,0 +1,46 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	color: #fff;
+	font-size: 1em;
+}
+
+.screen {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	overflow: hidden;
+    background-image: -webkit-linear-gradient(bottom, #11CAD4 0%, #2BFFAE 100%);
+}
+
+.btn:hover {
+	cursor: pointer;
+}
+
+.btn {
+    background: #fff;
+    border-radius: 999px;
+    width: 5em;	
+    height: 5em;
+    margin: 0 auto;
+    box-shadow: #999 1px 1px 1px;    
+}
+
+.script {
+	font-size: 4em;
+	width: 70%;
+	margin: 3em auto;
+	text-shadow: #999 1px 1px 1px;
+}
+
+.record {
+	position: absolute;
+	bottom: 10%;
+	left: 50%;
+	margin-left: -152px;
+	z-index: 10;
+	display: none;
+}
