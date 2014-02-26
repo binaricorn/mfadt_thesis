@@ -76,8 +76,9 @@ $(document).ready(function() {
         });
     });
     
-    showInfo('info_start');
+    // Google Speech to Text API
     
+    showInfo('info_start');
     
     if ('webkitSpeechRecognition' in window) {
         start_button.style.display = 'inline-block';
