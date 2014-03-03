@@ -22,23 +22,13 @@ var script_model = {
           1: "I'm really glad you've decided to come in for our quick 5 minute interview.",
           2: "I’m so excited that you might be joining our team.",
           3: "Please have a seat and we’ll get started."  
-        },
-        audio: {
-          0: "0_0",
-          1: "0_1",
-          2: "0_2",
-          3: "0_3"  
         }
     },
     
     1: {
         system: {
-          0: "I apologize for my rudeness but I am having trouble finding the correct faces in my program.",
-          1: "Could you please remind me of your name?"
-        },
-        audio: {
-          0: "1_0",
-          1: "1_1"
+          0: "I apologize for my rudeness but I am having trouble finding your face in my program.",
+          1: "Could you please tell me your first and last name?"
         }
     },
     
@@ -46,12 +36,7 @@ var script_model = {
         system: {
             0: "Thank you username.",
             1: "We have a few openings at HALtech. Which position are you applying for?"
-        },
-        audio: {
-            0: "2_0",
-            1: "2_1"
         }
-        
     },
     
     3: {
@@ -60,9 +45,6 @@ var script_model = {
             1: "My name is Judy and I am a second-generation manager created from the original Judy Santos, who we lost 5 years ago.",
             2: "We were lucky to have her.",
             2: "Thankfully, the team at HALtech had her uploaded to the system before her last days."
-        },
-        audio: {
-            0: "0"
         }
     },
     
@@ -73,9 +55,6 @@ var script_model = {
             2: "so that your joy can also be felt by our customers.",
             3: "Happy employees equals happy customers.",
             4: "We have a mantra we like to repeat to ourselves every morning with a smile on our face."
-        },
-        audio: {
-            0: "0"
         }
     }
     
@@ -98,8 +77,10 @@ db.users.save(script_model, function(err, saved) {
 /* db.users.remove(); */
 
 io.sockets.on('connection', function(socket) {
-
-     socket.emit('script', script_model);
+    
+    var $provider = require( './providers/arduino.js' ).init( socket );
+    
+    socket.emit('script', script_model);
      
      /*
 db.users.find(0, function(err, users) {
