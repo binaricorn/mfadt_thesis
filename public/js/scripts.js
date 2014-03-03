@@ -20,6 +20,7 @@ $(document).ready(function() {
     var one_line = /\n/g;
     var first_char = /\S/;
     var lostUser = 0;
+    var userHere = false;
     // Send name to socket, have socket store the name
     var socket = io.connect("/");
     var voices = [];
@@ -28,6 +29,9 @@ $(document).ready(function() {
     $("#startbutton").on('click', function() {
         startVideo();
     });
+    
+    var u = new SpeechSynthesisUtterance("hi");
+    speechSynthesis.speak(u);
     
     socket.on('script', function(script) {
                 
@@ -39,8 +43,6 @@ $(document).ready(function() {
             } else {
                 bouncingLogo();
                 waitingForUser();
-
-
             }
             // When we've got the user
 
@@ -50,26 +52,7 @@ $(document).ready(function() {
                 lostUser = 0;
                 initSystem(s_slc);
                 initSound(s_alc);
-                $('.btn').on('mouseup', function() {
-                    s_slc++;
-                    s_alc++;
-                    initSystem(s_slc);
-                    initSound(s_alc);
-                    // Reset the count
-                    if (s_slc == s_sl - 1 || s_alc == s_al - 1) {
-                        count++;
-                        s_slc = -1;
-                        s_alc = -1;
-                    }
-                    // If we reach the line where we're asking for the name
-                    if (count == 2 && s_slc == -1) {
-                        console.log(s_slc);
-                        console.log("record");
-                        $('.record').css('display', 'block');
-                    } else {
-                        $('.record').css('display', 'none');
-                    }
-                });
+                console.log("have user");
             }
             
             function bouncingLogo() {
@@ -100,15 +83,9 @@ $(document).ready(function() {
             getName(username);
             $('.script').css('display', 'block');
             $('.script').text(script[count].system[s_slc]);
-/*
-            var u = new SpeechSynthesisUtterance(script[count].system[s_slc]);
-            speechSynthesis.speak(u);
-*/
         }
 
         function initSound(s_alc) {
-            /* s_al = Object.keys(script[count].audio).length;  */
-            /* $('.audio audio').html('<source src="audio/'+ script[count].audio[s_alc] +'.mp3" type="audio/mpeg">'); */
         }
 
         function getName(username) {
