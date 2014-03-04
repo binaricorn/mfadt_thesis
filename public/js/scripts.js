@@ -1,56 +1,38 @@
 $(document).ready(function() {
+    var sitting = false;
+    
+     
     var script_model = {
         0 : {
-            system: {
-              0: "Hi, I've been expecting you.",
-              1: "I'm really glad you've decided to come in for our quick 5 minute interview.",
-              2: "I’m so excited that you might be joining our team.",
-              3: "Please have a seat and we’ll get started."  
-            }
+            script: "Ive been expecting you. The interview will only take a few minutes, why doent you take a seat?",
+            interaction: "sit"
         },
         
-        1: {
-            system: {
-              0: "I apologize for my rudeness but I am having trouble finding your face in my program.",
-              1: "Could you please tell me your first and last name?"
-            }
-        },
-        
-        2: {
-            system: {
-                0: "Thank you username.",
-                1: "We have a few openings at HALtech. Which position are you applying for?"
-            }
-        },
-        
-        3: {
-            system: {
-                0: "Thank you username for your cooperation and patience, ",
-                1: "My name is Judy and I am a second-generation manager created from the original Judy Santos, who we lost 5 years ago.",
-                2: "We were lucky to have her.",
-                2: "Thankfully, the team at HALtech had her uploaded to the system before her last days."
-            }
-        },
-        
-        4: {
-            system: {
-                0: "But enough about me, let’s go over the specifics of the job.",
-                1: "Aside from your daily tasks as a sales support staff, it’s also very important for us to make sure you are happy at your job",
-                2: "so that your joy can also be felt by our customers.",
-                3: "Happy employees equals happy customers.",
-                4: "We have a mantra we like to repeat to ourselves every morning with a smile on our face."
-            }
-        }
+        1 : {
+            script: "Eyem so sorry, Eyem having some trouble finding your face in my schedule. There is a microphone on the desk, enunciate your first and last name loudly, and clearly into it so that I may pull up your records.",
+            interaction: "none"
+        } 
         
     }
 
     var socket = io.connect("/");
 
-    socket.on("arduinoTwo", function(arduinoTwo) {
-        if(arduinoTwo == "present") {
+    socket.on("userPresence", function(userPresence) {
+        
+        if(userPresence == "1") {
             haveUser();
-            initSystem(script_model[0].system[0]);
-        }        
+            initSystem(script_model[0].script);
+            initInteraction(script_model[0].interaction);
+        } else if(userPresence == "0") {
+            waitingForUser();
+        }       
+    });
+    
+    
+    socket.on("userSitting", function(userSitting) {
+        if(userSitting >= "950") {
+            console.log("someone's sitting here");          
+        }
     });
     
     function haveUser() {
@@ -59,10 +41,33 @@ $(document).ready(function() {
         $('.logo').css('display', 'none');
     }
     
+    function waitingForUser() {
+        $('.screen').removeClass('screen-gradient').addClass('screen-dark');
+        $('.logo').css('display', 'block');
+        $('.script').css('display', 'none');
+    }
+
+    
     function initSystem(currentLine) {
-            $('.script').css('display', 'block');
-            $('.script').text(currentLine);
-        }
+        $('.script').css('display', 'block');
+        $('.script').text(currentLine);
+        var u = new SpeechSynthesisUtterance(currentLine);
+        speechSynthesis.speak(u);
+    }
+    
+    function initInteraction(currentInteraction) {
+        $('.btn').click(function() {
+           sitting = true; 
+           
+           if(currentInteraction == "sit") {
+               if (sitting == true) {
+                    initSystem(script_model[1].script);
+                    sitting = false;
+               }
+           }
+        });
+    }
+    
 });
 /*
 $(document).ready(function() {

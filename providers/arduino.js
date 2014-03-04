@@ -11,11 +11,10 @@ var sp = new SerialPort( portName, {
 });
 
 var present = false;
-var absent = true;
+var absent = false;
 
-var strP = "present";
-var strA = "absent";
-
+var userPresence;
+var userSitting;
 
 
 module.exports = {
@@ -24,15 +23,40 @@ module.exports = {
 
 		/* When we get a new line from the arduino, send it to the browser via this socket */
 		sp.on( "data", function ( data ) {
-            data = data.toString('utf-8').trim();
+            data = data.toString();
+            data = process_data(data);
             
-            // send the state to the browser just once...
-            if(data == strP && present == false) {
-    			socket.emit( "arduinoTwo", data );
-    			present = true;
-            } 
-
-		});
+            // a = Range finder value [0 or 1]
+            userPresence = data.a;
+            userSitting = data.b;
+            
+            if (userPresence == 0 && absent == false) {
+                socket.emit("userPresence", data);
+                absent = true;
+            } else if (userPresence == 1 && present == false) {
+                socket.emit("userPresence", data.a);
+                present = true;
+            }
+            
+            if (present == true) {
+                socket.emit("userSitting", data.b);
+            }
+            
+            function process_data(data) {
+        		var ret = {
+        			a: 0,
+        			b: 0
+        		};
+        		
+        		var array = data.split(',');
+        		
+        		if (array.length < 1) return ret;
+            		ret.a = array[0];
+                    ret.b = array[1];
+                    return ret;
+        	}
+    
+    		});
 
 	}
 
