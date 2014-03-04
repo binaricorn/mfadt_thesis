@@ -12,84 +12,14 @@ var app = connect.createServer(
 ).listen(port);
 
 var io = require("socket.io").listen(app);
-// if .listen() is set to another port then that means the socket is listening on another port...
 
 
-var script_model = {
-    0 : {
-        system: {
-          0: "Hi, I've been expecting you.",
-          1: "I'm really glad you've decided to come in for our quick 5 minute interview.",
-          2: "I’m so excited that you might be joining our team.",
-          3: "Please have a seat and we’ll get started."  
-        }
-    },
-    
-    1: {
-        system: {
-          0: "I apologize for my rudeness but I am having trouble finding your face in my program.",
-          1: "Could you please tell me your first and last name?"
-        }
-    },
-    
-    2: {
-        system: {
-            0: "Thank you username.",
-            1: "We have a few openings at HALtech. Which position are you applying for?"
-        }
-    },
-    
-    3: {
-        system: {
-            0: "Thank you username for your cooperation and patience, ",
-            1: "My name is Judy and I am a second-generation manager created from the original Judy Santos, who we lost 5 years ago.",
-            2: "We were lucky to have her.",
-            2: "Thankfully, the team at HALtech had her uploaded to the system before her last days."
-        }
-    },
-    
-    4: {
-        system: {
-            0: "But enough about me, let’s go over the specifics of the job.",
-            1: "Aside from your daily tasks as a sales support staff, it’s also very important for us to make sure you are happy at your job",
-            2: "so that your joy can also be felt by our customers.",
-            3: "Happy employees equals happy customers.",
-            4: "We have a mantra we like to repeat to ourselves every morning with a smile on our face."
-        }
-    }
-    
-}
-
-// Database stuff
-var databaseUrl = "mydb"; // "username:password@example.com/mydb"
-var collections = ["users", "reports"]
-var db = require("mongojs").connect(databaseUrl, collections);
-
-
-/*
-db.users.save(script_model, function(err, saved) {
-    if( err || !saved ) console.log("User not saved");
-    else console.log("User saved");
-});
-*/
-
-
-/* db.users.remove(); */
 
 io.sockets.on('connection', function(socket) {
     
     var $provider = require( './providers/arduino.js' ).init( socket );
     
-    socket.emit('script', script_model);
-     
-     /*
-db.users.find(0, function(err, users) {
-         if( err || !users) console.log("No female users found");
-         else users.forEach( function(femaleUser) {
-            socket.emit('female users', femaleUser);
-        });
-    });
-*/    
+
    
 });
 

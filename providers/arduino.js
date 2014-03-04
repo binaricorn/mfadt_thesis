@@ -10,13 +10,28 @@ var sp = new SerialPort( portName, {
 	parser  :serial.parsers.readline( "\n" )
 });
 
+var present = false;
+var absent = true;
+
+var strP = "present";
+var strA = "absent";
+
+
+
 module.exports = {
 
 	init:function ( socket ) {
 
 		/* When we get a new line from the arduino, send it to the browser via this socket */
 		sp.on( "data", function ( data ) {
-			socket.emit( "arduino", data.toString() );
+            data = data.toString('utf-8').trim();
+            
+            // send the state to the browser just once...
+            if(data == strP && present == false) {
+    			socket.emit( "arduinoTwo", data );
+    			present = true;
+            } 
+
 		});
 
 	}

@@ -1,4 +1,71 @@
 $(document).ready(function() {
+    var script_model = {
+        0 : {
+            system: {
+              0: "Hi, I've been expecting you.",
+              1: "I'm really glad you've decided to come in for our quick 5 minute interview.",
+              2: "I’m so excited that you might be joining our team.",
+              3: "Please have a seat and we’ll get started."  
+            }
+        },
+        
+        1: {
+            system: {
+              0: "I apologize for my rudeness but I am having trouble finding your face in my program.",
+              1: "Could you please tell me your first and last name?"
+            }
+        },
+        
+        2: {
+            system: {
+                0: "Thank you username.",
+                1: "We have a few openings at HALtech. Which position are you applying for?"
+            }
+        },
+        
+        3: {
+            system: {
+                0: "Thank you username for your cooperation and patience, ",
+                1: "My name is Judy and I am a second-generation manager created from the original Judy Santos, who we lost 5 years ago.",
+                2: "We were lucky to have her.",
+                2: "Thankfully, the team at HALtech had her uploaded to the system before her last days."
+            }
+        },
+        
+        4: {
+            system: {
+                0: "But enough about me, let’s go over the specifics of the job.",
+                1: "Aside from your daily tasks as a sales support staff, it’s also very important for us to make sure you are happy at your job",
+                2: "so that your joy can also be felt by our customers.",
+                3: "Happy employees equals happy customers.",
+                4: "We have a mantra we like to repeat to ourselves every morning with a smile on our face."
+            }
+        }
+        
+    }
+
+    var socket = io.connect("/");
+
+    socket.on("arduinoTwo", function(arduinoTwo) {
+        if(arduinoTwo == "present") {
+            haveUser();
+            initSystem(script_model[0].system[0]);
+        }        
+    });
+    
+    function haveUser() {
+        console.log("have user");
+        $('.screen').removeClass('screen-dark').addClass('screen-gradient');
+        $('.logo').css('display', 'none');
+    }
+    
+    function initSystem(currentLine) {
+            $('.script').css('display', 'block');
+            $('.script').text(currentLine);
+        }
+});
+/*
+$(document).ready(function() {
     // Loops though the blocks
     var count = 0;
     // Loops through the amount of script lines in each system script block
@@ -28,6 +95,10 @@ $(document).ready(function() {
     
     $("#startbutton").on('click', function() {
         startVideo();
+    });
+    
+    socket.on("arduinoTwo", function(arduinoTwo) {
+        console.log(arduinoTwo);        
     });
     
     var u = new SpeechSynthesisUtterance("hi");
@@ -224,7 +295,7 @@ $(document).ready(function() {
     
     var vid = document.getElementById('videoel');
     var overlay = document.getElementById('overlay');
-    var overlayCC = overlay.getContext('2d'); /********** check and set up video/webcam **********/
+    var overlayCC = overlay.getContext('2d'); // check and set up video/webcam 
 
     $('#start_button').on('click', function() {
         startButton(event);
@@ -264,7 +335,7 @@ $(document).ready(function() {
         //insertAltVideo(vid);
         alert("This demo depends on getUserMedia, which your browser does not seem to support. :(");
     }
-    vid.addEventListener('canplay', enablestart, false); /*********** setup of emotion detection *************/
+    vid.addEventListener('canplay', enablestart, false); // setup of emotion detection
     var ctrack = new clm.tracker({
         useWebGL: true
     });
@@ -302,7 +373,7 @@ $(document).ready(function() {
     }
     var ec = new emotionClassifier();
     ec.init(emotionModel);
-    var emotionData = ec.getBlank(); /************ d3 code for barchart *****************/
+    var emotionData = ec.getBlank(); // d3 code for barchart
     var margin = {
         top: 20,
         right: 20,
@@ -383,7 +454,7 @@ $(document).ready(function() {
         // exit
         rects.exit().remove();
         texts.exit().remove();
-    } /******** stats ********/
+    } // stats 
     stats = new Stats();
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.top = '0px';
@@ -393,3 +464,4 @@ $(document).ready(function() {
         stats.update();
     }, false);
 });
+*/
