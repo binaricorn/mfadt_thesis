@@ -1,39 +1,96 @@
 $(document).ready(function() {
     var sitting = false;
+    var userSittingBool = false;
+    var loop = 0;
+    // Speech recognition
+    var username = "";
+    var final_transcript = '';
+    var recognizing = false;
+    var ignore_onend;
+    var start_timestamp;
+    var current_style;
+    var two_line = /\n\n/g;
+    var one_line = /\n/g;
+    var first_char = /\S/;
     
+    var speech = new SpeechSynthesisUtterance('');
      
-    var script_model = {
+    var scenes = {
         0 : {
-            script: "Ive been expecting you. The interview will only take a few minutes, why doent you take a seat?",
+            script: "Thanks for applying to NetNastics Workplace Wellness Solutions! Eyem Judy and eyel be conducting your interview today. Itll only take a few minutes, why doent you take a seat?",
             interaction: "sit"
         },
         
         1 : {
-            script: "Eyem so sorry, Eyem having some trouble finding your face in my schedule. There is a microphone on the desk, enunciate your first and last name loudly, and clearly into it so that I may pull up your records.",
+            script: "Hey sorry about this but I cant find you in my schedule. There is a microphone on the desk. Spell out your first and last name loudly and clearly so I can pull up your record.",
             interaction: "none"
-        } 
+        },
         
+        2 : {
+            script: ", great to meet you. So where did you go to college?",
+            interaction: "none"
+        },
+        
+        3 : {
+            script: "Eyem Judy and eyel be training you. Too bad you never met the original Judy. She passed away 5 years ago but luckily the team was able to have her uploaded to the system before she expired. Or else I woodent be here right now! Hah hah hah.",
+            interaction: "none"
+        },
+        
+        4 : {
+            script: "What can you tell me about your time studying design at ",
+            interaction: "none"
+        },
+        
+        5 : {
+            script: "HALtech is a great place for designers fresh out of college not only because we are leaders in the creative industry, but also because we take pride in our employees’ happiness. Happy employees equal happy customers. No brainer right?",
+            interaction: "none"
+        },  
+        
+        6 : {
+            script: "Your probably wondering how we plan to live up to that promise. Your work day is long, and you get distracted. Trust me, we understand. Weave all been there. Thats why we’ve come up with an exciting set of games to keep you motivated and feeling positive. Just so you know, we expect every member of the HALtech family to play these games. Wheell let you know how well your stacking up and give you a cumulative score at the end of this training session.",
+            interaction: "none"
+        },  
+        
+        7 : {
+            script: "The first activity is to sing the company anthem at the beginning and the end of each day. We like to think of this as a mini break from your usual workload. Let’s give this a run through. Repeat after me.",
+            interaction: "none"
+        },
+        
+        7 : {
+            script: "We are the best at what we do. Because HALtech’s love is strong and true",
+            interaction: "none"
+        },  
     }
+    
 
     var socket = io.connect("/");
 
+    // scene 0
     socket.on("userPresence", function(userPresence) {
         
         if(userPresence == "1") {
             haveUser();
-            initSystem(script_model[0].script);
-            initInteraction(script_model[0].interaction);
+            initSystem(loop);
         } else if(userPresence == "0") {
             waitingForUser();
         }       
     });
     
-    
     socket.on("userSitting", function(userSitting) {
-        if(userSitting >= "950") {
-            console.log("someone's sitting here");          
-        }
+    
+        // if someone is sitting here
+        if(userSitting >= 800 && userSitting <= 1023 && userSittingBool == false) {
+            nextScene(loop);
+          
+        } 
     });
+    
+    function nextScene(loop) {
+        loop++;
+        initSystem(loop);
+        startRecording(event);       
+        userSittingBool = true;
+    }
     
     function haveUser() {
         console.log("have user");
@@ -48,27 +105,147 @@ $(document).ready(function() {
     }
 
     
-    function initSystem(currentLine) {
+    function initSystem(loop) {
         $('.script').css('display', 'block');
-        $('.script').text(currentLine);
-        var u = new SpeechSynthesisUtterance(currentLine);
-        speechSynthesis.speak(u);
+        //$('.script').text(scenes[loop].script);
+        speech.text = scenes[loop].script;
+        speechSynthesis.speak(speech);
     }
     
-    function initInteraction(currentInteraction) {
-        $('.btn').click(function() {
-           sitting = true; 
-           
-           if(currentInteraction == "sit") {
-               if (sitting == true) {
-                    initSystem(script_model[1].script);
-                    sitting = false;
-               }
-           }
+    function getName(username) {
+        username = localStorage.username;
+        username = JSON.parse(username);
+        console.log(username);
+            // Look for 'username' from the incoming text and replace it with the username sent in from the speech to text
+            //script[count].system[s_slc] = script[count].system[s_slc].replace(/username/g, username);
+        }
+
+////////////////////////// Google Speech to Text API
+    
+    showInfo('info_start');
+    
+    if ('webkitSpeechRecognition' in window) {
+    
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.onstart = function() {
+            recognizing = true;
+            showInfo('info_speak_now');
+            start_img.src = 'img/mic-animate.gif';
+        };
+        recognition.onerror = function(event) {
+            if (event.error == 'no-speech') {
+                start_img.src = 'img/mic.gif';
+                showInfo('info_no_speech');
+                ignore_onend = true;
+            }
+            if (event.error == 'audio-capture') {
+                start_img.src = 'img/mic.gif';
+                showInfo('info_no_microphone');
+                ignore_onend = true;
+            }
+            if (event.error == 'not-allowed') {
+                if (event.timeStamp - start_timestamp < 100) {
+                    showInfo('info_blocked');
+                } else {
+                    showInfo('info_denied');
+                }
+                ignore_onend = true;
+            }
+        };
+        recognition.onend = function() {
+            recognizing = false;
+            if (ignore_onend) {
+                return;
+            }
+            start_img.src = 'img/mic.gif';
+            if (!final_transcript) {
+                showInfo('info_start');
+                return;
+            }
+            showInfo('');
+            if (window.getSelection) {
+                window.getSelection().removeAllRanges();
+                var range = document.createRange();
+                range.selectNode(document.getElementById('final_span'));
+                window.getSelection().addRange(range);
+            }
+        };
+        recognition.onresult = function(event) {
+            var interim_transcript = '';
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                    username = final_transcript;
+                    username = JSON.stringify(username);
+                    localStorage.username = username;
+                } else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }
+            final_transcript = capitalize(final_transcript);
+            final_span.innerHTML = linebreak(final_transcript);
+            interim_span.innerHTML = linebreak(interim_transcript);
+            
+            if (final_transcript || interim_transcript) {
+                showButtons('inline-block');
+            }
+        };
+    }
+
+    function linebreak(s) {
+        return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+    }
+
+    function capitalize(s) {
+        return s.replace(first_char, function(m) {
+            return m.toUpperCase();
         });
     }
-    
+
+    function startRecording(event) {
+        if (recognizing) {
+            recognition.stop();
+            return;
+        }
+        //$('.record').css('display', 'block');
+        
+        final_transcript = '';
+        recognition.lang = 'en-US';
+        recognition.start();
+        ignore_onend = false;
+        final_span.innerHTML = '';
+        interim_span.innerHTML = '';
+        start_img.src = 'img/mic-slash.gif';
+        showInfo('info_allow');
+        showButtons('none');
+        start_timestamp = event.timeStamp;
+    }
+
+    function showInfo(s) {
+        if (s) {
+            for (var child = info.firstChild; child; child = child.nextSibling) {
+                if (child.style) {
+                    child.style.display = child.id == s ? 'inline' : 'none';
+                }
+            }
+            info.style.visibility = 'visible';
+        } else {
+            info.style.visibility = 'hidden';
+        }
+    }
+
+    function showButtons(style) {
+        if (style == current_style) {
+            return;
+        }
+        current_style = style;
+    }
+        
 });
+
+
 /*
 $(document).ready(function() {
     // Loops though the blocks
@@ -296,7 +473,7 @@ $(document).ready(function() {
     }
     
     
-    ////////////////////////// HTML5 Text to speech API
+    ////////////////////////// Emotion detection
     
     var vid = document.getElementById('videoel');
     var overlay = document.getElementById('overlay');

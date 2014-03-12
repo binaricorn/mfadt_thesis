@@ -21,7 +21,7 @@ body {
 
 .screen-dark {
     background-image: none;
-    background-color: #000;
+    background-color: #ed1c24;
 }
 
 #content {
@@ -116,19 +116,19 @@ body {
 }
 
 .logo {
-    width: 500px;
-    height: 107px;
-    background-image: url('../img/haltech_logo.png');
+    width: 427px;
+    height: 89px;
+    background-image: url('../img/netnastics.png');
     position: absolute;
     z-index: 20;
-    margin-left: -250px;
-    margin-top: -53px;
+    margin-left: -213px;
+    margin-top: -45px;
     top: 50%;
     left: 50%;
 }
 
 .script {
-	font-size: 4em;
+	font-size: 0.5em;
 	width: 70%;
 	margin: 3em auto;
 	text-shadow: #999 1px 1px 1px;
