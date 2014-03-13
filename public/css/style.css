@@ -16,11 +16,11 @@ body {
 }
 
 .screen-gradient {
-    background-image: -webkit-linear-gradient(bottom, #11CAD4 0%, #2BFFAE 100%);
+    background-color: hsl(19, 12%, 53%);
+    -webkit-transition: all 0.3s;
 }
 
 .screen-dark {
-    background-image: none;
     background-color: #ed1c24;
 }
 

@@ -1,6 +1,9 @@
 $(document).ready(function() {
     var sitting = false;
+    
     var userSittingBool = false;
+    var gotName = false;
+    
     var loop = 0;
     // Speech recognition
     var username = "";
@@ -13,52 +16,65 @@ $(document).ready(function() {
     var one_line = /\n/g;
     var first_char = /\S/;
     
+    var interaction;
+    
+    var sitting_local;
+    
     var speech = new SpeechSynthesisUtterance('');
      
     var scenes = {
         0 : {
-            script: "Thanks for applying to NetNastics Workplace Wellness Solutions! Eyem Judy and eyel be conducting your interview today. Itll only take a few minutes, why doent you take a seat?",
-            interaction: "sit"
+            script: "Thanks for applying to NetNastics Workplace Wellness Solutions! Eyem Judy and eyel be conducting your interview today. Itll only take a few minutes, why doent you have a seat?",
+            interaction: "sit",
+            completed: "false"
         },
         
         1 : {
-            script: "Hey sorry about this but I cant find you in my schedule. There is a microphone on the desk. Spell out your first and last name loudly and clearly so I can pull up your record.",
-            interaction: "none"
+            script: "Haay sorry about this but I cant find you in my schedule. There is a microphone on the desk. Say your first and last name loudly and clearly so I can pull up your records.",
+            interaction: "speak",
+            completed: "false"
         },
         
         2 : {
-            script: ", great to meet you. So where did you go to college?",
-            interaction: "none"
+            script: "Oh yes. username, its so graaat to meet you. Too bad you never met the original Judy. She passed away five years ago but luckily the team was able to have her uploaded to the system before she expired. Or else I woodent be here right now! Hah hah hah.",
+            interaction: "repeat",
+            completed: "false"
         },
         
         3 : {
             script: "Eyem Judy and eyel be training you. Too bad you never met the original Judy. She passed away 5 years ago but luckily the team was able to have her uploaded to the system before she expired. Or else I woodent be here right now! Hah hah hah.",
-            interaction: "none"
+            interaction: "none",
+            completed: "false"
         },
         
         4 : {
             script: "What can you tell me about your time studying design at ",
-            interaction: "none"
+            interaction: "none",
+            completed: "false"
         },
         
         5 : {
             script: "HALtech is a great place for designers fresh out of college not only because we are leaders in the creative industry, but also because we take pride in our employees’ happiness. Happy employees equal happy customers. No brainer right?",
-            interaction: "none"
+            interaction: "none",
+            completed: "false"
         },  
         
         6 : {
             script: "Your probably wondering how we plan to live up to that promise. Your work day is long, and you get distracted. Trust me, we understand. Weave all been there. Thats why we’ve come up with an exciting set of games to keep you motivated and feeling positive. Just so you know, we expect every member of the HALtech family to play these games. Wheell let you know how well your stacking up and give you a cumulative score at the end of this training session.",
-            interaction: "none"
+            interaction: "none",
+            completed: "false"
         },  
         
         7 : {
             script: "The first activity is to sing the company anthem at the beginning and the end of each day. We like to think of this as a mini break from your usual workload. Let’s give this a run through. Repeat after me.",
-            interaction: "none"
+            interaction: "none",
+            completed: "false"
         },
         
         7 : {
             script: "We are the best at what we do. Because HALtech’s love is strong and true",
-            interaction: "none"
+            interaction: "none",
+            completed: "false"
         },  
     }
     
@@ -76,25 +92,17 @@ $(document).ready(function() {
         }       
     });
     
-    socket.on("userSitting", function(userSitting) {
-    
-        // if someone is sitting here
-        if(userSitting >= 800 && userSitting <= 1023 && userSittingBool == false) {
-            nextScene(loop);
-          
-        } 
-    });
-    
-    function nextScene(loop) {
-        loop++;
-        initSystem(loop);
-        startRecording(event);       
-        userSittingBool = true;
-    }
     
     function haveUser() {
-        console.log("have user");
         $('.screen').removeClass('screen-dark').addClass('screen-gradient');
+        
+        setInterval(function() {
+            var hue = Math.floor(Math.random() * 5) * 12;
+            console.log(hue);
+            $('.screen-gradient').css('background-color','hsl(20,'+ hue + '%,50%)').css('-webkit-transition','all 0.3s');
+        }, 300);
+        
+        
         $('.logo').css('display', 'none');
     }
     
@@ -106,19 +114,49 @@ $(document).ready(function() {
 
     
     function initSystem(loop) {
-        $('.script').css('display', 'block');
-        //$('.script').text(scenes[loop].script);
+        username = localStorage.username;
+        username = JSON.parse(username);
+
         speech.text = scenes[loop].script;
+        // Look for 'username' from the incoming text and replace it with the username sent in from the speech to text
+        speech.text = speech.text.replace(/username/g, username);
         speechSynthesis.speak(speech);
+        
+        checkInteraction(loop);   
     }
+    
+    function checkInteraction(loop) {
+        console.log("loop: " + loop);
+        interaction = scenes[loop].interaction;
+        if(interaction == 'sit') {
+            socket.on("userSitting", function(userSitting) {
+                if(userSitting >= 800 && userSitting <= 1023 && userSittingBool == false) {
+                    console.log("sitting down now");
+                    nextScene(loop);
+                    userSittingBool = true; 
+                }
+            });
+        } else if(interaction == 'speak') {
+            startRecording(event);  
+        } else if(interaction == 'repeat') {
+            console.log('repeat');
+        }
+        
+    }
+    
+    function nextScene(loop) {
+        loop++;
+        console.log("loop++: " + loop);
+        initSystem(loop);
+    }
+
+    
     
     function getName(username) {
         username = localStorage.username;
         username = JSON.parse(username);
         console.log(username);
-            // Look for 'username' from the incoming text and replace it with the username sent in from the speech to text
-            //script[count].system[s_slc] = script[count].system[s_slc].replace(/username/g, username);
-        }
+    }
 
 ////////////////////////// Google Speech to Text API
     
@@ -176,10 +214,15 @@ $(document).ready(function() {
             var interim_transcript = '';
             for (var i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
-                    final_transcript += event.results[i][0].transcript;
-                    username = final_transcript;
-                    username = JSON.stringify(username);
-                    localStorage.username = username;
+                    if(gotName == false) {                        
+                        final_transcript += event.results[i][0].transcript;
+                        username = final_transcript;
+                        username = JSON.stringify(username);
+                        localStorage.username = username;
+                        console.log("what's the loop #: " + loop);
+                        nextScene(1);
+                        gotName = true;
+                    }
                 } else {
                     interim_transcript += event.results[i][0].transcript;
                 }
@@ -248,32 +291,7 @@ $(document).ready(function() {
 
 /*
 $(document).ready(function() {
-    // Loops though the blocks
-    var count = 0;
-    // Loops through the amount of script lines in each system script block
-    var s_slc = 0;
-    // Amount of lines in each system script block
-    var s_sl = 0;
-    // Loops through the amount of audio files in each system script block
-    var s_alc = 0;
-    // Amount of lines in each system audio block
-    var s_al = 0;
-    // Speech recognition
-    var username = "";
-    var final_transcript = '';
-    var recognizing = false;
-    var ignore_onend;
-    var start_timestamp;
-    var current_style;
-    var two_line = /\n\n/g;
-    var one_line = /\n/g;
-    var first_char = /\S/;
-    var lostUser = 0;
-    var userHere = false;
-    // Send name to socket, have socket store the name
-    var socket = io.connect("/");
-    var voices = [];
-    voices = window.speechSynthesis.getVoices();
+    
     
     $("#startbutton").on('click', function() {
         startVideo();
@@ -351,127 +369,7 @@ $(document).ready(function() {
         function recordName() {
             $('.record').css('display', 'block');
         }
-    });
-    
-    ////////////////////////// Google Speech to Text API
-    
-    showInfo('info_start');
-    if ('webkitSpeechRecognition' in window) {
-        start_button.style.display = 'inline-block';
-        var recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.onstart = function() {
-            recognizing = true;
-            showInfo('info_speak_now');
-            start_img.src = 'img/mic-animate.gif';
-        };
-        recognition.onerror = function(event) {
-            if (event.error == 'no-speech') {
-                start_img.src = 'img/mic.gif';
-                showInfo('info_no_speech');
-                ignore_onend = true;
-            }
-            if (event.error == 'audio-capture') {
-                start_img.src = 'img/mic.gif';
-                showInfo('info_no_microphone');
-                ignore_onend = true;
-            }
-            if (event.error == 'not-allowed') {
-                if (event.timeStamp - start_timestamp < 100) {
-                    showInfo('info_blocked');
-                } else {
-                    showInfo('info_denied');
-                }
-                ignore_onend = true;
-            }
-        };
-        recognition.onend = function() {
-            recognizing = false;
-            if (ignore_onend) {
-                return;
-            }
-            start_img.src = 'img/mic.gif';
-            if (!final_transcript) {
-                showInfo('info_start');
-                return;
-            }
-            showInfo('');
-            if (window.getSelection) {
-                window.getSelection().removeAllRanges();
-                var range = document.createRange();
-                range.selectNode(document.getElementById('final_span'));
-                window.getSelection().addRange(range);
-            }
-        };
-        recognition.onresult = function(event) {
-            var interim_transcript = '';
-            for (var i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    final_transcript += event.results[i][0].transcript;
-                    username = final_transcript;
-                    username = JSON.stringify(username);
-                    localStorage.username = username;
-                } else {
-                    interim_transcript += event.results[i][0].transcript;
-                }
-            }
-            final_transcript = capitalize(final_transcript);
-            final_span.innerHTML = linebreak(final_transcript);
-            interim_span.innerHTML = linebreak(interim_transcript);
-            if (final_transcript || interim_transcript) {
-                showButtons('inline-block');
-            }
-        };
-    }
-
-    function linebreak(s) {
-        return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
-    }
-
-    function capitalize(s) {
-        return s.replace(first_char, function(m) {
-            return m.toUpperCase();
-        });
-    }
-
-    function startButton(event) {
-        if (recognizing) {
-            recognition.stop();
-            return;
-        }
-        final_transcript = '';
-        recognition.lang = 'en-US';
-        recognition.start();
-        ignore_onend = false;
-        final_span.innerHTML = '';
-        interim_span.innerHTML = '';
-        start_img.src = 'mic-slash.gif';
-        showInfo('info_allow');
-        showButtons('none');
-        start_timestamp = event.timeStamp;
-    }
-
-    function showInfo(s) {
-        if (s) {
-            for (var child = info.firstChild; child; child = child.nextSibling) {
-                if (child.style) {
-                    child.style.display = child.id == s ? 'inline' : 'none';
-                }
-            }
-            info.style.visibility = 'visible';
-        } else {
-            info.style.visibility = 'hidden';
-        }
-    }
-
-    function showButtons(style) {
-        if (style == current_style) {
-            return;
-        }
-        current_style = style;
-    }
-    
+    });    
     
     ////////////////////////// Emotion detection
     
