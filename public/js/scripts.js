@@ -5,7 +5,8 @@ $(document).ready(function() {
     var gotName = false;
     
     var loop = 0;
-    // Speech recognition
+    
+    // Google Speech to Text
     var username = "";
     var final_transcript = '';
     var recognizing = false;
@@ -18,8 +19,7 @@ $(document).ready(function() {
     
     var interaction;
     
-    var sitting_local;
-    
+    // Google Text to Speech
     var speech = new SpeechSynthesisUtterance('');
      
     var scenes = {
@@ -95,6 +95,7 @@ $(document).ready(function() {
     
     function haveUser() {
         $('.screen').removeClass('screen-dark').addClass('screen-gradient');
+        
         
         setInterval(function() {
             var hue = Math.floor(Math.random() * 5) * 12;

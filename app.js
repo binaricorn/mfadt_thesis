@@ -13,6 +13,27 @@ var app = connect.createServer(
 
 var io = require("socket.io").listen(app);
 
+var request = require('request');
+
+var options = {
+    url: 'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=fei&20liu',
+    headers: {
+        'User-Agent': 'request'
+    }
+};
+
+function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+        var info = JSON.parse(body);
+        console.log(info.responseData.results[0]);
+        /*
+console.log(info.stargazers_count + " Stars");
+        console.log(info.forks_count + " Forks");
+*/
+    }
+}
+
+request(options, callback);
 
 
 io.sockets.on('connection', function(socket) {
