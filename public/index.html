@@ -19,6 +19,11 @@
     <section class="screen screen-dark">
         <div class="logo"></div>
 
+        <div class="block_nameInput" style="position: absolute; top: 0; left: 0; z-index: 1005; display: none">
+            <input type="text" id="form_nameInput" placeholder="name"/>
+            <input type="submit" id="form_nameInputSubmit" value="submit"/>
+        </div>
+        
         <div class="script"></div>
 
         <div class="audio" style="display:none">
@@ -35,7 +40,7 @@
             <div id='emotion_chart'></div>
         </div>
 
-        <div id="controls" style="display:none">
+        <div id="controls">
             <input class="smile_btn" type="button" value="wait, loading video" disabled="disabled" id="startbutton">
         </div>
 
