@@ -2,13 +2,12 @@ $(document).ready(function() {
     var sitting = false;
     var userSittingBool = false;
     var userNameBool = false;
+    var userLinkedInBool = false;
     var listen1 = false;
     var loop = 0;
-    // Google Speech to Text
     var username = "";
 
     var interaction;
-    // Google Text to Speech
     var speech = new SpeechSynthesisUtterance('hi');
     
     var scenes = [
@@ -29,14 +28,14 @@ $(document).ready(function() {
         {
             scene: {
                 script: "Oh yes. username, its so great to meet you. Eyem Judy. too bad you never met the original. She passed away five years ago but luckily the team was able to have her uploaded to the system before she expired. Or else I woodent be here right now! Hah hah hah.",
-                interaction: "listen1",
+                interaction: "linkedin",
                 visible: ""
             }
         },
         {
             scene: {
-                script: "I just took a quick glance at your resume and everything looks pretty good. The schoolname is a great school. We also saw from your application that you’ve got a great smile. Can you show me that smile again?",
-                interaction: "linkedin",
+                script: "I just took a quick glance at your resume and everything looks pretty good. The schoolname is a great school. We also saw from your application that yoov got a great smile. Can you show me that smile again?",
+                interaction: "listen1",
                 visible: ""
             }
         }
@@ -96,7 +95,6 @@ $(document).ready(function() {
             socket.on("userSitting", function(userSitting) {
                 // if the user is sitting now
                 if (userSitting >= 800 && userSitting <= 1023 && userSittingBool == false) {
-                    console.log("sitting down now");
                     nextScene(loop);
                     userSittingBool = true;
                 }
@@ -109,11 +107,19 @@ $(document).ready(function() {
                     username = localStorage.username;
                     username = JSON.parse(username);
                     nextScene(loop);
-                   // startVideoStuff();
-                    
+                    console.log('type name');
                     userNameBool = true;
                 }
             });
+        } else if (interaction == 'linkedin') {
+            if (userLinkedInBool == false) {
+                onLinkedInLoad();    
+                // typing michael here will bring up michael kahane's records on linkedin                
+                onLinkedInAuth(username);
+               // nextScene(loop);
+                
+                userLinkedInBool = true;
+            }    
         } else if (interaction == 'listen1') {
             if (listen1 == false) {
                 console.log('just listen');
@@ -136,8 +142,44 @@ $(document).ready(function() {
         localStorage.username = username;
     }
     
+
+    
+    ////////////////////////////////////// Linkedin API
+    
+    
+    // 2. Runs when the JavaScript framework is loaded
+      function onLinkedInLoad(username) {
+        IN.Event.on(IN, "auth", onLinkedInAuth);
+        console.log('crawl linkedin');
+      }
+    
+    // 2. Runs when the viewer has authenticated
+      function onLinkedInAuth() {
+        IN.API.PeopleSearch()
+          .fields("firstName", "lastName", "positions", "educations")
+          .params({"first-name": username, "last-name": "kahane", "school-name":"new school"})
+          .result(displayPeopleSearch)
+          .error(displayPeopleSearchErrors);
+      }
+    
+      // 2. Runs when the PeopleSearch() API call returns successfully
+      function displayPeopleSearch(peopleSearch) {
+        var peopleSearchDiv = document.getElementById("peoplesearch");
+         
+        var members = peopleSearch.people.values; // people are stored in a different spot than earlier example
+        for (var member in members) {
+          // but inside the loop, everything is the same
+          // extract the title from the members first position
+          console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
+        }     
+      }
+    
+      function displayPeopleSearchErrors(error) { /* do nothing */ }
+
+
+    ////////////////////////////////////// Emotion detection
+    
     function startVideoStuff() {
-        ////////////////////////// Emotion detection
         $('#startbutton').on('click', function() {
             startVideo();
         });
