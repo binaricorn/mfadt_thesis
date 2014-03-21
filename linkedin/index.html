@@ -18,21 +18,27 @@
 
   // 2. Runs when the viewer has authenticated
   function onLinkedInAuth() {
-  IN.API.Profile("me","url=http://www.linkedin.com/in/jakobheuser")
-    .result(displayProfiles);
-}
+    IN.API.PeopleSearch()
+      .fields("firstName", "lastName", "positions", "educations")
+      .params({"first-name": "michael", "last-name": "kahane", "school-name":"new school"})
+      .result(displayPeopleSearch)
+      .error(displayPeopleSearchErrors);
+  }
 
   // 2. Runs when the PeopleSearch() API call returns successfully
-  function displayProfiles(profiles) {
-  var profilesDiv = document.getElementById("profiles");
-
-  var members = profiles.values;
-  for (var member in members) {
-    profilesDiv.innerHTML += "<p>Welcome " + members[member].firstName + " " + members[member].lastName + "</p>";
+  function displayPeopleSearch(peopleSearch) {
+    var peopleSearchDiv = document.getElementById("peoplesearch");
+     
+    var members = peopleSearch.people.values; // people are stored in a different spot than earlier example
+    for (var member in members) {
+      // but inside the loop, everything is the same
+      // extract the title from the members first position
+      peopleSearchDiv.innerHTML += "<p>" + members[member].firstName + " " + members[member].lastName 
+                                + " is a " + members[member].positions.values[0].title + ".</p>";
+    }     
   }
-}
 
-  
+  function displayPeopleSearchErrors(error) { /* do nothing */ }
 </script>
 </head>
 <body>
@@ -41,7 +47,7 @@
 <script type="IN/Login"></script>
 
 <!-- 4. Placeholder for the greeting -->
-<div id="profiles"></div>
+<div id="peoplesearch"></div>
 
 </body>
 </html>
