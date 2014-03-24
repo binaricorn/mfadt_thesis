@@ -6,6 +6,9 @@ $(document).ready(function() {
     var listen1 = false;
     var loop = 0;
     var username = "";
+    var userlastname = "";
+    var schoolname = "";
+    var linkedInJobTitle = "";
 
     var interaction;
     var speech = new SpeechSynthesisUtterance('hi');
@@ -20,9 +23,9 @@ $(document).ready(function() {
         },
         {
             scene: {
-                script: "Haay sorry about this but I cant find you in my schedule. There is a microphone on the desk. Type your first and last name so I can pull up your records.",
+                script: "Haay sorry about this but I cant find you in my schedule. Fill out the form on my screen so I can pull up your records.",
                 interaction: "type",
-                visible: ".block_nameInput"
+                visible: ".block_fieldInput"
             }
         },
         {
@@ -34,7 +37,7 @@ $(document).ready(function() {
         },
         {
             scene: {
-                script: "I just took a quick glance at your resume and everything looks pretty good. The schoolname is a great school. We also saw from your application that yoov got a great smile. Can you show me that smile again?",
+                script: "I just took a quick glance at your resume and everything looks pretty good. Your experience as a jobtitle will be great for this position. We also saw from your application that yoov got a great smile. Can you show me that smile again?",
                 interaction: "listen1",
                 visible: ""
             }
@@ -71,8 +74,11 @@ $(document).ready(function() {
     
     function initSystem(loop) {
         speech.text = scenes[loop].scene.script;
+                    
         // Look for 'username' from the incoming text and replace it with the username sent in from the speech to text
         speech.text = speech.text.replace(/username/g, username);
+
+
         speechSynthesis.speak(speech);
         checkInteraction(loop);
     }
@@ -100,23 +106,30 @@ $(document).ready(function() {
                 }
             });
         } else if (interaction == 'type') {
-            $('#form_nameInputSubmit').on('click', function() {
+            $('#form_submit').on('click', function() {
                 if (userNameBool == false) {
-                    storeName(username);
+                    storeValues(username, userlastname, schoolname);
                     // retriving username...need to write in a function
                     username = localStorage.username;
                     username = JSON.parse(username);
+                    
+                    userlastname = localStorage.userlastname;
+                    userlastname = JSON.parse(userlastname);
+                    
+                    schoolname = localStorage.schoolname;
+                    schoolname = JSON.parse(schoolname);
+                    
+                    
                     nextScene(loop);
-                    console.log('type name');
+                    console.log('type name: ' + username + userlastname + schoolname);
                     userNameBool = true;
                 }
             });
         } else if (interaction == 'linkedin') {
             if (userLinkedInBool == false) {
-                onLinkedInLoad();    
-                // typing michael here will bring up michael kahane's records on linkedin                
-                onLinkedInAuth(username);
-               // nextScene(loop);
+                onLinkedInLoad();                  
+                onLinkedInAuth(username, userlastname, schoolname);    
+                nextScene(loop);
                 
                 userLinkedInBool = true;
             }    
@@ -136,10 +149,19 @@ $(document).ready(function() {
         initSystem(loop);
     }
 
-    function storeName(username) {
-        username = $('#form_nameInput').val();
+    function storeValues(username, userlastname, schoolname) {
+        username = $('#form_firstName').val();
         username = JSON.stringify(username);
         localStorage.username = username;
+        
+        userlastname = $('#form_lastName').val();
+        userlastname = JSON.stringify(userlastname);
+        localStorage.userlastname = userlastname;
+        
+        schoolname = $('#form_schoolName').val();
+        schoolname = JSON.stringify(schoolname);
+        localStorage.schoolname = schoolname;
+    
     }
     
 
@@ -148,16 +170,16 @@ $(document).ready(function() {
     
     
     // 2. Runs when the JavaScript framework is loaded
-      function onLinkedInLoad(username) {
+      function onLinkedInLoad() {
         IN.Event.on(IN, "auth", onLinkedInAuth);
         console.log('crawl linkedin');
       }
     
     // 2. Runs when the viewer has authenticated
-      function onLinkedInAuth() {
+      function onLinkedInAuth(username, userlastname, schoolname) {
         IN.API.PeopleSearch()
           .fields("firstName", "lastName", "positions", "educations")
-          .params({"first-name": username, "last-name": "kahane", "school-name":"new school"})
+          .params({"first-name": username, "last-name": userlastname, "school-name": schoolname })
           .result(displayPeopleSearch)
           .error(displayPeopleSearchErrors);
       }
@@ -171,6 +193,16 @@ $(document).ready(function() {
           // but inside the loop, everything is the same
           // extract the title from the members first position
           console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
+          
+          linkedInJobTitle = members[member].positions.values[0].title;
+          speech.text = speech.text.replace(/jobtitle/g, linkedInJobTitle);          
+  
+          /*
+          // in case we need to store the job title info:
+          linkedInJobTitle = JSON.stringify(members[member].positions.values[0].title);
+          localStorage.linkedInJobTitle = linkedInJobTitle;
+          */
+          
         }     
       }
     
