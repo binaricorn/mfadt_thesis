@@ -13,24 +13,6 @@ var app = connect.createServer(
 
 var io = require("socket.io").listen(app);
 
-var request = require('request');
-
-var options = {
-    url: 'https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=crystal%20ruth%20bell',
-    headers: {
-        'User-Agent': 'request'
-    }
-};
-
-function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-        var info = JSON.parse(body);
-        console.log(info.responseData.results[0]);
-    }
-}
-
-request(options, callback);
-
 
 io.sockets.on('connection', function(socket) {
     

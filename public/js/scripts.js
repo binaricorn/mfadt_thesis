@@ -4,6 +4,7 @@ $(document).ready(function() {
     var userNameBool = false;
     var userLinkedInBool = false;
     var listen1 = false;
+    var userSmileBool1 = false;
     var loop = 0;
     var username = "";
     var userlastname = "";
@@ -35,14 +36,17 @@ $(document).ready(function() {
                 visible: ""
             }
         },
+        // linkedin interaction should happen insider the smile interaction. after a settimeout, the system should show the camera stuff.
         {
             scene: {
-                script: "I just took a quick glance at your resume and everything looks pretty good. Your experience as a jobtitle will be great for this position. We also saw from your application that yoov got a great smile. Can you show me that smile again?",
-                interaction: "listen1",
-                visible: ""
+                script: "I just took a quick glance at your resume and everything looks pretty good. Your experience as a jobtitle will be great for this position. We also saw from your application that yoov got a great smile. Show me that smile again?",
+                interaction: "smile1",
+                visible: "#content"
             }
         }
+        
     ];
+    
     
     
     
@@ -77,9 +81,12 @@ $(document).ready(function() {
                     
         // Look for 'username' from the incoming text and replace it with the username sent in from the speech to text
         speech.text = speech.text.replace(/username/g, username);
-
-
-        speechSynthesis.speak(speech);
+        
+        speech.onend = function(event) {
+            console.log('the end of speech.')
+        };
+        
+        speechSynthesis.speak(speech); 
         checkInteraction(loop);
     }
     
@@ -121,26 +128,28 @@ $(document).ready(function() {
                     
                     
                     nextScene(loop);
-                    console.log('type name: ' + username + userlastname + schoolname);
                     userNameBool = true;
                 }
             });
         } else if (interaction == 'linkedin') {
-            if (userLinkedInBool == false) {
-                onLinkedInLoad();                  
-                onLinkedInAuth(username, userlastname, schoolname);    
+            if (userLinkedInBool == false) {   
                 nextScene(loop);
-                
                 userLinkedInBool = true;
             }    
-        } else if (interaction == 'listen1') {
-            if (listen1 == false) {
-                console.log('just listen');
-                nextScene(loop);
-                listen1 = true;
-/*             startVideoStuff(); */    
+        } 
+        else if (interaction == "smile1") {
+            if (userSmileBool1 == false) {
+                console.log('emotion detection');
+                onLinkedInLoad();                  
+                onLinkedInAuth(username, userlastname, schoolname); 
+                
+                setTimeout(function() {
+                    startVideoStuff();                     
+                }, 5000);
+
+                nextScene(loop);                
+                userSmileBool1 = true;
             }
-            
         }
     }
 
