@@ -14,7 +14,7 @@ var present = false;
 var absent = false;
 
 var userPresence;
-var userSitting;
+var userStanding;
 
 
 module.exports = {
@@ -29,18 +29,18 @@ module.exports = {
             
             // a = Range finder value [0 or 1]
             userPresence = data.a;
-            userSitting = data.b;
+            userStanding = data.b;
             
             if (userPresence == 0 && absent == false) {
                 socket.emit("userPresence", data);
                 absent = true;
             } else if (userPresence == 1 && present == false) {
-                socket.emit("userPresence", data.a);
+                socket.emit("userStanding", data.a);
                 present = true;
             }
             
             if (present == true) {
-                socket.emit("userSitting", data.b);
+                socket.emit("userStanding", data.b);
             }
             
             function process_data(data) {

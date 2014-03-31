@@ -4,7 +4,7 @@ $(document).ready(function() {
         lastname: null,
         schoolname: null,
         jobtitle: null,
-        sitting: false,
+        standing: false,
         passInitSmilingTest: false,
         initSmilingScore: null
     }
@@ -30,7 +30,7 @@ $(document).ready(function() {
         if (userPresence == "1") {
             haveUser();
             enableCamera();
-            botSpeak("have a seat");            
+            botSpeak("you are here for an interview.");            
             speech.onend = function(event) {
                 checkInteraction(0);
             }
@@ -57,10 +57,10 @@ $(document).ready(function() {
     function checkInteraction(counter) {
         switch(counter) {
             case 0:
-                socket.on("userSitting", function(userSitting) {
-                    if (userSitting >= 800 && userSitting <= 1023 && user.sitting == false) {
-                        user.sitting = true;
-                        console.log("user is sitting");    
+                socket.on("userStanding", function(userStanding) {
+                    if (userStanding >= 800 && userStanding <= 1023 && user.standing == false) {
+                        user.standing = true;
+                        console.log("user is standing at the rihgt place");    
                         checkInteraction(1);        
                     }
                 });
