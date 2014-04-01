@@ -4,6 +4,7 @@ $(document).ready(function() {
         lastname: null,
         schoolname: null,
         jobtitle: null,
+        jobcompany: null,
         standing: false,
         passInitSmilingTest: false,
         initSmilingScore: null
@@ -12,6 +13,14 @@ $(document).ready(function() {
     var counter;
     var speech = new SpeechSynthesisUtterance('hi');
     var smiling1Level1Counter = 0;
+    
+    var scenes = [
+        "Thanks for applying to NetNastics Workplace Wellness Solutions! My name is Judy. Your interview will only take a few minutes. Place your feet on the platform and we can get started.",
+        "Fill out the form so I can pull up your records.",
+        "Hello username its nice to meet you.",
+        "Your experience as a jobtitle at jobcompany is perfect for this position. I saw a great smile on your file. Lets see that smile for one minute.",
+        "that was only a initSmilingScore out of 100, youll have to do better than that!"
+    ]
     
     var vid = document.getElementById('videoel');
     var overlay = document.getElementById('overlay');
@@ -23,14 +32,13 @@ $(document).ready(function() {
     });
     ctrack.init(pModel);
     
-    
     var socket = io.connect("/");
     // scene 0
     socket.on("userPresence", function(userPresence) {
         if (userPresence == "1") {
             haveUser();
             enableCamera();
-            botSpeak("you are here for an interview.");            
+            botSpeak(scenes[0]);            
             speech.onend = function(event) {
                 checkInteraction(0);
             }
@@ -57,16 +65,16 @@ $(document).ready(function() {
     function checkInteraction(counter) {
         switch(counter) {
             case 0:
-                socket.on("userStanding", function(userStanding) {
-                    if (userStanding >= 800 && userStanding <= 1023 && user.standing == false) {
-                        user.standing = true;
+                socket.on("userStanding", function(userLeftFoot, userRightFoot) {
+                    if(userLeftFoot >= 600 && userRightFoot >= 600 && user.standing == false) {
+                        user.standing = true;   
                         console.log("user is standing at the rihgt place");    
-                        checkInteraction(1);        
-                    }
+                        checkInteraction(1);    
+                    } 
                 });
                 break;
             case 1:
-                botSpeak("type your name");
+                botSpeak(scenes[1]); 
                 displayElements('.block_fieldInput');
                 $('#form_submit').on('click', function() {
                     storeFormVals();
@@ -74,7 +82,7 @@ $(document).ready(function() {
                 });
                 break;
             case 2:
-                botSpeak("oh hello username nice to meet you");
+                botSpeak(scenes[2]); 
                 onLinkedInLoad();
                 onLinkedInAuth();
                 console.log("crawl linkedin");
@@ -82,14 +90,15 @@ $(document).ready(function() {
             case 3:
                 user.jobtitle = localStorage.jobtitle;
                 user.jobtitle = JSON.parse(user.jobtitle);
-                console.log(user.jobtitle);
-                botSpeak("your experience as a jobtitle. lets see that smile for one minute.");
+                user.jobcompany = localStorage.jobcompany;
+                user.jobcompany = JSON.parse(user.jobcompany);
+                
+                botSpeak(scenes[3]); 
                 checkInteraction(4);
                 break;
             case 4: 
                 console.log("check smile");
                 hideElements('.block_fieldInput');
-                displayElements('#content');
                 startVideoTracking();
                 break;
             case 5:
@@ -97,7 +106,7 @@ $(document).ready(function() {
                 user.initSmilingScore = localStorage.initSmilingScore;
                 //user.initSmilingScore = user.initSmilingScore.toFixed(2);
                 console.log(user.initSmilingScore);
-                botSpeak("that was only a initSmilingScore out of 100, you can do better than that!");
+                botSpeak(scenes[4]); 
         }
     }
     
@@ -119,6 +128,7 @@ $(document).ready(function() {
         speech.text = str;
         speech.text = speech.text.replace(/username/g, user.firstname);
         speech.text = speech.text.replace(/jobtitle/g, user.jobtitle);
+        speech.text = speech.text.replace(/jobcompany/g, user.jobcompany);
         
         speech.text = speech.text.replace(/initSmilingScore/g, user.initSmilingScore);
         speechSynthesis.speak(speech);
@@ -142,6 +152,10 @@ $(document).ready(function() {
         for (var member in members) {
             
             //   console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
+            console.log(members[member].positions.values[0].company.name);
+            user.jobcompany = members[member].positions.values[0].company.name;
+            user.jobcompany = JSON.stringify(user.jobcompany);
+            localStorage.jobcompany = user.jobcompany;
             user.jobtitle = members[member].positions.values[0].title;
             user.jobtitle = JSON.stringify(user.jobtitle);
             localStorage.jobtitle = user.jobtitle;
@@ -183,11 +197,9 @@ $(document).ready(function() {
                 }
                 vid.play();
             }, function() {
-                //insertAltVideo(vid);
                 alert("There was some problem trying to fetch video from your webcam. If you have a webcam, please make sure to accept when the browser asks for access to your webcam.");
             });
         } else {
-            //insertAltVideo(vid);
             alert("This demo depends on getUserMedia, which your browser does not seem to support. :(");
         }
     }
@@ -246,7 +258,9 @@ $(document).ready(function() {
     attr("fill", "#2d578b");
     
     /*
-svg.selectAll("text.labels").
+    Text labels for emotion values
+    
+    svg.selectAll("text.labels").
     data(emotionData).
     enter().
     append("svg:text").
@@ -279,7 +293,7 @@ svg.selectAll("text.labels").
     }).
     attr("transform", "translate(0, 18)").
     attr("class", "yAxis");
-*/
+    */
 
     function updateData(data) {
         // update
@@ -310,12 +324,12 @@ svg.selectAll("text.labels").
     function analyzeSmileInitialData(smileScore) {
         //console.log(user.passInitSmilingTest);
         
-        if (smileScore > 0.20 && smileScore < 0.40 && user.passInitSmilingTest == false) {
+        if (smileScore > 0.02 && smileScore < 0.60 && user.passInitSmilingTest == false) {
             
             smiling1Level1Counter++;
-            if (smiling1Level1Counter > 30) { // smiling for 30 seconds
+            console.log(smiling1Level1Counter);
+            if (smiling1Level1Counter > 145) { // smiling for 30 seconds
                user.passInitSmilingTest = true;
-               console.log( "you are smiling enough, smile counter: " + smileScore); 
                localStorage.initSmilingScore = smileScore;
                checkInteraction(5);
             }

@@ -14,7 +14,9 @@ var present = false;
 var absent = false;
 
 var userPresence;
-var userStanding;
+var userLeftFoot;
+var userRightFoot;
+//var userStanding;
 
 
 module.exports = {
@@ -27,33 +29,41 @@ module.exports = {
             data = data.toString();
             data = process_data(data);
             
-            // a = Range finder value [0 or 1]
-            userPresence = data.a;
-            userStanding = data.b;
+            userPresence = data.a; // Range finder value [0 or 1]
+            userLeftFoot = data.b; // Pressure sensor value [0 to 1023]
+            userRightFoot = data.c; // Pressure sensor value [0 to 1023]
+            userLeftHand = data.d; // Button press value [0 or 1]
+            userRightHand = data.e; // Button press value [0 or 1]
             
             if (userPresence == 0 && absent == false) {
                 socket.emit("userPresence", data);
                 absent = true;
             } else if (userPresence == 1 && present == false) {
-                socket.emit("userStanding", data.a);
+                socket.emit("userPresence", data.a);
                 present = true;
             }
             
             if (present == true) {
-                socket.emit("userStanding", data.b);
+                socket.emit("userStanding", data.b, data.c);
             }
             
             function process_data(data) {
         		var ret = {
         			a: 0,
-        			b: 0
+        			b: 0,
+        			c: 0,
+        			d: 0,
+        			e: 0
         		};
         		
         		var array = data.split(',');
         		
-        		if (array.length < 1) return ret;
+        		if (array.length < 4) return ret;
             		ret.a = array[0];
                     ret.b = array[1];
+                    ret.c = array[2];
+                    ret.d = array[3];
+                    ret.e = array[4];
                     return ret;
         	}
     

@@ -5,14 +5,12 @@ int maximumRange = 120; // Maximum range needed
 int minimumRange = 0; // Minimum range needed
 long duration, distance; // Duration used to calculate distance
 
-int sitSensor = A0;
 int footSensor1 = A2;
 int footSensor2 = A3;    
 int handButton1 = 2;
 int handButton2 = 3;
 int ledPin = 13;
 
-int sitVal;
 int foot1SensorVal;
 int foot2SensorVal;
 
@@ -25,7 +23,6 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  pinMode(sitSensor, INPUT);
   pinMode(footSensor1, INPUT);
   pinMode(footSensor2, INPUT);
 }
@@ -68,16 +65,11 @@ void waitingForUser() {
 }
 
 void nobody() {
-    sitVal = analogRead(sitSensor);
-    Serial.print("0");
-    Serial.print(",");
-
-    Serial.println(sitVal);
+    Serial.println("0");
     lostUser = 0;
 }
 
 void haveUser() {
-    sitVal = analogRead(sitSensor);
     foot1SensorVal = analogRead(footSensor1);
     foot2SensorVal = analogRead(footSensor2);
     int handButton1Val = digitalRead(handButton1); 
@@ -90,8 +82,6 @@ void haveUser() {
     }
     
     Serial.print("1");
-    Serial.print(",");
-    Serial.print(sitVal);
     Serial.print(",");
     Serial.print(foot1SensorVal);
     Serial.print(",");
