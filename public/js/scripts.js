@@ -11,15 +11,49 @@ $(document).ready(function() {
     }
     
     var counter;
-    var speech = new SpeechSynthesisUtterance('hi');
+    var instructions = new SpeechSynthesisUtterance('speech');
     var smiling1Level1Counter = 0;
+    var checking = false;
     
-    var scenes = [
-        "Thanks for applying to NetNastics Workplace Wellness Solutions! My name is Judy. Your interview will only take a few minutes. Place your feet on the platform and we can get started.",
-        "Fill out the form so I can pull up your records.",
-        "Hello username its nice to meet you.",
-        "Your experience as a jobtitle at jobcompany is perfect for this position. I saw a great smile on your file. Lets see that smile for one minute.",
-        "that was only a initSmilingScore out of 100, youll have to do better than that!"
+    var monologue = new SpeechSynthesisUtterance("");
+    var monologue2 = new SpeechSynthesisUtterance("");
+    var monologue3 = new SpeechSynthesisUtterance("");
+    var monologue4 = new SpeechSynthesisUtterance("");
+    var monologue5 = new SpeechSynthesisUtterance("");
+
+    
+   /*
+ var scenes = [
+        // 0
+        "Thanks for applying to NetNastics Workplace Wellness Solutions, my name is Judy, your interview will only take a few minutes, place your feet on the platform and we can get started.",
+        // 1
+        "Please fill out this form.",
+        // 2
+        "Hello username.",
+        // 3
+        "Your experience as a jobtitle at jobcompany is perfect for this position, I saw a great smile on your file, Lets see that smile now.",
+        // 4
+        "Thanks. Eyem tasked with finding extraordinary talent which your resumay seems to indicate but that smile was only a initSmilingScore out of 100, youll have to do better than that!",
+        // 5
+        "Weer leaders in the workplace wellness industry only because we take pride in caring about our own employees. We like to tell ourselves employees first.",
+        "ha"
+    ]
+    
+*/
+    var i_script = [
+        // 0
+        "Hi.",
+        // 1
+        "Please fill out this form.",
+        // 2
+        "Hello username.",
+        // 3
+        "Your experience as a jobtitle at jobcompany is perfect for this position, smile.",
+        // 4
+        "smile was only a initSmilingScore out of 100, youll have to do better than that!"
+        /* "Weer leaders in the workplace wellness industry only because we take pride in caring about our own employees. We like to tell ourselves employees first.", */
+        // 6
+        
     ]
     
     var vid = document.getElementById('videoel');
@@ -38,8 +72,8 @@ $(document).ready(function() {
         if (userPresence == "1") {
             haveUser();
             enableCamera();
-            botSpeak(scenes[0]);            
-            speech.onend = function(event) {
+            botSpeak(instructions, i_script[0]);
+            instructions.onend = function(event) {
                 checkInteraction(0);
             }
         } else if (userPresence == "0") {
@@ -67,22 +101,22 @@ $(document).ready(function() {
             case 0:
                 socket.on("userStanding", function(userLeftFoot, userRightFoot) {
                     if(userLeftFoot >= 600 && userRightFoot >= 600 && user.standing == false) {
-                        user.standing = true;   
-                        console.log("user is standing at the rihgt place");    
-                        checkInteraction(1);    
-                    } 
+                        user.standing = true;
+                        console.log("user is standing at the rihgt place");
+                        checkInteraction(1);
+                    }
                 });
                 break;
             case 1:
-                botSpeak(scenes[1]); 
+                botSpeak(instructions, i_script[1]);
                 displayElements('.block_fieldInput');
                 $('#form_submit').on('click', function() {
                     storeFormVals();
-                    checkInteraction(2);        
+                    checkInteraction(2);
                 });
                 break;
             case 2:
-                botSpeak(scenes[2]); 
+                botSpeak(instructions, i_script[2]);
                 onLinkedInLoad();
                 onLinkedInAuth();
                 console.log("crawl linkedin");
@@ -93,10 +127,10 @@ $(document).ready(function() {
                 user.jobcompany = localStorage.jobcompany;
                 user.jobcompany = JSON.parse(user.jobcompany);
                 
-                botSpeak(scenes[3]); 
+                botSpeak(instructions, i_script[3]);
                 checkInteraction(4);
                 break;
-            case 4: 
+            case 4:
                 console.log("check smile");
                 hideElements('.block_fieldInput');
                 startVideoTracking();
@@ -106,7 +140,25 @@ $(document).ready(function() {
                 user.initSmilingScore = localStorage.initSmilingScore;
                 //user.initSmilingScore = user.initSmilingScore.toFixed(2);
                 console.log(user.initSmilingScore);
-                botSpeak(scenes[4]); 
+                botSpeak(instructions, i_script[4]);
+                checkInteraction(6);
+                break;
+            case 6:
+                botSpeak(monologue, "Weer leaders in the workplace wellness industry only because we take pride in caring about our own employees. We like to tell ourselves happy employees first. And boy do we live up to our company motto!");
+                botSpeak(monologue2, "We understand you get tired and distracted, weeve all been there. Even me, a bot, can get tired sometimes!");
+                botSpeak(monologue3, "Thats why weeve come up with an exciting set of games to keep you motivated and feeling positive. We expect every member of the NetNastics family to play these games.");
+                botSpeak(monologue4, "We want everyone to live up to the motto and become employees who can represent the NetNastics brand with pride!");
+                botSpeak(monologue5, "The first activity is to sing the company anthem at the beginning and the end of each day. Itll keep your eyes on the prize. Lets give this a quick run through. Repeat after me.");
+
+                break;
+
+            /*
+case 6:
+                console.log(scenes[5]);
+                botSpeak(scenes[5]);
+                checkInteraction(7);
+                break;
+*/
         }
     }
     
@@ -124,14 +176,14 @@ $(document).ready(function() {
         user.schoolname = $('#form_schoolName').val();
     }
     
-    function botSpeak(str) {
-        speech.text = str;
-        speech.text = speech.text.replace(/username/g, user.firstname);
-        speech.text = speech.text.replace(/jobtitle/g, user.jobtitle);
-        speech.text = speech.text.replace(/jobcompany/g, user.jobcompany);
+    function botSpeak(s, str) {
+        s.text = str;
+        s.text = s.text.replace(/username/g, user.firstname);
+        s.text = s.text.replace(/jobtitle/g, user.jobtitle);
+        s.text = s.text.replace(/jobcompany/g, user.jobcompany);
         
-        speech.text = speech.text.replace(/initSmilingScore/g, user.initSmilingScore);
-        speechSynthesis.speak(speech);
+        s.text = s.text.replace(/initSmilingScore/g, user.initSmilingScore);
+        speechSynthesis.speak(s);
     }
     
     //////////////////////////////////////////////////////////////// Linkedin API
@@ -148,10 +200,10 @@ $(document).ready(function() {
     }
     function displayPeopleSearch(peopleSearch) {
         var peopleSearchDiv = document.getElementById("peoplesearch");
-        var members = peopleSearch.people.values; 
+        var members = peopleSearch.people.values;
         for (var member in members) {
             
-            //   console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
+            // console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
             console.log(members[member].positions.values[0].company.name);
             user.jobcompany = members[member].positions.values[0].company.name;
             user.jobcompany = JSON.stringify(user.jobcompany);
@@ -159,7 +211,7 @@ $(document).ready(function() {
             user.jobtitle = members[member].positions.values[0].title;
             user.jobtitle = JSON.stringify(user.jobtitle);
             localStorage.jobtitle = user.jobtitle;
-            checkInteraction(3); 
+            checkInteraction(3);
         }
     }
     function displayPeopleSearchErrors(error) { /* do nothing */}
@@ -258,42 +310,41 @@ $(document).ready(function() {
     attr("fill", "#2d578b");
     
     /*
-    Text labels for emotion values
-    
-    svg.selectAll("text.labels").
-    data(emotionData).
-    enter().
-    append("svg:text").
-    attr("x", function(datum, index) {
-        return x(index) + barWidth;
-    }).
-    attr("y", function(datum) {
-        return height - y(datum.value);
-    }).
-    attr("dx", -barWidth / 2).
-    attr("dy", "1.2em").
-    attr("text-anchor", "middle").
-    text(function(datum) {
-        return datum.value;
-    }).
-    attr("fill", "white").
-    attr("class", "labels");
-    svg.selectAll("text.yAxis").
-    data(emotionData).
-    enter().append("svg:text").
-    attr("x", function(datum, index) {
-        return x(index) + barWidth;
-    }).
-    attr("y", height).
-    attr("dx", -barWidth / 2).
-    attr("text-anchor", "middle").
-    attr("style", "font-size: 12").
-    text(function(datum) {
-        return datum.emotion;
-    }).
-    attr("transform", "translate(0, 18)").
-    attr("class", "yAxis");
-    */
+Text labels for emotion values
+svg.selectAll("text.labels").
+data(emotionData).
+enter().
+append("svg:text").
+attr("x", function(datum, index) {
+return x(index) + barWidth;
+}).
+attr("y", function(datum) {
+return height - y(datum.value);
+}).
+attr("dx", -barWidth / 2).
+attr("dy", "1.2em").
+attr("text-anchor", "middle").
+text(function(datum) {
+return datum.value;
+}).
+attr("fill", "white").
+attr("class", "labels");
+svg.selectAll("text.yAxis").
+data(emotionData).
+enter().append("svg:text").
+attr("x", function(datum, index) {
+return x(index) + barWidth;
+}).
+attr("y", height).
+attr("dx", -barWidth / 2).
+attr("text-anchor", "middle").
+attr("style", "font-size: 12").
+text(function(datum) {
+return datum.emotion;
+}).
+attr("transform", "translate(0, 18)").
+attr("class", "yAxis");
+*/
 
     function updateData(data) {
         // update
@@ -303,17 +354,17 @@ $(document).ready(function() {
             return y(datum.value);
         });
        /*
- var texts = svg.selectAll("text.labels").data(data).attr("y", function(datum) {
-            return height - y(datum.value);
-        }).text(function(datum) {
-            return datum.value.toFixed(1);
-        });
+var texts = svg.selectAll("text.labels").data(data).attr("y", function(datum) {
+return height - y(datum.value);
+}).text(function(datum) {
+return datum.value.toFixed(1);
+});
 */
         
         var smileScore = data[3].value;
         
         analyzeSmileInitialData(smileScore);
-        // enter 
+        // enter
         rects.enter().append("svg:rect");
         //texts.enter().append("svg:text");
         // exit
@@ -333,21 +384,21 @@ $(document).ready(function() {
                localStorage.initSmilingScore = smileScore;
                checkInteraction(5);
             }
-        } 
+        }
         
     }
     
     /*
-    // The text stats
-    stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.top = '0px';
-    document.getElementById('container').appendChild(stats.domElement);
-    // update stats on every iteration
-    document.addEventListener('clmtrackrIteration', function(event) {
-        stats.update();
-    }, false);
-    */
+// The text stats
+stats = new Stats();
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.top = '0px';
+document.getElementById('container').appendChild(stats.domElement);
+// update stats on every iteration
+document.addEventListener('clmtrackrIteration', function(event) {
+stats.update();
+}, false);
+*/
 
     
 });
