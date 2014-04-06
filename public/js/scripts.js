@@ -20,6 +20,7 @@ $(document).ready(function() {
     var monologue3 = new SpeechSynthesisUtterance("");
     var monologue4 = new SpeechSynthesisUtterance("");
     var monologue5 = new SpeechSynthesisUtterance("");
+    var monologue6 = new SpeechSynthesisUtterance("");
 
     
    /*
@@ -40,6 +41,8 @@ $(document).ready(function() {
     ]
     
 */
+    // add images with the talking
+    // http://widifajarbelajar.files.wordpress.com/2011/09/group-happy1.gif
     var i_script = [
         // 0
         "Hi.",
@@ -149,7 +152,8 @@ $(document).ready(function() {
                 botSpeak(monologue3, "Thats why weeve come up with an exciting set of games to keep you motivated and feeling positive. We expect every member of the NetNastics family to play these games.");
                 botSpeak(monologue4, "We want everyone to live up to the motto and become employees who can represent the NetNastics brand with pride!");
                 botSpeak(monologue5, "The first activity is to sing the company anthem at the beginning and the end of each day. Itll keep your eyes on the prize. Lets give this a quick run through. Repeat after me.");
-
+                // cello voice?
+                botSpeak(monologue6, "we are the best at what we do, because your love for us is strong and true, we honor these metrics, they keep our eyes on the prize, we honor this data, they keep us from our early demise.");
                 break;
 
             /*
