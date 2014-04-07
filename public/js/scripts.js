@@ -103,7 +103,7 @@ $(document).ready(function() {
         switch(counter) {
             case 0:
                 socket.on("userStanding", function(userLeftFoot, userRightFoot) {
-                    if(userLeftFoot >= 600 && userRightFoot >= 600 && user.standing == false) {
+                    if(userLeftFoot >= 0 && userRightFoot >= 0 && user.standing == false) {
                         user.standing = true;
                         console.log("user is standing at the rihgt place");
                         checkInteraction(1);
