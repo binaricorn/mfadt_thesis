@@ -45,7 +45,10 @@ module.exports = {
             
             if (present == true) {
                 socket.emit("userStanding", data.b, data.c);
+                socket.emit("userButtonsPressed", data.d, data.e);
             }
+            
+            
             
             function process_data(data) {
         		var ret = {

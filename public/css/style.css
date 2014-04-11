@@ -24,12 +24,48 @@ body {
 	background-color:#ed1c24;
 }
 
+#percentage {
+	position:absolute;
+	z-index:30;
+	top:50%;
+	left:25%;
+	font-size: 4em;
+	display: none;
+}
+
 #content {
 	position:absolute;
 	z-index:30;
 	top:0;
 	left:0;
 	display: none;
+}
+
+#speech_detection {
+    color: red;
+    text-transform: uppercase;
+    position: relative;
+    width: 600px;
+    height: 450px; 
+	z-index: 100;
+	top:0;
+	left: 0;
+	display: none;
+}
+
+span#final_span {
+    position: absolute;
+    font-size: 4em;
+    bottom: 50px;
+    left: 50px;    
+    color: yellow;
+}
+
+#target {
+    position: absolute;
+    font-size: 4em;
+    bottom: 50px;
+    left: 50px;
 }
 
 #overlay {

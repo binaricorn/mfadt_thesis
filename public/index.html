@@ -23,18 +23,33 @@
 </head>
 
 <body>
+    <section id="percentage"></section>
     <section class="screen screen-dark">
         <div class="logo"></div>
 
         <div class="block_fieldInput">
-            <input type="text" id="form_firstName" placeholder="First name"/>
-            <input type="text" id="form_lastName" placeholder="Last name"/>
-            <input type="text" id="form_schoolName" placeholder="School name"/>
+            <input type="text" id="form_firstName" placeholder="First name" value="colleen"/>
+            <input type="text" id="form_lastName" placeholder="Last name" value="macklin"/>
+            <input type="text" id="form_schoolName" placeholder="School name" value="the new school"/>
             <input type="submit" id="form_submit" value="submit"/>
         </div>
         
         <div class="script"></div>
     </section>
+
+    <div id="speech_detection">
+        <div id="target"></div>
+
+        <div class="right">
+            <button id="start_button"><img id="start_img" src="img/mic.gif" alt="Start"></button>
+        </div>
+
+        <div id="results">
+            <span id="target"></span>
+            <span id="final_span" class="final"></span>
+            <span id="interim_span" class="interim"></span>
+        </div>
+    </div>
 
     <div id="content">
         <div id="container">
@@ -45,7 +60,7 @@
             <div id='emotion_chart'></div>
         </div>
 
-        <div id="controls">
+        <div id="controls" style="display:none">
             <input class="smile_btn" type="button" value="wait, loading video" disabled="disabled" id="startbutton">
         </div>
         
