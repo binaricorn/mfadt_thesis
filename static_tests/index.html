@@ -10,41 +10,54 @@
 
 <body>
 
-	<div class="option-hide">
-		<select name="voice" id="voice"></select>
-	</div>
+	
 
 <div class="wrapper">
-    <section class="promo">
+    <section class="option-hide screen">
+		<select name="voice" id="voice"></select>
+		
+    		<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
+               <source src="audio/yacht2.m4a" />  
+            </audio> 
+		
+    </section>
+	
+    <section class="promo screen">
         <article class="block">  
-            <div class="logo centered promo">
+            <div class="logo centered">
                 <span class="icon icon-fitness"></span><span class="icon icon-emotion"></span><span class="icon icon-inquiry"></span>
                 <h1>TaylorHealth</h1>
+                <span class="script">We are Taylor Health.</span>
             </div>  
         </article>
         <article class="block">    
-            <p class="centered promo">3/4</p>
+            <p class="centered">Google, Yahoo, Apple, and the Taylor Experience.
+                <span class="script">Weve used our patented technologies to help make the offices of top Fortune 500 companies 199.98% more fun since 2011.</span></p>
         </article>
-        <article class="block">    
-            <p class="centered promo">#myjobisthebestever</p>
+        <article class="block">
+            <p class="centered">Experiments!   
+                <span class="script">We spend so much of our time at work its really a crime that we dont enjoy it as much as we should. We did a few studies and experiments, and voila, Taylor Health was born.</span></p>
         </article>
-        <article class="block">    
-            <p class="centered promo">Taylored just for you</p>
+        <article class="block">
+            <p class="centered">We're hiring!   
+                <span class="script">And now we want to share this Taylored experience with you.</span></p>
         </article>
-        <article class="block">    
-            <p class="centered promo">>_<</p>
+        <article class="block">
+            <p class="centered">Seeking DigitalUnicorns 4 AwesomeJob
+                <span class="script">Weere here at the MFADT Thesis show to hire a digital unicorn to join our team of Sociometric Sorcerers and Wellness Warlocks.</span></p>
         </article>
-        <article class="block">    
-            <p class="centered promo">:)</p>
-        </article>
-        <article class="block">    
-            <p class="centered promo">You + Taylor Health</p>
-        </article>
-        <article class="block">    
-            <p class="centered promo"><input placeholder="First Name"><input type="text" placeholder="Last Name"><input type="text" placeholder="School Attended"><input type="submit" value="Go!"></p>
+        <article class="block">
+            <p class="centered block_fieldInput">
+                <input type="text" id="form_firstName" placeholder="First name" value="colleen"/>
+                <input type="text" id="form_lastName" placeholder="Last name" value="macklin"/>
+                <input type="text" id="form_schoolName" placeholder="School name" value="the new school"/>
+                <input type="submit" id="form_submit" value="Go!"/>
+                
+                <span class="script">Were hoping that youll be the mystical horse of our dreams. Help us revolutionize the workplace and sign up for a quick interview, we'd really love to get to know you!</span>
+            </p>                
         </article>
     </section>
-    <section class="ambient_vis_container">
+    <section class="ambient_vis_container screen">
         <article class="block">
             <div class="ambient_vis centered"></article>    
         </article>
