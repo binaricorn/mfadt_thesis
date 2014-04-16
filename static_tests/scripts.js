@@ -22,7 +22,7 @@ $(document).ready(function() {
     };
     
     var audioElem = $('#audioplay').get(0);
-    if (audioElem) audioElem.volume = 0.35;
+    if (audioElem) audioElem.volume = 0.3;
     
     
     var s_promo = []
@@ -30,76 +30,104 @@ $(document).ready(function() {
     var s_dialogue = [
     {
         scene: {
-            script: "Hi colleen, I hope your tour of our office has been a pleasant one."    
+            change: '.foo',
+            script: "Hi crystal, I hope your tour of our office has been a pleasant one."    
         }
     },
     {
         scene: {
+            change: '.',
             script: "Lets get down to business."    
         }
     },
     {
         scene: {
-            script: "You worked at Local number 12 as a Designer, thats super cool!"    
+            change: '.',
+            script: "You work at Do Something as a Creative Lead, thats super cool!"    
         }
     },
     {
         scene: {
-            script: "Sigh, theres no Smile Point record on your file. Oh well, thats fine. We can record a new one today."    
+            script: "Oh, theres no Smile Point record on your file.",
+            changeMood: "down"  
         }
     },
     {
         scene: {
-            script: "This one will stay on your record for the next three years, so try not to screw it up!"    
+            script: "I guess thats alright. We can just record a new one today. Eyell get it set up in a sec.",
+            changeMood: "up"  
         }
     },
     {
         scene: {
-            script: "Just kidding. I hope you know that was just a joke. I think I need to work on my sense of humor, I get told quite often that eyem not very funny."    
+            show: '.foo',
+            script: "This one will stay on your record for the next three years, so try not to screw it up!",    
+            changeMood: "up" 
         }
     },
     {
         scene: {
-            script: "Anyway, you know what Smile Points are, doent you?"    
+            show: '.foo',
+            script: "Justkidding. I hope you know that was just a joke. I think I need to work on my sense of humor, I get told quite often that eyem not very funny.",
+            changeMood: "down"     
         }
     },
     {
         scene: {
-            script: "No? Wow okay. Theyre a scientifically determined measurement of your emotional health and your ability to handle stressful situations."    
+            show: '.foo',
+            script: "Anyway, you know what Smile Points are, doent you?",
+            changeMood: "down"     
         }
     },
     {
         scene: {
-            script: "Think of them as a gauge whether or not youll be able to handle the awe some ness of working with us, because we will challenge you!"    
+            show: '.foo',
+            script: "No? Wow okay. Theyre a scientifically determined measurement of your emotional health and your ability to handle stressful situations.",
+            changeMood: "down"     
         }
     },
     {
         scene: {
+            show: '.foo',
+            script: "Think of them as a gauge whether or not youll be able to handle the awe some ness of working with us, because we will challenge you!",
+            changeMood: "neutral"     
+        }
+    },
+    {
+        scene: {
+            show: '.foo',
             script: "There once was a man named Frederick Taylor, who said, In the past the man has been first."    
         }
     },
     {
-        scene: {
+        scene: {    
+            show: '.foo',
             script: "In the future the system must be first, and that the first object of any good system must be that of developing first class men."    
         }
     },
     {
         scene: {
+            show: '.foo',
             script: "Oh crap, which reminds me, I forgot to introduce myself."    
         }
     },
     {
         scene: {
+            show: '.foo',
             script: "Fitness Emotion Inquiry, nice to meet you."    
         }
     },
     {
         scene: {
+            show: '.foo',
             script: "You can just call me Faye."    
         }
     }
     
     ];
+    
+    
+    
     var sc_dialogue = [];
     
     var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
@@ -115,9 +143,7 @@ $(document).ready(function() {
     for (i = 0; i < s_promo.length; i++) {
         sc_promo[i] = new SpeechSynthesisUtterance(s_promo[i]);
     }
-    
-    console.log(s_dialogue.length);
-    
+        
     for (i = 0; i < s_dialogue.length; i++) {
         sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
         
@@ -125,20 +151,84 @@ $(document).ready(function() {
 
     
     setTimeout(function() {
-        loopPromo(count);
+        //$('.dialogue, .ambient_vis_container').css('display','none');
+        
+       /*
+ loopPromo(count);
         $('#form_submit').on('click', function() {
-            if (audioElem) audioElem.volume = 0.15;
-            
-            $('.block_fieldInput').css('display','none');
-            $('.ambient_vis_container').css('display','block');
-            
-            for (i = 0; i < s_dialogue.length; i++) {
-                botSpeak(sc_dialogue[i]);
-            }
-        });
-        
-        
+            $('.promo').css('display','none');
+            $('.dialogue').css('display','block');
+            $('.ambient_vis_container').css('display','block');   
+            show($('.ambient_vis_container'));
+            $('.block_fieldInput').hide();
+*/
+            $('.promo').css('display','none');
+            $('.ambient_vis_container').css('display','block'); 
+            show($('.ambient_vis_container'));        
+            checkInteraction(0);
+        //});
     }, 500);
+    
+    function checkInteraction(count) {
+        switch(count) {
+            case 0:
+                botSpeak(sc_dialogue[0]);
+                botSpeak(sc_dialogue[1]);
+                botSpeak(sc_dialogue[2]);
+                botSpeak(sc_dialogue[3]);
+                sc_dialogue[3].onstart = function(event) {
+                    $('body').addClass(s_dialogue[3].scene.changeMood).removeClass('middle');
+                }
+                botSpeak(sc_dialogue[4]);
+                sc_dialogue[4].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[5]);
+                sc_dialogue[5].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[4].scene.changeMood).addClass(s_dialogue[5].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[6]);
+                sc_dialogue[6].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[5].scene.changeMood).addClass(s_dialogue[6].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[7]);
+                sc_dialogue[7].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[6].scene.changeMood).addClass(s_dialogue[7].scene.changeMood);
+                }
+                break;
+        }
+    }
+    
+    /*
+    // This is too automated, I don't think it'll work for what I want it to 
+function loopVisuals(count) {
+        if (count < (s_dialogue.length)-2) {
+            count++;
+            botSpeak(sc_dialogue[count]);
+            sc_dialogue[count].onstart = function(event) {
+                if (count < (s_dialogue.length)-2) {
+                    //hide(s_dialogue[count].scene.show);
+                    show(s_dialogue[count].scene.show);
+                }
+            }            
+            sc_dialogue[count].onend = function(event) {
+                hide(s_dialogue[count].scene.show);
+            }
+            $(s_dialogue[count].scene.show).on(transEnd, function(e) {
+                $(s_dialogue[count].scene.show).off(transEnd);
+                loopVisuals(count);
+            });
+        }
+    }
+*/
+    
+    function hide(elem) {
+        $(elem).removeClass('show').addClass('hide');
+    }
+    
+    function show(elem) {
+        $(elem).removeClass('hide').addClass('show');
+    }
 
     function loopPromo(count) {
         if (count < (s_promo.length)-2) {
@@ -189,10 +279,11 @@ $(document).ready(function() {
     var path = svg.selectAll("path").data(quad(points)).enter().append("path").style("fill", function(d) {
         // control mood by changing color and speed
         return d3.hsl(z(d[1].value), 1, 0.8);
-    }).style("stroke", "#EC6052");
+    })
+    /* .style("stroke", "#EC6052"); */
     var t0 = Date.now();
     d3.timer(function() {
-        var dt = (Date.now() - t0) * .0007;
+        var dt = (Date.now() - t0) * .0001;
         points.forEach(function(d) {
             d[1] = y(d.scale = Math.sin(d.value + dt));
         });
