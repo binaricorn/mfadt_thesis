@@ -5,203 +5,145 @@
 
 body {
 	color:#fff;
-	font-size:1em;
-}
-
-.screen {
-	width:100%;
+	font-family:'ABeeZee',sans-serif;
+	font-size:3em;
 	height:100%;
-	position:absolute;
+	width:100%;
 	overflow:hidden;
 }
 
-.screen-gradient {
-	background-color:hsl(19,12%,53%);
-	-webkit-transition:all .3s;
-}
-
-.screen-dark {
-	background-color:#ed1c24;
-}
-
-#percentage {
-	position:absolute;
-	z-index:30;
-	top:50%;
-	left:25%;
-	font-size: 4em;
-	display: none;
-}
-
-#content {
-	position:absolute;
-	z-index:30;
-	top:0;
-	left:0;
-	display: none;
-}
-
-#speech_detection {
-    color: red;
-    text-transform: uppercase;
-    position: relative;
-    width: 600px;
-    height: 450px; 
-	z-index: 100;
-	top:0;
+.wrapper {
+	width:100%;
+	height:100%;
+	position: fixed;
+	top: 0;
 	left: 0;
-	display: none;
+	overflow: hidden;
 }
 
-span#final_span {
-    position: absolute;
-    font-size: 4em;
-    bottom: 50px;
-    left: 50px;    
-    color: yellow;
+.wrapper section.screen {
+    width:100%;
+	height:100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
+ 
+.option-hide {
+    display: none;
 }
 
-#target {
-    position: absolute;
-    font-size: 4em;
-    bottom: 50px;
-    left: 50px;
+.middle {
+    background-color:#EC6052;
+    -webkit-transition: background-color .7s;
 }
 
-#overlay {
-	position:absolute;
-	top:0;
-	left:0;
-	-o-transform:scaleX(-1);
-	-webkit-transform:scaleX(-1);
-	transform:scaleX(-1);
-	-ms-filter:fliph;
-/*IE*/
-	filter:fliph;
-/*IE*/
-	width:600px;
-	height:450px;
+.up {
+    background-color:#F77D77;
+    -webkit-transition: background-color .7s;
 }
 
-#videoel {
-	-o-transform:scaleX(-1);
-	-webkit-transform:scaleX(-1);
-	transform:scaleX(-1);
-	-ms-filter:fliph;
-/*IE*/
-	filter:fliph;
-/*IE*/
-	width:600px;
-	height:450px;
+.down {
+    background-color: #B54D3F;
+    -webkit-transition: background-color .7s;
 }
 
-#container {
-	position:relative;
-}
-
-#sketch,#filter {
-	display:none;
-}
-
-#controls {
-	text-align:center;
-}
-
-#emotion_container {
-	width:600px;
-}
-
-#emotion_icons {
-	height:50px;
-	padding-left:40px;
-}
-
-.emotion_icon {
-	width:40px;
-	height:40px;
-	margin-top:5px;
-/*margin-left : 13px;*/
-	margin-left:35px;
-}
-
-#emotion_chart,#emotion_icons {
-	margin:0 auto;
-	width:400px;
-}
-
-#icon1,#icon2,#icon3,#icon4,#icon5,#icon6 {
-	visibility:hidden;
-}
-
-/* d3 */
-.bar {
-	fill:#4682b4;
-	fill-opacity:.9;
-}
-
-.btn:hover {
-	cursor:pointer;
-}
-
-.btn {
-	background:#fff;
-	border-radius:999px;
-	width:5em;
-	height:5em;
-	margin:0 auto;
-	box-shadow:#999 1px 1px 1px;
+h1 {
+	font-weight:400;
+	font-family:'static_bold',sans-serif;
+	font-size:3em;
+	margin:.1em 0;
 }
 
 .logo {
-	width:427px;
-	height:89px;
-	background-image:url(../img/netnastics.png);
-	position:absolute;
-	z-index:20;
-	margin-left:-213px;
-	margin-top:-45px;
-	top:50%;
-	left:50%;
+	text-align:center!important;
+}
+
+.logo .icon {
+	font-size:3em;
+	line-height:0;
+}
+
+.show {
+    -webkit-transition: opacity .7s;
+    opacity: 1;
+}
+
+.hide {
+    -webkit-transition: opacity .7s;
+    opacity: 0;
 }
 
 .script {
-	font-size:.5em;
-	width:70%;
-	margin:3em auto;
-	text-shadow:#999 1px 1px 1px;
+    display: none;
 }
 
-.record {
-	position:absolute;
-	bottom:10%;
-	left:50%;
-	margin-left:-152px;
-	z-index:10;
-	display:none;
+
+.slide {
+	-webkit-transition:all .7s;
 }
 
-.IN-widget {
-    position: absolute;
-    z-index: 100000;
-    bottom: 50px;
-    right: 50px;  
+.fade {
+    opacity: 0;
+    -webkit-transition:all .7s;
 }
+
+
+.block {
+	text-align:center;
+	position: absolute;
+	width:100%;
+	height:100%;
+	top: 0;
+	left: 0;
+}
+
+.block:before {
+	content:'';
+	display:inline-block;
+	height:100%;
+	vertical-align:middle;
+	text-align:left;
+	margin-right:-.25em;
+}
+
+.centered {
+	text-align:left;
+	display:inline-block;
+	vertical-align:middle;
+	width:64%;
+}
+
+
+
+.promo .block:last-child .centered {
+	width: 90%;
+}
+
 
 input {
-    border: 1px solid #fff;    
-    padding: 1em;
+    width: 23%;
+    padding: 2%;
+    border: 0;
+    margin: 0.5%;
+    font-size: 0.5em;
+    color: #EC6052;
 }
 
-input[type="text"] {
-    color: #000;
+input[type="submit"] {
+	background-color: #B54D3F;
+	color: #fff;
 }
 
-.block_fieldInput {
-    width: 100%;
-    text-align: center;
-    position: absolute; 
-    top: 50%; 
-    left: 0; 
-    z-index: 1005; 
-    display: none
+.ambient_vis_container {   
+}
+
+.foo {
+    background: #EC6052;
+}
+
+.ambient_vis {
+    width: 960px;
+    margin: 0 auto;
 }

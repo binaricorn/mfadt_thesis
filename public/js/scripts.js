@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    Parse.initialize("vqKbr74yCvrCSE4a0hoJt8jaSqiMGZFf6YRd9aF1", "lebReTB7uP9mYCxSinxoajrP0skGE4dsmqlFGJcc");
+    
     var user = {
         firstname: null,
         lastname: null,
@@ -7,582 +9,382 @@ $(document).ready(function() {
         jobcompany: null,
         standing: false,
         passInitSmilingTest: false,
-        initSmilingScore: null
+        initSmilingScore: null            
     }
     
     var highVal = 0;
     
-    var target_phrase = ["You", "Love", "Us"];
-    
-    var instructionsVar = [];
-    
-    var instructionsScript = [
-        // 0
-        "Thanks for applying to NetNastics Workplace Wellness Solutions! My names Fei and isle be conducting your interview today, itll only take a few minutes. Put your feet on the mat and wheel get started.",
-        // 1
-        "Do me a favor and fill out this form so I can pull up your records?",
-        // 2
-        "Hi username, the original Fei would have loved to meet you, she suffered a disruption to her system 5 years ago but luckily our team was able to have her uploaded before she expired.",
-        // 3
-        "Your experience as a jobtitle at jobcompany is perfect for this position. But we have no way of knowing without seeing your smile. Can you show us your smile for one minute starting now?",
-        // 4
-        "It is shown in scientific studies that smiling can greatly reduce stress.",
-        // 5
-        "Alright thats good for now. Your smile was a initSmilingScore out of 100, but I think you can do better!",   
-        // 6
-        "Now lets see how well you do in our fitness emotion inquiry. Read the text that appears loudly and clearly. Remember to smile while youre doing it. Try to show more teeth this time.",
-        // 7
-        "Touch the yellow buttons! After you do that, look at the camera, smile, and say the target phrase again.",
-        // 8
-        "Thats why weeve come up with an exciting set of games to keep you motivated and feeling positive. We expect every member of the NetNastics family to play these games.",
-        // 9
-        "We want everyone to live up to the motto and become employees who can represent the NetNastics brand with pride!",
-        // 10
-        "The first activity is to sing the company anthem at the beginning and the end of each day. Itll keep your eyes on the prize. Lets give this a quick run through. Repeat after me.",
-        // 11
-        "alright now lets try that with a smile"
-    ]
-    
-    for(i = 0; i < instructionsScript.length; i++) {
-        instructionsVar[i] = new SpeechSynthesisUtterance(instructionsScript[i]);
-    }
-
-    
-    var counter;
-    var smiling1Level1Counter = 0;
-    var checkingPass = false;
-    
-    var user = {
-        firstname: null,
-        lastname: null,
-        schoolname: null,
-        jobtitle: null,
-        jobcompany: null,
-        standing: false,
-        passInitSmilingTest: false,
-        initSmilingScore: null
-    }
-    
-    
-
-    var vid = document.getElementById('videoel');
-    var overlay = document.getElementById('overlay');
-    var overlayCC = overlay.getContext('2d'); //check and set up video/webcam
-    
-    vid.addEventListener('canplay', enablestart, false); // setup of emotion detection
-    var ctrack = new clm.tracker({
-        useWebGL: true
-    });
-    ctrack.init(pModel);
-    
     var socket = io.connect("/");
-    // scene 0
+    
     socket.on("userPresence", function(userPresence) {
-        if (userPresence == "1") {
+          if (userPresence == "1") {
             haveUser();
-            enableCamera();
-            botSpeak(instructionsVar[0]);
-            instructionsVar[0].onend = function(event) {
-                checkInteraction(0);
-            }
-        } else if (userPresence == "0") {
-            waitingForUser();
-        }
-    });
-
+              //enableCamera();
+              
+            setTimeout(function() {
+                findCurrentUser();
+            }, 50);
+              
+          } else if (userPresence == "0") {
+              waitingForUser();
+          }
+      });
+    
     function haveUser() {
-        $('.screen').removeClass('screen-dark').addClass('screen-gradient');
-        setInterval(function() {
-            var hue = Math.floor(Math.random() * 5) * 12;
-            $('.screen-gradient').css('background-color', 'hsl(20,' + hue + '%,50%)').css('-webkit-transition', 'all 0.3s');
-        }, 300);
-        $('.logo').css('display', 'none');
+        show($('.ambient_vis_container'));
+        console.log("found user");          
     }
-
+  
     function waitingForUser() {
-        $('.screen').removeClass('screen-gradient').addClass('screen-dark');
-        $('.logo').css('display', 'block');
-        $('.script').css('display', 'none');
+        console.log("waiting");      
     }
     
+    
+    var b = $('.block').length;
+    var count = -1;
+    
+    //////////////////////////////////////////////////////////////// Voice
+    
+    var voiceSelect = document.getElementById('voice'); 
+    var audioElem = $('#audioplay').get(0);
+
+    function loadVoices() {
+        var voices = speechSynthesis.getVoices();
+        voices.forEach(function(voice, i) {
+            var option = document.createElement('option');
+            option.value = "Google UK English Female";
+            option.value = voice.name;
+            voiceSelect.appendChild(option);
+        });
+    }
+    window.speechSynthesis.onvoiceschanged = function(e) {
+        loadVoices();
+    };
+    
+    
+    if (audioElem) audioElem.volume = 0.3;
+    
+    var sc_dialogue = [];
+    
+    var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
+    
+    for (i = 0; i < s_dialogue.length; i++) {
+        sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
+        
+    }
+    
+    
+    
+    /*
+
+        
+        show($('.ambient_vis_container'));        
+        loadUser(findCurrent, callback);
+        checkInteraction(0);
+    }, 500);
+*/
+    
+      
+    function findCurrentUser() {
+        var Person = Parse.Object.extend("Person");
+        var query = new Parse.Query(Person);
+        
+        query.equalTo("current_user", true);
+        query.find({
+            success: function(results) {
+                for (var i = 0; i < results.length; i++) {
+                    var object = results[i];
+                    user.firstname = object.get('firstname');
+                    user.lastname = object.get('lastname'); 
+                    user.schoolname = object.get('schoolname');  
+                    onLinkedInLoad();   
+                    onLinkedInAuth();
+                    
+                }
+            },
+            error: function(error) {
+                console.log("Error: " + error.code + " " + error.message);
+              }
+        });        
+    }
+
+
+    /*
+findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser);
+    
+    function findCurrentUser(fname, lname, sname, callback) {
+        var Person = Parse.Object.extend("Person");
+        var query = new Parse.Query(Person);
+        
+        query.equalTo("current_user", true);
+        query.find({
+            success: function(results) {
+                for (var i = 0; i < results.length; i++) {
+                    var object = results[i];
+                    user.firstname = object.get('firstname');
+                    user.lastname = object.get('lastname'); 
+                    user.schoolname = object.get('schoolname');  
+                    callback(user.firstname, user.lastname, user.schoolname);
+                }
+            },
+            error: function(error) {
+                console.log("Error: " + error.code + " " + error.message);
+              }
+        });        
+    }
+    
+    function checkCurrentUser(fname, lname, sname) {
+        user.firstname = fname;
+        user.lastname = lname;
+        user.schoolname = sname;
+        console.log(user.firstname);
+        checkInteraction(0);
+
+        //onLinkedInLoad();
+        //onLinkedInAuth();
+
+    }
+*/
+    
+    function checkInteraction(count) {
+        switch(count) {
+            case 0:
+                botSpeak(sc_dialogue[0]);
+                sc_dialogue[0].onstart = function(event) {
+                    $('body').addClass(s_dialogue[0].scene.changeMood).removeClass('middle');
+                }
+                botSpeak(sc_dialogue[1]);
+                sc_dialogue[1].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[0].scene.changeMood).addClass(s_dialogue[1].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[2]);
+                sc_dialogue[2].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[1].scene.changeMood).addClass(s_dialogue[2].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[3]);
+                sc_dialogue[3].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[2].scene.changeMood).addClass(s_dialogue[3].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[4]);
+                sc_dialogue[4].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[5]);
+                sc_dialogue[5].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[4].scene.changeMood).addClass(s_dialogue[5].scene.changeMood);
+                }
+                
+                sc_dialogue[5].onend = function(event) {
+                    checkInteraction(1);    
+                    console.log("Stopped speaking");
+                    
+                }
+
+                
+
+                break;
+            case 1:
+                console.log("get feet");
+                socket.on("userStanding", function(userLeftFoot, userRightFoot) {
+                     if(userLeftFoot >= highVal && userRightFoot >= highVal && user.standing == false) {
+                          user.standing = true;
+                          console.log("user is standing at the rihgt place");
+                          checkInteraction(2);
+                      }
+                });
+                break;
+                
+            case 2:
+            
+                botSpeak(sc_dialogue[6]);
+                /*
+                sc_dialogue[3].onstart = function(event) {
+                    $('body').addClass(s_dialogue[3].scene.changeMood).removeClass('middle');
+                }
+
+                botSpeak(sc_dialogue[4]);
+                sc_dialogue[4].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
+                }
+                
+                /*
+                sc_dialogue[4].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[5]);
+                sc_dialogue[5].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[4].scene.changeMood).addClass(s_dialogue[5].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[6]);
+                sc_dialogue[6].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[5].scene.changeMood).addClass(s_dialogue[6].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[7]);
+                sc_dialogue[7].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[6].scene.changeMood).addClass(s_dialogue[7].scene.changeMood);
+                }
+*/
+                break;
+                
+        }
+    }
+    
+    /*
+    // This is too automated, I don't think it'll work for what I want it to? 
+function loopVisuals(count) {
+        if (count < (s_dialogue.length)-2) {
+            count++;
+            botSpeak(sc_dialogue[count]);
+            sc_dialogue[count].onstart = function(event) {
+                if (count < (s_dialogue.length)-2) {
+                    //hide(s_dialogue[count].scene.show);
+                    show(s_dialogue[count].scene.show);
+                }
+            }            
+            sc_dialogue[count].onend = function(event) {
+                hide(s_dialogue[count].scene.show);
+            }
+            $(s_dialogue[count].scene.show).on(transEnd, function(e) {
+                $(s_dialogue[count].scene.show).off(transEnd);
+                loopVisuals(count);
+            });
+        }
+    }
+*/
+    
+    function hide(elem) {
+        $(elem).removeClass('show').addClass('hide').css('display','none');
+    }
+    
+    function show(elem) {
+        $(elem).removeClass('hide').addClass('show').css('display','block');;
+    }
+
     function botSpeak(str) {
+    
+        str.voice = speechSynthesis.getVoices().filter(function(voice) {
+            return voice.name == "Google UK English Female";
+        })[0];
+        
         str.text = str.text.replace(/username/g, user.firstname);
         str.text = str.text.replace(/jobtitle/g, user.jobtitle);
         str.text = str.text.replace(/jobcompany/g, user.jobcompany);
         str.text = str.text.replace(/initSmilingScore/g, user.initSmilingScore);
         speechSynthesis.speak(str);
-    }
-    
-    function checkInteraction(counter) {
-        switch(counter) {
-            case 0:
-                socket.on("userStanding", function(userLeftFoot, userRightFoot) {
-                    if(userLeftFoot >= highVal && userRightFoot >= highVal && user.standing == false) {
-                        user.standing = true;
-                        console.log("user is standing at the rihgt place");
-                        checkInteraction(1);
-                    }
-                });
-                break;
-            case 1:
-                botSpeak(instructionsVar[1]);
-                displayElements('.block_fieldInput');
-                $('#form_submit').on('click', function() {
-                    storeFormVals();
-                    checkInteraction(2);
-                });
-                break;
-            case 2:
-                hideElements('.block_fieldInput');
-                botSpeak(instructionsVar[2]);
-                onLinkedInLoad();
-                onLinkedInAuth();
-                console.log("crawl linkedin");
-                break;
-            case 3:
-                botSpeak(instructionsVar[3]);
-                botSpeak(instructionsVar[4]); 
-                instructionsVar[3].onend = function(event) {
-                    console.log("stopped speaking");
-                    startVideoTracking();
-                }
-                       
-                break;
-            case 4:
-                hideElements('.block_fieldInput');
-                user.initSmilingScore = user.initSmilingScore * 100;
-                $("#percentage").text(user.initSmilingScore + " / 100");
-                checkInteraction(5);
-                break;
-            case 5:
-                hideElements('#content'); 
-                console.log(user.initSmilingScore); // your smile score                
-                botSpeak(instructionsVar[5]);
-                instructionsVar[5].onstart = function(event) {
-                    displayElements("#percentage");
-                    checkInteraction(6);
-                }
-                break;
-            case 6:
-                botSpeak(instructionsVar[6]);
-                instructionsVar[6].onstart = function(event) {
-                    feiTest();
-                }
-                break;
-            case 7:
-                botSpeak(instructionsVar[7]);
-                buttonsPressed();
-                break;
-
-            /*
-            case 6:
-                botSpeak(instructionsVar[5]);
-                botSpeak(instructionsVar[6]);
-                botSpeak(instructionsVar[7]);
-                botSpeak(instructionsVar[8]);
-                botSpeak(instructionsVar[9]);
-                instructionsVar[9].onend = function(event) {
-                    $('#target').text(target_phrase[0] + " " + target_phrase[1] + " " + target_phrase[2]);
-                    startButton(event);
-                    displayElements('#speech_detection');
-                    hideElements("#emotion_container");
-                }
-                break;
-            case 7:
-                displayElements('#content');    
-                displayElements('#emotion_container');
-                botSpeak(instructionsVar[10]);
-                break;
-*/
-        }
-    }
-    
-    function displayElements(elem) {
-        $(elem).css('display','block');
-    }
-    
-    function hideElements(elem) {
-        $(elem).css('display','none');
-    }
-    
-    function storeFormVals() {
-        user.firstname = $('#form_firstName').val();
-        user.lastname = $('#form_lastName').val();
-        user.schoolname = $('#form_schoolName').val();
-    }
-    
-   
+    } 
     
     //////////////////////////////////////////////////////////////// Linkedin API
-
-    function onLinkedInLoad() {
-        IN.Event.on(IN, "auth", onLinkedInAuth);
+  
+      function onLinkedInLoad() {
+          IN.Event.on(IN, "auth", onLinkedInAuth);
+      }
+      function onLinkedInAuth() {
+          IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "educations").params({
+              "first-name": user.firstname,
+              "last-name": user.lastname,
+              "school-name": user.schoolname
+          }).result(displayPeopleSearch).error(displayPeopleSearchErrors);
+      }
+      function displayPeopleSearch(peopleSearch) {
+          var peopleSearchDiv = document.getElementById("peoplesearch");
+          var members = peopleSearch.people.values;
+          for (var member in members) {
+              
+              // console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
+              console.log(members[member].positions.values[0].company.name);
+              user.jobcompany = members[member].positions.values[0].company.name;
+              user.jobtitle = members[member].positions.values[0].title;
+              checkInteraction(0);
+            }
     }
-    function onLinkedInAuth() {
-        IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "educations").params({
-            "first-name": user.firstname,
-            "last-name": user.lastname,
-            "school-name": user.schoolname
-        }).result(displayPeopleSearch).error(displayPeopleSearchErrors);
-    }
-    function displayPeopleSearch(peopleSearch) {
-        var peopleSearchDiv = document.getElementById("peoplesearch");
-        var members = peopleSearch.people.values;
-        for (var member in members) {
-            
-            // console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
-            console.log(members[member].positions.values[0].company.name);
-            user.jobcompany = members[member].positions.values[0].company.name;
-            user.jobtitle = members[member].positions.values[0].title;
-            checkInteraction(3);
-        }
-    }
+    
     function displayPeopleSearchErrors(error) { /* do nothing */}
     
-    
-    function buttonsPressed() {
-        socket.on("userButtonsPressed", function(userLeftButton, userRightButton) {
-            if(userLeftButton == 1 && userRightButton == 1) {
-                console.log("buttons pressed");
-                startButton(event);
-            }
-        });
-        
-    }
-    
-    //////////////////////////////////////////////////////////////// Camera and emotion tracking
-    
-    function enablestart() {
-        var startbutton = document.getElementById('startbutton');
-        startbutton.value = "start";
-        startbutton.disabled = null;
-    }
-    
-    function enableCamera() {
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-        window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
-        // check for camerasupport
-        if (navigator.getUserMedia) {
-            // set up stream
-            var videoSelector = {
-                video: true
-            };
-            if (window.navigator.appVersion.match(/Chrome\/(.*?) /)) {
-                var chromeVersion = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
-                if (chromeVersion < 20) {
-                    videoSelector = "video";
-                }
-            };
-            navigator.getUserMedia(videoSelector, function(stream) {
-                if (vid.mozCaptureStream) {
-                    vid.mozSrcObject = stream;
-                } else {
-                    vid.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
-                }
-                vid.play();
-            }, function() {
-                alert("There was some problem trying to fetch video from your webcam. If you have a webcam, please make sure to accept when the browser asks for access to your webcam.");
-            });
-        } else {
-            alert("This demo depends on getUserMedia, which your browser does not seem to support. :(");
-        }
-    }
-    
-    function startVideoTracking() {
-        // start video
-        vid.play();
-        // start tracking
-        ctrack.start(vid);
-        // start loop to draw face
-        drawLoop();
-    }
-
-    function drawLoop() {
-        requestAnimFrame(drawLoop);
-        overlayCC.clearRect(0, 0, 400, 300);
-        if (ctrack.getCurrentPosition()) {
-            ctrack.draw(overlay);
-        }
-        var cp = ctrack.getCurrentParameters();
-        var er = ec.meanPredict(cp);
-        if (er) {
-            updateData(er);
-        }
-    }
-    var ec = new emotionClassifier();
-    ec.init(emotionModel);
-    var emotionData = ec.getBlank(); // d3 code for barchart
+    /* Rainbow Worm via http://mbostock.github.io/protovis/ex/segmented.html */
     var margin = {
-        top: 20,
-        right: 20,
-        bottom: 10,
-        left: 40
+        top: 100,
+        right: 100,
+        bottom: 100,
+        left: 100
     },
-        width = 400 - margin.left - margin.right,
-        height = 100 - margin.top - margin.bottom;
-    var barWidth = 30;
-    var formatPercent = d3.format(".0%");
-    var x = d3.scale.linear().domain([0, ec.getEmotions().length]).range([margin.left, width + margin.left]);
-    var y = d3.scale.linear().domain([0, 1]).range([0, height]);
-    var svg = d3.select("#emotion_chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
-    svg.selectAll("rect").
-    data(emotionData).
-    enter().
-    append("svg:rect").
-    attr("x", function(datum, index) {
-        return x(index);
-    }).
-    attr("y", function(datum) {
-        return height - y(datum.value);
-    }).
-    attr("height", function(datum) {
-        return y(datum.value);
-    }).
-    attr("width", barWidth).
-    attr("fill", "#2d578b");
-    
-    /*
-Text labels for emotion values
-svg.selectAll("text.labels").
-data(emotionData).
-enter().
-append("svg:text").
-attr("x", function(datum, index) {
-return x(index) + barWidth;
-}).
-attr("y", function(datum) {
-return height - y(datum.value);
-}).
-attr("dx", -barWidth / 2).
-attr("dy", "1.2em").
-attr("text-anchor", "middle").
-text(function(datum) {
-return datum.value;
-}).
-attr("fill", "white").
-attr("class", "labels");
-svg.selectAll("text.yAxis").
-data(emotionData).
-enter().append("svg:text").
-attr("x", function(datum, index) {
-return x(index) + barWidth;
-}).
-attr("y", height).
-attr("dx", -barWidth / 2).
-attr("text-anchor", "middle").
-attr("style", "font-size: 12").
-text(function(datum) {
-return datum.emotion;
-}).
-attr("transform", "translate(0, 18)").
-attr("class", "yAxis");
-*/
-
-    function updateData(data) {
-        // update
-        var rects = svg.selectAll("rect").data(data).attr("y", function(datum) {
-            return height - y(datum.value);
-        }).attr("height", function(datum) {
-            return y(datum.value);
-        });
-       /*
-var texts = svg.selectAll("text.labels").data(data).attr("y", function(datum) {
-return height - y(datum.value);
-}).text(function(datum) {
-return datum.value.toFixed(1);
-});
-*/
-        
-        var smileScore = data[3].value;
-        
-        analyzeSmileInitialData(smileScore);
-        
-        // enter
-        rects.enter().append("svg:rect");
-        //texts.enter().append("svg:text");
-        // exit
-        rects.exit().remove();
-        //texts.exit().remove();
-    }
-    
-    function analyzeSmileInitialData(smileScore) {
-        user.initSmilingScore = smileScore;
-        if (user.initSmilingScore > 0.2 && user.passInitSmilingTest == false) {
-                user.passInitSmilingTest = true;
-                checkInteraction(4);
-        }
-        
-        /*
-if (smileScore > 0.02 && smileScore < 0.60 && user.passInitSmilingTest == false) {
-            // use requestframeanimation here instead of increasing the count like that...
-            smiling1Level1Counter++;
-            console.log(smiling1Level1Counter);
-            if (smiling1Level1Counter > 245) { // smiling for 30 seconds
-               user.passInitSmilingTest = true;
-               user.initSmilingScore = smileScore;
-               checkInteraction(5);
-            }
-        }
-*/
-        
-    }
-    
-    /*
-// The text stats
-stats = new Stats();
-stats.domElement.style.position = 'absolute';
-stats.domElement.style.top = '0px';
-document.getElementById('container').appendChild(stats.domElement);
-// update stats on every iteration
-document.addEventListener('clmtrackrIteration', function(event) {
-stats.update();
-}, false);
-*/
-
-
-    //////////////////////////////////////////////////////////////// FEI Test
-
-function feiTest() {
-    displayElements('#speech_detection');
-    displayElements('#content');
-    hideElements("#percentage");
-    $('#target').text(target_phrase[0] + " " + target_phrase[1] + " " + target_phrase[2]);
-    startButton(event);
-}
-
-
-    //////////////////////////////////////////////////////////////// Speech input
-    
-var final_transcript = '';
-var recognizing = false;
-var ignore_onend;
-var start_timestamp;
-var recognition = new webkitSpeechRecognition();
-recognition.continuous = true;
-recognition.interimResults = true;
-recognition.onstart = function () {
-    recognizing = true;
-    start_img.src = 'img/mic-animate.gif';
-};
-recognition.onerror = function (event) {
-    if (event.error == 'no-speech') {
-        start_img.src = 'img/mic.gif';
-        ignore_onend = true;
-    }
-    if (event.error == 'audio-capture') {
-        start_img.src = 'img/mic.gif';
-        ignore_onend = true;
-    }
-};
-recognition.onend = function () {
-    recognizing = false;
-    if (ignore_onend) {
-        return;
-    }
-    start_img.src = 'img/mic.gif';
-    if (!final_transcript) {
-        return;
-    }
-    if (window.getSelection) {
-        window.getSelection().removeAllRanges();
-        var range = document.createRange();
-        range.selectNode(document.getElementById('final_span'));
-        window.getSelection().addRange(range);
-    }
-};
-recognition.onresult = function (event) {
-    var split_final = "";
-    var interim_transcript = '';
-    var interim_target = '';
-    for (var i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-            final_transcript += event.results[i][0].transcript;
-        } else {
-            interim_transcript += event.results[i][0].transcript;
-        }
-    }
-    final_transcript = capitalize(final_transcript);
-    final_span.innerHTML = linebreak(final_transcript);
-    interim_span.innerHTML = linebreak(interim_transcript);
-    if (final_transcript || interim_transcript) {
-        showButtons('inline-block');
-    }
-    split_final = final_transcript.split(" ");
-    console.log(final_transcript + " " + split_final);
-    testInterim(final_transcript);
-
-};
-
-
-function testInterim(str) {
-    if (str.indexOf(target_phrase[0]) != -1 || str.indexOf(target_phrase[1]) != -1 || str.indexOf(target_phrase[2]) != -1) {
-        checkingPass = true;
-        recognition.stop();
-        console.log(user.initSmilingScore);
-        checkInteraction(7);
-        //console.log("The function passed");        
-    }
-
-}
-
-/*
-function testInterim(str, split_str) {
-    for (i = 0; i < split_str.length; i++) {
-        if (str.indexOf(split_str[i]) != -1) {
-            console.log(split_str[i] + "found a matching word");    
-        }
-        
-        
-    }
-    if (str.indexOf(target_phrase[0]) != -1 || str.indexOf(target_phrase[1]) != -1 || str.indexOf(target_phrase[2]) != -1) {
-        checkingPass = true;
-        recognition.stop();
-        console.log(user.initSmilingScore);
-        //console.log("The function passed");        
-    }
-
-}
-*/
-
-var two_line = /\n\n/g;
-var one_line = /\n/g;
-
-function linebreak(s) {
-    return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
-}
-var first_char = /\S/;
-
-function capitalize(s) {
-    return s.replace(first_char, function (m) {
-        return m.toUpperCase();
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+    var x = d3.scale.linear().domain([0, 5.9]).range([0, width]);
+    var y = d3.scale.linear().domain([-1, 1]).range([height, 0]);
+    var z = d3.scale.linear().domain([0, 5.9]).range([0, 360]);
+    var points = d3.range(0, 6, .1).map(function(t) {
+        return {
+            value: t,
+            0: x(t),
+            1: y(Math.sin(t))
+        };
     });
-}
+    var svg = d3.select(".ambient_vis").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var path = svg.selectAll("path").data(quad(points)).enter().append("path").style("fill", function(d) {
+        // control mood by changing color and speed
+        return d3.hsl(z(d[1].value), 1, 0.8);
+    })
+    /* .style("stroke", "#EC6052"); */
+    var t0 = Date.now();
+    d3.timer(function() {
+        var dt = (Date.now() - t0) * .0001;
+        points.forEach(function(d) {
+            d[1] = y(d.scale = Math.sin(d.value + dt));
+        });
+        path.attr("d", function(d) {
+            return lineJoin(d[0], d[1], d[2], d[3], 80 * d[1].scale * d[1].scale + 10);
+        }).attr("stroke-width", 5);
+    });
+    // Compute quads of adjacent points [p0, p1, p2, p3].
 
-function startButton(event) {
-    if (recognizing) {
-        recognition.stop();
-        return;
+    function quad(points) {
+        return d3.range(points.length - 1).map(function(i) {
+            return [points[i - 1], points[i], points[i + 1], points[i + 2]];
+        });
     }
-    final_transcript = '';
-    recognition.start();
-    ignore_onend = false;
-    final_span.innerHTML = '';
-    interim_span.innerHTML = '';
-    start_img.src = 'img/mic-slash.gif';
-    showButtons('none');
-    start_timestamp = event.timeStamp;
-}
-var current_style;
+    // Compute stroke outline for segment p12.
 
-function showButtons(style) {
-    if (style == current_style) {
-        return;
+    function lineJoin(p0, p1, p2, p3, width) {
+        var u12 = perp(p1, p2),
+            r = width / 2,
+            a = [p1[0] + u12[0] * r, p1[1] + u12[1] * r],
+            b = [p2[0] + u12[0] * r, p2[1] + u12[1] * r],
+            c = [p2[0] - u12[0] * r, p2[1] - u12[1] * r],
+            d = [p1[0] - u12[0] * r, p1[1] - u12[1] * r];
+        if (p0) { // clip ad and dc using average of u01 and u12
+            var u01 = perp(p0, p1),
+                e = [p1[0] + u01[0] + u12[0], p1[1] + u01[1] + u12[1]];
+            a = lineIntersect(p1, e, a, b);
+            d = lineIntersect(p1, e, d, c);
+        }
+        if (p3) { // clip ab and dc using average of u12 and u23
+            var u23 = perp(p2, p3),
+                e = [p2[0] + u23[0] + u12[0], p2[1] + u23[1] + u12[1]];
+            b = lineIntersect(p2, e, a, b);
+            c = lineIntersect(p2, e, d, c);
+        }
+        return "M" + a + "L" + b + " " + c + " " + d + "Z";
     }
-    current_style = style;
-}
+    // Compute intersection of two infinite lines ab and cd.
 
+    function lineIntersect(a, b, c, d) {
+        var x1 = c[0],
+            x3 = a[0],
+            x21 = d[0] - x1,
+            x43 = b[0] - x3,
+            y1 = c[1],
+            y3 = a[1],
+            y21 = d[1] - y1,
+            y43 = b[1] - y3,
+            ua = (x43 * (y1 - y3) - y43 * (x1 - x3)) / (y43 * x21 - x43 * y21);
+        return [x1 + ua * x21, y1 + ua * y21];
+    }
+    // Compute unit vector perpendicular to p01.
 
-
-
-    
+    function perp(p0, p1) {
+        var u01x = p0[1] - p1[1],
+            u01y = p1[0] - p0[0],
+            u01d = Math.sqrt(u01x * u01x + u01y * u01y);
+        return [u01x / u01d, u01y / u01d];
+    }
 });
