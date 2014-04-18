@@ -14,6 +14,10 @@ $(document).ready(function() {
     
     var highVal = 0;
     
+    var audioElem = $('#audioplay').get(0);
+    if (audioElem) audioElem.volume = 0.1;
+
+    
     var socket = io.connect("/");
     
     socket.on("userPresence", function(userPresence) {
@@ -62,7 +66,7 @@ $(document).ready(function() {
     };
     
     
-    if (audioElem) audioElem.volume = 0.3;
+
     
     var sc_dialogue = [];
     
@@ -197,25 +201,6 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
             case 2:
             
                 botSpeak(sc_dialogue[6]);
-                /*
-                sc_dialogue[3].onstart = function(event) {
-                    $('body').addClass(s_dialogue[3].scene.changeMood).removeClass('middle');
-                }
-
-                botSpeak(sc_dialogue[4]);
-                sc_dialogue[4].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
-                }
-                
-                /*
-                sc_dialogue[4].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[5]);
-                sc_dialogue[5].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[4].scene.changeMood).addClass(s_dialogue[5].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[6]);
                 sc_dialogue[6].onstart = function(event) {
                     $('body').removeClass(s_dialogue[5].scene.changeMood).addClass(s_dialogue[6].scene.changeMood);
                 }
@@ -223,7 +208,31 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
                 sc_dialogue[7].onstart = function(event) {
                     $('body').removeClass(s_dialogue[6].scene.changeMood).addClass(s_dialogue[7].scene.changeMood);
                 }
-*/
+                botSpeak(sc_dialogue[8]);
+                sc_dialogue[8].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[7].scene.changeMood).addClass(s_dialogue[8].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[9]);
+                sc_dialogue[9].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[8].scene.changeMood).addClass(s_dialogue[9].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[10]);
+                sc_dialogue[10].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[9].scene.changeMood).addClass(s_dialogue[10].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[11]);
+                sc_dialogue[11].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[10].scene.changeMood).addClass(s_dialogue[11].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[12]);
+                sc_dialogue[12].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[11].scene.changeMood).addClass(s_dialogue[12].scene.changeMood);
+                }
+                botSpeak(sc_dialogue[13]);
+                sc_dialogue[13].onstart = function(event) {
+                    $('body').removeClass(s_dialogue[12].scene.changeMood).addClass(s_dialogue[13].scene.changeMood);
+                }
+
                 break;
                 
         }

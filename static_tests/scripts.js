@@ -27,7 +27,7 @@ $(document).ready(function() {
     };
     
     var audioElem = $('#audioplay').get(0);
-    if (audioElem) audioElem.volume = 0.3;
+    if (audioElem) audioElem.volume = 0.4;
     
     
     var s_promo = []

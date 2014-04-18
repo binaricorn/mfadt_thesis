@@ -6,12 +6,14 @@ var SerialPort = serial.SerialPort;
 var portName = "/dev/tty.usbserial-A700e171";
 
 var sp = new SerialPort( portName, {
-	baudrate:9600,
+	baudrate: 115200,
 	parser  :serial.parsers.readline( "\n" )
 });
 
 var present = false;
 var absent = false;
+
+var BPM;
 
 var userPresence;
 var userLeftFoot;
@@ -34,6 +36,12 @@ module.exports = {
             userRightFoot = data.c; // Pressure sensor value [0 to 1023]
             userLeftHand = data.d; // Button press value [0 or 1]
             userRightHand = data.e; // Button press value [0 or 1]
+
+            BPM = data.f;
+            BPM = BPM.replace("B", "");
+            //console.log("BPM: " + BPM);
+            
+            
             
             if (userPresence == 0 && absent == false) {
                 socket.emit("userPresence", data);
@@ -46,6 +54,7 @@ module.exports = {
             if (present == true) {
                 socket.emit("userStanding", data.b, data.c);
                 socket.emit("userButtonsPressed", data.d, data.e);
+                socket.emit("userHeartRate", BPM);
             }
             
             
@@ -56,18 +65,24 @@ module.exports = {
         			b: 0,
         			c: 0,
         			d: 0,
-        			e: 0
+        			e: 0,
+        			f: 0
         		};
         		
         		var array = data.split(',');
         		
-        		if (array.length < 4) return ret;
-            		ret.a = array[0];
-                    ret.b = array[1];
-                    ret.c = array[2];
-                    ret.d = array[3];
-                    ret.e = array[4];
-                    return ret;
+        		console.log(BPM);
+        		
+        		if (array.length < 6) return ret;
+        		
+                ret.a = array[0];
+                ret.b = array[1];
+                ret.c = array[2];
+                ret.d = array[3];
+                ret.e = array[4];
+                ret.f = array[5];
+                return ret;
+                
         	}
     
     		});
