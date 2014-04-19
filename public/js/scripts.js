@@ -9,7 +9,8 @@ $(document).ready(function() {
         jobcompany: null,
         standing: false,
         passInitSmilingTest: false,
-        initSmilingScore: null            
+        initSmilingScore: null,
+        getUserPulse: false            
     }
     
     var highVal = 0;
@@ -43,6 +44,7 @@ $(document).ready(function() {
         console.log("waiting");      
     }
     
+
     
     var b = $('.block').length;
     var count = -1;
@@ -76,8 +78,6 @@ $(document).ready(function() {
         sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
         
     }
-    
-    
     
     /*
 
@@ -153,39 +153,19 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
     function checkInteraction(count) {
         switch(count) {
             case 0:
-                botSpeak(sc_dialogue[0]);
-                sc_dialogue[0].onstart = function(event) {
-                    $('body').addClass(s_dialogue[0].scene.changeMood).removeClass('middle');
-                }
-                botSpeak(sc_dialogue[1]);
-                sc_dialogue[1].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[0].scene.changeMood).addClass(s_dialogue[1].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[2]);
-                sc_dialogue[2].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[1].scene.changeMood).addClass(s_dialogue[2].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[3]);
-                sc_dialogue[3].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[2].scene.changeMood).addClass(s_dialogue[3].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[4]);
-                sc_dialogue[4].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[3].scene.changeMood).addClass(s_dialogue[4].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[5]);
-                sc_dialogue[5].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[4].scene.changeMood).addClass(s_dialogue[5].scene.changeMood);
+                console.log("Total lines of script: " + sc_dialogue.length);
+                
+                for (i = 0; i < 6; i++) {
+                    botSpeak(sc_dialogue[i]);  
+                    sc_dialogue[i].onstart = function(event) {
+                        $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
+                    }  
                 }
                 
                 sc_dialogue[5].onend = function(event) {
                     checkInteraction(1);    
-                    console.log("Stopped speaking");
-                    
+                    console.log("Stopped speaking");   
                 }
-
-                
-
                 break;
             case 1:
                 console.log("get feet");
@@ -196,70 +176,47 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
                           checkInteraction(2);
                       }
                 });
-                break;
-                
+                break;                
             case 2:
-            
-                botSpeak(sc_dialogue[6]);
-                sc_dialogue[6].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[5].scene.changeMood).addClass(s_dialogue[6].scene.changeMood);
+                for (i = 6; i < 17; i++) {
+                    botSpeak(sc_dialogue[i]);  
+                    sc_dialogue[i].onstart = function(event) {
+                        $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
+                    }  
                 }
-                botSpeak(sc_dialogue[7]);
-                sc_dialogue[7].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[6].scene.changeMood).addClass(s_dialogue[7].scene.changeMood);
+                sc_dialogue[16].onend = function(event) {
+                    checkInteraction(3);    
                 }
-                botSpeak(sc_dialogue[8]);
-                sc_dialogue[8].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[7].scene.changeMood).addClass(s_dialogue[8].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[9]);
-                sc_dialogue[9].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[8].scene.changeMood).addClass(s_dialogue[9].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[10]);
-                sc_dialogue[10].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[9].scene.changeMood).addClass(s_dialogue[10].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[11]);
-                sc_dialogue[11].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[10].scene.changeMood).addClass(s_dialogue[11].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[12]);
-                sc_dialogue[12].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[11].scene.changeMood).addClass(s_dialogue[12].scene.changeMood);
-                }
-                botSpeak(sc_dialogue[13]);
-                sc_dialogue[13].onstart = function(event) {
-                    $('body').removeClass(s_dialogue[12].scene.changeMood).addClass(s_dialogue[13].scene.changeMood);
-                }
-
+                
+                break;
+            case 3: 
+                console.log("get BPM");
+                socket.on("userHeartRate", function(BPM) {
+                    if (BPM == "\r") {
+                        console.log("!= BPM reading");
+                    } else {
+                        BPM = BPM.replace("B", ""); 
+                        
+                        if(BPM > 50 && BPM < 170 && user.getUserPulse == false) {
+                       // if(user.getUserPulse == false) {
+                        setTimeout(function() {
+                            user.getUserPulse = true;
+                            console.log("use this BPM: " + BPM); 
+                            checkInteraction(4);   
+                        }, 10000);
+                        
+                       }   
+                    }
+                    
+                });
+                break;
+            case 4:
+                console.log("next line after BPM");
+                botSpeak(sc_dialogue[17]);
                 break;
                 
         }
     }
-    
-    /*
-    // This is too automated, I don't think it'll work for what I want it to? 
-function loopVisuals(count) {
-        if (count < (s_dialogue.length)-2) {
-            count++;
-            botSpeak(sc_dialogue[count]);
-            sc_dialogue[count].onstart = function(event) {
-                if (count < (s_dialogue.length)-2) {
-                    //hide(s_dialogue[count].scene.show);
-                    show(s_dialogue[count].scene.show);
-                }
-            }            
-            sc_dialogue[count].onend = function(event) {
-                hide(s_dialogue[count].scene.show);
-            }
-            $(s_dialogue[count].scene.show).on(transEnd, function(e) {
-                $(s_dialogue[count].scene.show).off(transEnd);
-                loopVisuals(count);
-            });
-        }
-    }
-*/
     
     function hide(elem) {
         $(elem).removeClass('show').addClass('hide').css('display','none');
@@ -275,7 +232,8 @@ function loopVisuals(count) {
             return voice.name == "Google UK English Female";
         })[0];
         
-        str.text = str.text.replace(/username/g, user.firstname);
+        str.text = str.text.replace(/userfirstname/g, user.firstname);
+        str.text = str.text.replace(/userlastname/g, user.lastname);
         str.text = str.text.replace(/jobtitle/g, user.jobtitle);
         str.text = str.text.replace(/jobcompany/g, user.jobcompany);
         str.text = str.text.replace(/initSmilingScore/g, user.initSmilingScore);

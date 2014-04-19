@@ -36,11 +36,15 @@ module.exports = {
             userRightFoot = data.c; // Pressure sensor value [0 to 1023]
             userLeftHand = data.d; // Button press value [0 or 1]
             userRightHand = data.e; // Button press value [0 or 1]
-
-            BPM = data.f;
-            BPM = BPM.replace("B", "");
-            //console.log("BPM: " + BPM);
+            //BPM = data.f;
             
+            
+            if (data.f != undefined) {
+                BPM = data.f;
+                //BPM = BPM.replace("B", "");    
+            } else {
+                BPM = 0;
+            }
             
             
             if (userPresence == 0 && absent == false) {
@@ -71,7 +75,7 @@ module.exports = {
         		
         		var array = data.split(',');
         		
-        		console.log(BPM);
+        		//console.log(BPM);
         		
         		if (array.length < 6) return ret;
         		
@@ -83,6 +87,7 @@ module.exports = {
                 ret.f = array[5];
                 return ret;
                 
+                console.log(data.f);
         	}
     
     		});
