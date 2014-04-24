@@ -5,6 +5,7 @@ $(document).ready(function() {
         firstname: null,
         lastname: null,
         schoolname: null,
+        pictureUrl: null,
         jobtitle: null,
         jobcompany: null,
         standing: false,
@@ -36,7 +37,7 @@ $(document).ready(function() {
       });
     
     function haveUser() {
-        show($('.ambient_vis_container'));
+        //show($('.afei_voice_visualizer'));
         console.log("found user");          
     }
   
@@ -154,17 +155,31 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
         switch(count) {
             case 0:
                 console.log("Total lines of script: " + sc_dialogue.length);
+                $('.dashboard, .sidebar').removeClass('hide').addClass('show');
                 
-                for (i = 0; i < 6; i++) {
+                for (i = 0; i < 8; i++) {
                     botSpeak(sc_dialogue[i]);  
                     sc_dialogue[i].onstart = function(event) {
-                        $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
+                       // $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
                     }  
                 }
                 
-                sc_dialogue[5].onend = function(event) {
-                    checkInteraction(1);    
-                    console.log("Stopped speaking");   
+                sc_dialogue[3].onend = function(event) {
+                    displayUser();  
+                }
+                
+                sc_dialogue[4].onend = function(event) {
+                    $('.block_emotion').removeClass('inactive').addClass('show');
+                }
+                
+                sc_dialogue[6].onstart = function(event) {
+                    $('.block_emotion').removeClass('show').addClass('inactive');
+                  //  $('.dashboard_bottom, .sidebar, .profile').removeClass('show').addClass('hide');
+                }
+                
+                sc_dialogue[7].onstart = function(event) {
+                  //  $('.dashboard_bottom, .sidebar, .profile').removeClass('hide').addClass('show');
+                    //checkInteraction(1);    
                 }
                 break;
             case 1:
@@ -181,7 +196,7 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
                 for (i = 6; i < 17; i++) {
                     botSpeak(sc_dialogue[i]);  
                     sc_dialogue[i].onstart = function(event) {
-                        $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
+                     //   $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
                     }  
                 }
                 sc_dialogue[16].onend = function(event) {
@@ -218,6 +233,14 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
         }
     }
     
+    function displayUser() {
+        
+        $('.profile_photo').html('<img src="' + user.pictureUrl + '"/>'); 
+        $('.profile_title .name').html(user.firstname + " " + user.lastname);
+        $('.profile_title .title').text(user.jobtitle + " at " + user.jobcompany);
+            
+    }
+    
     function hide(elem) {
         $(elem).removeClass('show').addClass('hide').css('display','none');
     }
@@ -246,24 +269,30 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
           IN.Event.on(IN, "auth", onLinkedInAuth);
       }
       function onLinkedInAuth() {
-          IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "educations").params({
+          IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "pictureUrl", "educations").params({
               "first-name": user.firstname,
               "last-name": user.lastname,
-              "school-name": user.schoolname
+              "school-name": user.schoolname,
+              "picture-url": ""
           }).result(displayPeopleSearch).error(displayPeopleSearchErrors);
+          
+          //IN.API.Profile("me").result(displayProfiles);
+          
       }
       function displayPeopleSearch(peopleSearch) {
           var peopleSearchDiv = document.getElementById("peoplesearch");
           var members = peopleSearch.people.values;
           for (var member in members) {
               
-              // console.log(members[member].firstName + " " + members[member].lastName + " is a " + members[member].positions.values[0].title);
-              console.log(members[member].positions.values[0].company.name);
+              console.log(members[member]);
+              //console.log(members[member].positions.values[0].company.name + " " + members[member].profilespictureUrl);
+              user.pictureUrl = members[member].pictureUrl;
               user.jobcompany = members[member].positions.values[0].company.name;
               user.jobtitle = members[member].positions.values[0].title;
               checkInteraction(0);
             }
     }
+    
     
     function displayPeopleSearchErrors(error) { /* do nothing */}
     
@@ -274,8 +303,8 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
         bottom: 100,
         left: 100
     },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 700 - margin.left - margin.right, // 600 - 200
+        height = 200 - margin.top - margin.bottom; // 200 - 200
     var x = d3.scale.linear().domain([0, 5.9]).range([0, width]);
     var y = d3.scale.linear().domain([-1, 1]).range([height, 0]);
     var z = d3.scale.linear().domain([0, 5.9]).range([0, 360]);
@@ -286,7 +315,7 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
             1: y(Math.sin(t))
         };
     });
-    var svg = d3.select(".ambient_vis").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select(".fei_voice_visualizer").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var path = svg.selectAll("path").data(quad(points)).enter().append("path").style("fill", function(d) {
         // control mood by changing color and speed
         return d3.hsl(z(d[1].value), 1, 0.8);
@@ -294,7 +323,7 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
     /* .style("stroke", "#EC6052"); */
     var t0 = Date.now();
     d3.timer(function() {
-        var dt = (Date.now() - t0) * .0001;
+        var dt = (Date.now() - t0) * .0005;
         points.forEach(function(d) {
             d[1] = y(d.scale = Math.sin(d.value + dt));
         });

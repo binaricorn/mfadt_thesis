@@ -2,55 +2,98 @@
 <head>
     <title>Welcome to your new job!</title>
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/fonts.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script src="js/jquery.min.js" type="text/javascript"></script>
-    <script src="/socket.io/socket.io.js" type="text/javascript"></script>
-    <script src="js/utils.js" type="text/javascript"></script>
-    <script src="js/clmtrackr.js" type="text/javascript"></script>
-    <script src="models/model_pca_20_svm_emotionDetection.js" type="text/javascript"></script>
-    <script src="js/Stats.js" type="text/javascript"></script>
-    <script src="js/d3.min.js" type="text/javascript"></script>
-    <script src="js/emotion_classifier.js" type="text/javascript"></script>
-    <script src="js/emotionmodel.js" type="text/javascript"></script>
-    <script src="js/parse-1.2.12.min.js"></script>
-    
-    <script src="js/dialogue.js"></script>
-    <script src="js/scripts.js" type="text/javascript"></script>
-    
-    <script type="text/javascript" src="https://platform.linkedin.com/in.js">/*
+    <script src="js/jquery.min.js" type="text/javascript">
+</script>
+    <script src="/socket.io/socket.io.js" type="text/javascript">
+</script>
+    <script src="js/utils.js" type="text/javascript">
+</script>
+    <script src="js/clmtrackr.js" type="text/javascript">
+</script>
+    <script src="models/model_pca_20_svm_emotionDetection.js" type="text/javascript">
+</script>
+    <script src="js/Stats.js" type="text/javascript">
+</script>
+    <script src="js/d3.min.js" type="text/javascript">
+</script>
+    <script src="js/emotion_classifier.js" type="text/javascript">
+</script>
+    <script src="js/emotionmodel.js" type="text/javascript">
+</script>
+    <script src="js/parse-1.2.12.min.js" type="text/javascript">
+</script>
+    <script src="js/dialogue.js" type="text/javascript">
+</script>
+    <script src="js/scripts.js" type="text/javascript">
+</script>
+    <script type="text/javascript" src="https://platform.linkedin.com/in.js">
+/*
       api_key: 77yrn1lqfhtjy8
       authorize: true
-    */</script>
-    
+    */
+    </script>
 </head>
 
 <body class="middle">
     <div class="wrapper">
-        <section class="option-hide screen">
-    		<select name="voice" id="voice"></select>
-    		
-        		<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
+        <div class="sidebar">
+            <ul>
+                <li><h1>Taylor Health</h1></li>
+
+                <li class="highlight">F.E.I Analysis</li>
+
+                <li>Midlife Review</li>
+
+                <li>Post Expiration Review</li>
+
+                <li>Generational Extended Review</li>
+
+                <li>Logout</li>
+            </ul>
+        </div>
+
+        <section class="option-hide screen"><select name="voice" id="voice">
+            </select> <!--
+<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
                    <source src="audio/yacht2.m4a" />  
                 </audio> 
-    		
+--></section>
+
+        <section class="dashboard screen hide">
+            <section class="dashboard_top">
+                <article class="profile">
+                    <div class="profile_photo"><span class="icon icon-smile"></div>
+                    <div class="profile_title">
+                        <div class="name">Searching...</div>
+                        <div class="title"></div>
+                    </div>
+                </article>
+                <article class="fei_voice_visualizer"></article>
+                <div class="clear"></div>
+            </section>
+
+            <section class="dashboard_bottom">
+                    <h2>Psychometric Employee Profile</h2>
+                <article class="block_fitness inactive">
+                    <h2>Fitness</h2>
+                    <p class="block"><span class="icon icon-run-borderless centered"></span></p>
+                </article>
+                <article class="block_emotion inactive">
+                    <h2>Emotion</h2>
+                    <p class="block"><span class="icon icon-smile centered"></span></p>
+                    </article>
+                <article class="block_inquiry inactive">
+                    <h2>Inquiry</h2>
+                    <p class="block"><span class="icon icon-heart-borderless centered"></span></p>                    
+                </article>
+
+                <div class="clear"></div>
+            </section>
         </section>
-    	<section class="dialogue screen">
-    	    <article class="foo hide">foo</article>
-    	    <article class="foo2 hide">foo2</article>
-    	    <article class="foo3 hide">foo3</article>
-    	    <article class="foo4 hide">foo4</article>
-    	</section>
-    	
-        <section class="ambient_vis_container screen hide">
-            <article class="block">
-                <div class="ambient_vis centered"></article>    
-            </article>
-        </section>   
-    </div>
-
-<script src="js/d3.v3.min.js"></script>
-
-
-<script type="IN/Login"></script>
+    </div><script src="js/d3.v3.min.js" type="text/javascript">
+</script><script type="IN/Login">
+</script>
 </body>
 </html>
