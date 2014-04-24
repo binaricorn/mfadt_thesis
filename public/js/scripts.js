@@ -11,7 +11,8 @@ $(document).ready(function() {
         standing: false,
         passInitSmilingTest: false,
         initSmilingScore: null,
-        getUserPulse: false            
+        getUserPulse: false,
+        BPM: null            
     }
     
     var highVal = 0;
@@ -155,31 +156,37 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
         switch(count) {
             case 0:
                 console.log("Total lines of script: " + sc_dialogue.length);
+/*
+                $('.sidebar').removeClass('hide').addClass('show').on(transEnd, function() {
+                    $('.sidebar ul li').eq(1).addClass('highlight');
+                });
+*/
+
                 $('.dashboard, .sidebar').removeClass('hide').addClass('show');
                 
-                for (i = 0; i < 8; i++) {
+                for (i = 0; i < 9; i++) {
                     botSpeak(sc_dialogue[i]);  
                     sc_dialogue[i].onstart = function(event) {
                        // $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
                     }  
                 }
                 
-                sc_dialogue[3].onend = function(event) {
+                sc_dialogue[4].onend = function(event) {
                     displayUser();  
                 }
                 
-                sc_dialogue[4].onend = function(event) {
+                sc_dialogue[5].onend = function(event) {
                     $('.block_emotion').removeClass('inactive').addClass('show');
                 }
                 
-                sc_dialogue[6].onstart = function(event) {
+                sc_dialogue[7].onstart = function(event) {
                     $('.block_emotion').removeClass('show').addClass('inactive');
                   //  $('.dashboard_bottom, .sidebar, .profile').removeClass('show').addClass('hide');
                 }
                 
-                sc_dialogue[7].onstart = function(event) {
+                sc_dialogue[8].onstart = function(event) {
                   //  $('.dashboard_bottom, .sidebar, .profile').removeClass('hide').addClass('show');
-                    //checkInteraction(1);    
+                    checkInteraction(1);    
                 }
                 break;
             case 1:
@@ -193,13 +200,13 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
                 });
                 break;                
             case 2:
-                for (i = 6; i < 17; i++) {
+                for (i = 9; i < 15; i++) {
                     botSpeak(sc_dialogue[i]);  
                     sc_dialogue[i].onstart = function(event) {
                      //   $('body').addClass(s_dialogue[i-1].scene.changeMood).removeClass(s_dialogue[i].scene.changeMood);
                     }  
                 }
-                sc_dialogue[16].onend = function(event) {
+                sc_dialogue[14].onend = function(event) {
                     checkInteraction(3);    
                 }
                 
@@ -211,23 +218,26 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
                         console.log("!= BPM reading");
                     } else {
                         BPM = BPM.replace("B", ""); 
-                        
-                        if(BPM > 50 && BPM < 170 && user.getUserPulse == false) {
+                       setTimeout(function() { 
+                            if(BPM > 50 && BPM < 100 && user.getUserPulse == false) {
                        // if(user.getUserPulse == false) {
-                        setTimeout(function() {
-                            user.getUserPulse = true;
-                            console.log("use this BPM: " + BPM); 
-                            checkInteraction(4);   
-                        }, 10000);
+                       
+                                user.getUserPulse = true;
+                                console.log("use this BPM: " + BPM); 
+                                user.BPM = BPM;
+                                checkInteraction(4);   
+                       
                         
-                       }   
+                            } 
+                       }, 10000);  
                     }
                     
                 });
                 break;
             case 4:
                 console.log("next line after BPM");
-                botSpeak(sc_dialogue[17]);
+                $('.resting_bpm').text('Resting BPM: ' + user.BPM);
+                botSpeak(sc_dialogue[15]);
                 break;
                 
         }
@@ -260,6 +270,7 @@ findCurrentUser(user.firstname, user.lastname, user.schoolname, checkCurrentUser
         str.text = str.text.replace(/jobtitle/g, user.jobtitle);
         str.text = str.text.replace(/jobcompany/g, user.jobcompany);
         str.text = str.text.replace(/initSmilingScore/g, user.initSmilingScore);
+        str.text = str.text.replace(/userBPM/g, user.BPM);
         speechSynthesis.speak(str);
     } 
     

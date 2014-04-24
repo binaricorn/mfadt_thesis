@@ -23,96 +23,91 @@ var s_dialogue = [
     // 3
     {
         scene: {
-            script: "Eyem pulling up your records userfirstname. Just give me one second.",    
-            changeMood: "middle"  
+            script: "By the way, eyem the Fitness Emotion Inquiry taylored just for you, nice to meet you, you can just call me Faye!",
+            changeMood: "down"   
         }
     },
     // 4
+    {
+        scene: {
+            script: "Eyem pulling up your employment history userfirstname. Just give me one second.",    
+            changeMood: "middle"  
+        }
+    },
+    // 5
     {
         scene: {
             script: "Okay, got it. Youve worked at jobcompany as a jobtitle, thats super cool! Now lets take a look at your Average Emotional Threshold.",
             changeMood: "up"  
         }
     },
-    // 5
+    // 6
     {
         scene: {
             script: "Oh, wait a minute, theres no Employee Psychometric Profile on your record.",
             changeMood: "down"  
         }
     },
-    // 6
+    // 7
     {
         scene: {
             script: "I cant give you a proper assessment in this case.",
             changeMood: "down"  
         }
     },
-    // 7
+    // 8
     {
         scene: {
-            script: "But I guess thats alright. We can just record a new one today. Can you put your feet on that platform?",
+            script: "But I guess thats alright. We can just create one today in a few minutes. Then youll have a spanking new profile to add to all your other ones yay! Can you put your feet on the red mat below you?",
             changeMood: "up"  
         }
     },
+    // 9
     {
         scene: {
             script: "Okay great. Just so you know, this will stay on your record for the next five years, kind of like a DUI, so try not to fuck it up!",    
             changeMood: "up" 
         }
     },
+    // 10
     {
         scene: {
             script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Note to self",
             changeMood: "down"     
         }
     },
+    // 11
     {
         scene: {
             script: "Work on sense of humor. 86.65% of applicants think version line 17 is offensive.",
             changeMood: "down"     
         }
     },
+    // 12
     {
         scene: {
             script: "Anyway, you know what Psychometric Profiles are, doent you?",
             changeMood: "down"     
         }
     },
+    // 13
     {
         scene: {
-            script: "No? Wow. Okay. Its a completely objective measurement of the way your body handles stressful situations. We use this data to make sure youll get placed into the department youll be happiest at. Your going to experience the taylor philosophy first hand.",
+            script: "No? Wow. Okay. Its a completely objective measurement of the way your body handles stressful situations. We use this data to make sure youll get placed into the department youll be happiest at.",
             changeMood: "down"     
         }
     },
+    // 14
     {
         scene: {
-            script: "Think of them as a gauge whether or not youll be able to handle the challenging, but rewarding aspects of working with us!",
-            changeMood: "middle"   
-        
-        }
-    },
-    {
-        scene: {
-            script: "Oh crap, which reminds me, I forgot to introduce myself.",
-            changeMood: "down"   
-        }
-    },
-    {
-        scene: {
-            script: "Fitness Emotion Inquiry, nice to meet you, you can just call me Faye!",
-            changeMood: "middle"    
-        }
-    },
-    {
-        scene: {
-            script: "Wheel need to take 3 points of data for analysis. Lets start with your resting heart rate.",   
+            script: "Lets start with your resting heart rate. Put your hand on the Heart Rate machine.",   
             changeMood: "middle"  
         }
     },
+    // 15
     {
         scene: {
-            script: "BPM? Thats fine..",   
+            script: "Your resting BPM is alright at userBPM.",   
             changeMood: "middle"  
         }
     }
