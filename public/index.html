@@ -60,6 +60,7 @@
                    <source src="audio/yacht2.m4a" />  
                 </audio> 
 --></section>
+        <!-- <section expiration date> -->
 
         <section class="dashboard screen hide">
             <section class="dashboard_top">
@@ -68,7 +69,7 @@
                     <div class="profile_title">
                         <div class="name">Searching...</div>
                         <div class="title"></div>
-                        <div class="resting_bpm">Resting bPM: </div>
+                        <div class="resting_bpm">Resting BPM: </div>
                     </div>
                 </article>
                 <article class="fei_voice_visualizer"></article>
@@ -84,6 +85,17 @@
                 <article class="block_emotion inactive">
                     <h2>Emotion</h2>
                     <p class="block"><span class="icon icon-smile centered"></span></p>
+                    <div class="video_container">
+                        <video id="videoel" width="400" height="300" preload="auto" loop></video> <canvas id="overlay" width="400" height="300"></canvas>
+                        <!-- <canvas id="sketch" width="400" height="300"></canvas> -->
+                        <div id="emotion_container">
+                            <div id='emotion_chart'></div>
+                        </div>
+                        <div id="controls">
+                            <input class="smile_btn" type="button" value="wait, loading video" disabled="disabled" id="startbutton">
+                        </div>
+                    </div>
+                    
                     </article>
                 <article class="block_inquiry inactive">
                     <h2>Inquiry</h2>

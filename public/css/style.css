@@ -44,10 +44,7 @@ body {
 
 
 .profile_photo {
-  /*
-  width: 15%;
-    float: left;  
-*/  
+ 
 }
 
 .profile {
@@ -267,4 +264,59 @@ input[type="submit"] {
 .ambient_vis {
     width: 960px;
     margin: 0 auto;
+}
+
+#target {
+    position: absolute;
+    font-size: 4em;
+    bottom: 50px;
+    left: 50px;
+}
+
+#overlay {
+	position:absolute;
+	top:0;
+	left:0;
+	-webkit-transform:scaleX(-1);
+	width:400px;
+	height:300px;
+}
+
+#videoel {
+	-webkit-transform:scaleX(-1);
+	width:400px;
+	height:300px;
+}
+
+#emotion_container {
+	width:600px;
+	position: absolute;
+	top: 20px;
+}
+
+#emotion_icons {
+	height:50px;
+	padding-left:40px;
+}
+
+.emotion_icon {
+	width:40px;
+	height:40px;
+	margin-top:5px;
+/*margin-left : 13px;*/
+	margin-left:35px;
+}
+
+#emotion_chart,#emotion_icons {
+	margin:0 auto;
+	width:400px;
+}
+
+#icon1,#icon2,#icon3,#icon4,#icon5,#icon6 {
+	visibility:hidden;
+}
+
+.video_container {
+    position: relative;
+    overflow: hidden;
 }

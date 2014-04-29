@@ -31,8 +31,7 @@ This update fixes the firstBeat and secondBeat flag usage so that realistic BPM 
 //  VARIABLES
 int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
 int blinkPin = 13;                // pin to blink led at each beat
-int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
-int fadeRate = 0;                 // used to fade LED on with PWM on fadePin
+//int ledStrip = 4;                 // Fade LED strip when feet are on the board
 #define echoPin 7                 // Echo Pin
 #define trigPin 8                 // Trigger Pin
 
@@ -44,12 +43,14 @@ int footSensor1 = A2;
 int footSensor2 = A3;    
 int handButton1 = 2;
 int handButton2 = 3;
-int ledPin = 13;
+int ledPin = 4;
 
 int foot1SensorVal;
 int foot2SensorVal;
 
 int lostUser = 0;
+
+
 
 
 // these variables are volatile because they are used during the interrupt service routine!
@@ -126,6 +127,12 @@ void haveUser() {
       digitalWrite(ledPin, LOW);
     }
     
+    if(foot1SensorVal > 900 && foot2SensorVal > 900) {
+      digitalWrite(ledPin, HIGH);
+    } else {
+      digitalWrite(ledPin, LOW);
+    }
+    
     Serial.print("1");
     Serial.print(",");
     Serial.print(foot1SensorVal);
@@ -137,8 +144,7 @@ void haveUser() {
     Serial.print(handButton2Val);
     
     
-    if (QS == true){                       // Quantified Self flag is true when arduino finds a heartbeat
-        fadeRate = 255;                  // Set 'fadeRate' Variable to 255 to fade LED with pulse
+    if (QS == true){                       // Quantified Self flag is true when arduino finds a heartbeate
         sendDataToProcessing('B',BPM);   // send heart rate with a 'B' prefix
         QS = false;                      // reset the Quantified Self flag for next time    
      } else {
