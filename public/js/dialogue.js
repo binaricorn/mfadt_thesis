@@ -2,16 +2,14 @@ var s_dialogue = [
     // 0
     {
         scene: {
-            script: "Welcome applicant! Please step onto the platform.",    
+            script: "Welcome applicant! Want to learn the secrets to success and happiness? Step onto the platform to find out.",    
             changeMood: "up"  
         }
     },
-    
-/*     put your feet inside the testing apparatus and remain there for the duration of this assessment. I repeat, put your feet inside the testing apparatus and remain there for the duration of this assessment. */
     // 1
     {
         scene: {
-            script: "I hope youve enjoyed your tour of the office. I am your specially Taylored fitness emotion inquiry. You can just call me Faye from now on.",    
+            script: "I hope youve enjoyed your tour of the office. I am your specially Taylored fitness emotion inquiry. You can just refer to me as Faye.",    
 /*              This testing session is absolutely monitored and recorded for quality assurance. */
             changeMood: "up"  
         }
@@ -19,10 +17,18 @@ var s_dialogue = [
     //2
     {
         scene: {
-            script: "What your seeing now is the Taylor Health Assessment Dashboard, where if accepted, youll be reviewed every six months during your lifetime at taylor so we can continue making you happier and more productive!",    
+            script: "What your seeing now is the Taylor Health Assessment Dashboard. If you end up working with us, here is where wheel do check ups once in a while for any well you know, abnormalities.",    
             changeMood: "middle"  
         }
     },
+    /*
+{
+        scene: {
+            script: "What your seeing now is the Taylor Health Assessment Dashboard. where if accepted, youll be reviewed for abnormalities every six months during your lifetime at taylor.",    
+            changeMood: "middle"  
+        }
+    },
+*/
     // 3
     {
         scene: {
@@ -33,14 +39,14 @@ var s_dialogue = [
     // 4
     {
         scene: {
-            script: "Okay, got it. Youve worked at jobcompany as a jobtitle, thats super cool! Now lets take a look at your Employee Psychometric Profile.",
+            script: "Okay, got it. Youve worked at jobcompany as a jobtitle, thats really impressive! Now lets take a look at your Employee Psychometric Profile.",
             changeMood: "up"  
         }
     },
     // 5
     {
         scene: {
-            script: "Oh, wait a minute, theres no Employee Psychometric Profile on your record.",
+            script: "Oh, wait a minute, theres none on your record.",
             changeMood: "down"  
         }
     },
@@ -68,14 +74,14 @@ var s_dialogue = [
     // 9
     {
         scene: {
-            script: "Just so you know, this will stay on your profile for the next five years, kind of like a DUI, so try not to fuck it up!",
+            script: "Oh and just so you know, this will stay on your record for the next five years, kind of like a DUI, so try not to fuck it up!",
             changeMood: "up"
         }
     },
     // 10
     {
         scene: {
-            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended.",
+            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended by my attitude.",
             changeMood: "middle"
         }
     },
@@ -92,7 +98,22 @@ var s_dialogue = [
             script: "Now look into the camera and give us your biggest, happiest, and most genuine smile.",   
             changeMood: "middle"  
         }
+    },
+    // 13
+    {
+        scene: {
+            script: "Did you know that smiling can actually increase your recovery time after stressful activities?",   
+            changeMood: "middle"  
+        }
+    },
+    // 14
+    {
+        scene: {
+            script: "Oh a initSmilingScore? I think you can do way better than that! I think you need some motivation.",   
+            changeMood: "middle"  
+        }
     }
+    // 15
     
     // add stuff about browsercize research (mini breaks and health related stuff) in here.
    

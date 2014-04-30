@@ -19,7 +19,8 @@ $(document).ready(function() {
         jobtitle: null,
         jobcompany: null,
         standing: false,
-        passInitSmilingTest: false,
+        passInitSmilingTest: null,
+        initSmilingScoreArray: [],
         initSmilingScore: null,
         getUserPulse: false,
         BPM: null            
@@ -38,9 +39,9 @@ $(document).ready(function() {
             haveUser();
             voice_visualizer();
               
-            setTimeout(function() {
+            //setTimeout(function() {
                 findCurrentUser();
-            }, 50);
+            //}, 50);
               
           } else if (userPresence == "0") {
               waitingForUser();
@@ -152,7 +153,7 @@ $(document).ready(function() {
                 }
                 
                 sc_dialogue[4].onend = function(event) {
-                    resetAllUsers();
+                   // resetAllUsers();
                     $('.block_emotion').removeClass('inactive').addClass('show');
                 }
                 
@@ -194,6 +195,26 @@ $(document).ready(function() {
                 break;
             case 3: 
                 startVideoTracking(); 
+                setTimeout(function() {
+                    checkInteraction(4);
+                }, 10000);
+                break;
+            case 4:
+            
+                console.log(user.initSmilingScoreArray);
+                var initSmileArray = user.initSmilingScoreArray;
+                user.initSmilingScore = Math.max.apply(Math, initSmileArray);
+                user.initSmilingScore = user.initSmilingScore * 100;
+                console.log(user.initSmilingScore);
+                
+                botSpeak(sc_dialogue[13]);
+                sc_dialogue[13].onstart = function() {
+                    checkInteraction(5);
+                }
+                
+                break;
+            case 5:
+                botSpeak(sc_dialogue[14]);
                 break;
             }
     }
@@ -462,39 +483,39 @@ $(document).ready(function() {
     attr("fill", "#2d578b");
     
     //Text labels for emotion values
-svg.selectAll("text.labels").
-data(emotionData).
-enter().
-append("svg:text").
-attr("x", function(datum, index) {
-return x(index) + barWidth;
-}).
-attr("y", function(datum) {
-return height - y(datum.value);
-}).
-attr("dx", -barWidth / 2).
-attr("dy", "1.2em").
-attr("text-anchor", "middle").
-text(function(datum) {
-return datum.value;
-}).
-attr("fill", "white").
-attr("class", "labels");
-svg.selectAll("text.yAxis").
-data(emotionData).
-enter().append("svg:text").
-attr("x", function(datum, index) {
-return x(index) + barWidth;
-}).
-attr("y", height).
-attr("dx", -barWidth / 2).
-attr("text-anchor", "middle").
-attr("style", "font-size: 12").
-text(function(datum) {
-return datum.emotion;
-}).
-attr("transform", "translate(0, 18)").
-attr("class", "yAxis");
+    svg.selectAll("text.labels").
+    data(emotionData).
+    enter().
+    append("svg:text").
+    attr("x", function(datum, index) {
+    return x(index) + barWidth;
+    }).
+    attr("y", function(datum) {
+    return height - y(datum.value);
+    }).
+    attr("dx", -barWidth / 2).
+    attr("dy", "1.2em").
+    attr("text-anchor", "middle").
+    text(function(datum) {
+    return datum.value;
+    }).
+    attr("fill", "white").
+    attr("class", "labels");
+    svg.selectAll("text.yAxis").
+    data(emotionData).
+    enter().append("svg:text").
+    attr("x", function(datum, index) {
+    return x(index) + barWidth;
+    }).
+    attr("y", height).
+    attr("dx", -barWidth / 2).
+    attr("text-anchor", "middle").
+    attr("style", "font-size: 12").
+    text(function(datum) {
+    return datum.emotion;
+    }).
+    attr("transform", "translate(0, 18)").
+    attr("class", "yAxis");
 
     function updateData(data) {
         // update
@@ -504,11 +525,11 @@ attr("class", "yAxis");
             return y(datum.value);
         });
        var texts = svg.selectAll("text.labels").data(data).attr("y", function(datum) {
-return height - y(datum.value);
-}).text(function(datum) {
-return datum.value.toFixed(1);
-});
-        
+        return height - y(datum.value);
+        }).text(function(datum) {
+        return datum.value.toFixed(1);
+        });
+                
         var smileScore = data[3].value;
         
         analyzeSmileInitialData(smileScore);
@@ -522,8 +543,7 @@ return datum.value.toFixed(1);
     }
     
     function analyzeSmileInitialData(smileScore) {
-        user.initSmilingScore = smileScore;
-        //console.log(user.initSmilingScore);
+        user.initSmilingScoreArray.push(smileScore);
         /*
 if (user.initSmilingScore > 0.2 && user.passInitSmilingTest == false) {
                 user.passInitSmilingTest = true;
