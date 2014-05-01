@@ -68,27 +68,6 @@ $(document).ready(function() {
         });
     }, 500);
     
-    
-    // This is too automated, I don't think it'll work for what I want it to? 
-    function loopVisuals(count) {
-        if (count < (s_dialogue.length)) {
-            count++;
-            botSpeak(sc_dialogue[count]);
-            sc_dialogue[count].onstart = function(event) {
-                if (count < (s_dialogue.length)) {
-                    //hide(s_dialogue[count].scene.show);
-                    show(s_dialogue[count].scene.show);
-                }
-            }            
-            sc_dialogue[count].onend = function(event) {
-                hide(s_dialogue[count].scene.show);
-            }
-            $(s_dialogue[count].scene.show).on(transEnd, function(e) {
-                $(s_dialogue[count].scene.show).off(transEnd);
-                loopVisuals(count);
-            });
-        }
-    }
 
     
     function hide(elem) {
@@ -117,8 +96,15 @@ $(document).ready(function() {
                     loopPromo(count);    
                     
             });
+            
+        }
+        
+        if(count == 5) {
+            $('input#form_firstName').replaceWith('<input type="text" id="form_firstName" placeholder="First name" value="" autofocus/>');
+
         }
     }
+    
     
     function botSpeak(str) {
         str.voice = speechSynthesis.getVoices().filter(function(voice) {

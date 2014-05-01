@@ -4,30 +4,19 @@
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/fonts.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script src="js/jquery.min.js" type="text/javascript">
-</script>
-    <script src="/socket.io/socket.io.js" type="text/javascript">
-</script>
-    <script src="js/utils.js" type="text/javascript">
-</script>
-    <script src="js/clmtrackr.js" type="text/javascript">
-</script>
-    <script src="models/model_pca_20_svm_emotionDetection.js" type="text/javascript">
-</script>
-    <script src="js/Stats.js" type="text/javascript">
-</script>
-    <script src="js/d3.min.js" type="text/javascript">
-</script>
-    <script src="js/emotion_classifier.js" type="text/javascript">
-</script>
-    <script src="js/emotionmodel.js" type="text/javascript">
-</script>
-    <script src="js/parse-1.2.12.min.js" type="text/javascript">
-</script>
-    <script src="js/dialogue.js" type="text/javascript">
-</script>
-    <script src="js/scripts.js" type="text/javascript">
-</script>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="/socket.io/socket.io.js" type="text/javascript"></script>
+    <script src="js/utils.js" type="text/javascript"></script>
+    <script src="js/clmtrackr.js" type="text/javascript"></script>
+    <script src="models/model_pca_20_svm_emotionDetection.js" type="text/javascript"></script>
+    <script src="js/Stats.js" type="text/javascript"></script>
+    <script src="js/d3.min.js" type="text/javascript"></script>
+    <script src="js/emotion_classifier.js" type="text/javascript"></script>
+    <script src="js/emotionmodel.js" type="text/javascript"></script>
+    <script src="js/parse-1.2.12.min.js" type="text/javascript"></script>
+    <script src="js/promo.js" type="text/javascript"></script>
+    <script src="js/dialogue.js" type="text/javascript"></script>
+    <script src="js/scripts.js" type="text/javascript"></script>
     <script type="text/javascript" src="https://platform.linkedin.com/in.js">
 /*
       api_key: 77yrn1lqfhtjy8
@@ -38,6 +27,41 @@
 
 <body class="middle">
     <div class="wrapper">
+        <section class="screen promo">
+            <article class="block">  
+                <div class="logo centered">
+                    <span class="icon icon-run-borderless"></span><span class="icon icon-smile"></span><span class="icon icon-heart-borderless"></span>
+                    <h1>TaylorHealth</h1>
+                </div>  
+            </article>
+            <article class="block">    
+                <div class="centered">"My face hurts from smiling so hard at work everyday, and I love it!"<br><br>
+                <small><em>- Google Employee Says About the Taylor Experience</em></small></div>    
+            </article>
+            <article class="block">
+                <div class="centered">The Birth of Taylor = The Birth of Fun</div>
+            </article>
+            <article class="block">
+                <div class="centered">Sharing the Taylor is Caring</div>
+                    <!-- <span class="script">And now we want to share this Taylored experience with you.</span></p> -->
+            </article>
+            <article class="block">
+                <div class="centered">
+                    <img src="img/unicorn.png"/><br><br>Calling all unicorns!
+                </div>              
+            </article>
+            <article class="block">
+                <div class="centered block_fieldInput">
+                    Join the Taylor Health Revolution!<br><br>
+                    <form name="submission_form" id="submission_form">
+                        <input type="text" id="form_firstName" placeholder="First name" value=""/>
+                        <input type="text" id="form_lastName" placeholder="Last name" value=""/>
+                        <input type="submit" id="form_submit" value="Go!"/>    
+                    </form>
+                </div>                
+            </article>
+        </section>
+        
         <div class="sidebar hide">
             <ul>
                 <li><h1>Taylor Health</h1></li>
@@ -54,15 +78,14 @@
             </ul>
         </div>
 
-        <section class="option-hide screen"><select name="voice" id="voice">
-            </select> <!--
+        <section class="option-hide"><select name="voice" id="voice"></select> <!--
 <audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
                    <source src="audio/yacht2.m4a" />  
                 </audio> 
 --></section>
         <!-- <section expiration date> -->
 
-        <section class="dashboard screen hide">
+        <section class="dashboard-screen dashboard hide">
             <section class="dashboard_top">
                 <article class="profile">
                     <div class="profile_photo"><span class="icon icon-smile"></div>

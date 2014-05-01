@@ -17,18 +17,10 @@ var s_dialogue = [
     //2
     {
         scene: {
-            script: "What your seeing now is the Taylor Health Assessment Dashboard. If you end up working with us, here is where wheel do check ups once in a while for any well you know, abnormalities.",    
+            script: "What your seeing now is the Taylor Health Assessment Dashboard. If you end up working with us, here is where wheel do check ups once in a while for any oh well you know, abnormalities.",    
             changeMood: "middle"  
         }
     },
-    /*
-{
-        scene: {
-            script: "What your seeing now is the Taylor Health Assessment Dashboard. where if accepted, youll be reviewed for abnormalities every six months during your lifetime at taylor.",    
-            changeMood: "middle"  
-        }
-    },
-*/
     // 3
     {
         scene: {

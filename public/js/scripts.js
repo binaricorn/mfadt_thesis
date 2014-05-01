@@ -30,18 +30,33 @@ $(document).ready(function() {
     
     var audioElem = $('#audioplay').get(0);
     if (audioElem) audioElem.volume = 0.1;
-
+    
+    var sc_dialogue = [];
+    var sc_promo = [];
+    
+    var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
+    
+    for (i = 0; i < s_dialogue.length; i++) {
+        sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
+    }
+    
+    for (i = 0; i < s_promo.length; i++) {
+        sc_promo[i] = new SpeechSynthesisUtterance(s_promo[i].scene.script);
+    }
+    
+    /* Animation between screens */
+    var b = $('.promo .block').length;
+    
+    for (i = 0; i < b; i++) {
+        $(".promo .block").eq(i).css('-webkit-transform', 'translateX(' + i * 100 + '%)');
+    }
     
     var socket = io.connect("/");
     
     socket.on("userPresence", function(userPresence) {
           if (userPresence == "1") {
             haveUser();
-            voice_visualizer();
-              
-            //setTimeout(function() {
-                findCurrentUser();
-            //}, 50);
+            //voice_visualizer();
               
           } else if (userPresence == "0") {
               waitingForUser();
@@ -50,6 +65,19 @@ $(document).ready(function() {
     
     function haveUser() {
         //show($('.afei_voice_visualizer'));
+        botSpeak(sc_dialogue[0]); 
+        setTimeout(function() {
+            loopPromo(count);
+        }, 500);
+        
+       $('#submission_form').submit(function(e){
+           e.preventDefault();
+           user.firstname = $('#form_firstName').val();
+           user.lastname = $('#form_lastName').val();
+           console.log(user.firstname + user.lastname);
+           checkInteraction(0);
+        });        
+        
         console.log("found user");          
     }
   
@@ -58,6 +86,31 @@ $(document).ready(function() {
     }
     
 
+    function loopPromo(count) {
+        if (count < (s_promo.length)-1) {
+            count++;
+            botSpeak(sc_promo[count]);
+            sc_promo[count].onend = function(event) {
+                if (count < (s_promo.length)-1) {
+                    $(".promo .block").eq(count).addClass('slide').css('-webkit-transform', 'translateX(-100%)');
+                    $(".promo .block").eq(count + 1).addClass('slide').css('-webkit-transform', 'translateX(0%)');    
+                }
+                
+            }
+            $(".promo .block").eq(count).on(transEnd, function(e) {
+                // on the last slide, autofocus the firstname field 
+                if(count == 5) {
+                    $('input#form_firstName').replaceWith('<input type="text" id="form_firstName" placeholder="First name" value="" autofocus/>');
+
+                }
+                $(".promo .block").eq(count).off(transEnd);
+                    loopPromo(count);    
+                    
+            });
+        }
+        
+
+    }
     
     var b = $('.block').length;
     var count = -1;
@@ -83,63 +136,20 @@ $(document).ready(function() {
     
 
     
-    var sc_dialogue = [];
+   
     
-    var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
-    
-    for (i = 0; i < s_dialogue.length; i++) {
-        sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
-        
-    }
-    
-    
-    function resetAllUsers() {
-        var Person = Parse.Object.extend("Person");
-        var query = new Parse.Query(Person);
-        
-        query.equalTo("current_user", true);
-        
-        query.find({
-            success: function(results) {
-                console.log("reset all users");
-                for (var i = 0; i < results.length; i++) {
-                    var object = results[i];
-                    object.set("current_user", false);
-                    object.save();
-                }
-            },
-            error: function(error) {
-                console.log("Error: " + error.code + " " + error.message);
-              }
-        }); 
-    }
-      
-    function findCurrentUser() {
-        var Person = Parse.Object.extend("Person");
-        var query = new Parse.Query(Person);
-        
-        query.equalTo("current_user", true);
-        query.find({
-            success: function(results) {
-                for (var i = 0; i < results.length; i++) {
-                    var object = results[i];
-                    user.firstname = object.get('firstname');
-                    user.lastname = object.get('lastname'); 
-                    
-                    onLinkedInLoad();   
-                    onLinkedInAuth();
-                    
-                }
-            },
-            error: function(error) {
-                console.log("Error: " + error.code + " " + error.message);
-              }
-        });        
-    }
     function checkInteraction(count) {
         switch(count) {
             case 0:
-                for (i = 0; i < 12; i++) {
+                hide($('.promo'));
+                show($('.sidebar'));
+                show($('.dashboard-screen'));
+                
+                /*
+onLinkedInLoad();
+                onLinkedInAuth();
+*/
+                for (i = 1; i < 12; i++) {
                     botSpeak(sc_dialogue[i]);  
                 }
                 
@@ -297,7 +307,9 @@ $(document).ready(function() {
     }
     
     
-    function displayPeopleSearchErrors(error) { /* do nothing */}
+    function displayPeopleSearchErrors(error) { 
+        console.log("error, let's move on");
+    }
     
     
     
