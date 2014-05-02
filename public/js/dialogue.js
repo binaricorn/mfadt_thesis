@@ -1,59 +1,63 @@
+var backup_jobtitle = "Some designer";
+var backup_jobcompany = "Some company";
+var backup_pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
+
 var s_dialogue = [
     // 0
     {
         scene: {
-            script: "Welcome applicant! Want to learn the secrets to success and happiness? Step onto the platform to find out.",    
-            changeMood: "up"  
+            script: "Welcome applicant! Want to learn the secrets to success and happiness? Step onto the fitness assessment apparatus platform to find out.",
+            changeMood: "up"
         }
     },
     // 1
     {
         scene: {
-            script: "I hope youve enjoyed your tour of the office. I am your specially Taylored fitness emotion inquiry. You can just refer to me as Faye.",    
+            script: "I hope youve enjoyed your tour of the office. I am your specially Taylored fitness emotion inquiry. You can just refer to me as Faye.",
 /*              This testing session is absolutely monitored and recorded for quality assurance. */
-            changeMood: "up"  
+            changeMood: "up"
         }
     },
     //2
     {
         scene: {
-            script: "What your seeing now is the Taylor Health Assessment Dashboard. If you end up working with us, here is where wheel do check ups once in a while for any oh well you know, abnormalities.",    
-            changeMood: "middle"  
+            script: "What your seeing now is the Taylor Health Assessment Dashboard. If you end up working with us, here is where wheel do check ups once in a while for any oh well you know, abnormalities.",
+            changeMood: "middle"
         }
     },
     // 3
     {
         scene: {
-            script: "Eyem pulling up your employment history userfirstname. Just give me one second.",    
-            changeMood: "middle"  
+            script: "Eyem pulling up your employment history userfirstname. Just give me one second.",
+            changeMood: "middle"
         }
     },
     // 4
     {
         scene: {
             script: "Okay, got it. Youve worked at jobcompany as a jobtitle, thats really impressive! Now lets take a look at your Employee Psychometric Profile.",
-            changeMood: "up"  
+            changeMood: "up"
         }
     },
     // 5
     {
         scene: {
-            script: "Oh, wait a minute, theres none on your record.",
-            changeMood: "down"  
+            script: "Oh, wait a minute, theres none on your record.", // what record? social media?
+            changeMood: "down"
         }
     },
     // 6
     {
         scene: {
             script: "I cant give you a proper assessment in this case.",
-            changeMood: "down"  
+            changeMood: "down"
         }
     },
     // 7
     {
         scene: {
-            script: "But your resumay looked great so eyell make an exception. Lets just create a profile now, itll only take a few minutes.", 
-            changeMood: "up"  
+            script: "But your resumay looked great so eyell make an exception. Lets just create a profile now, itll only take a few minutes.",
+            changeMood: "up"
         }
     },
     // 8
@@ -73,45 +77,129 @@ var s_dialogue = [
     // 10
     {
         scene: {
-            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended by my attitude.",
+            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended by the  attitude.",
             changeMood: "middle"
         }
     },
     // 11
     {
         scene: {
-            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your finger into our assessment receptacle so we can collect your resting heartrate.",
+            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your finger into Inquiry box so we can get your resting heartrate.",
             changeMood: "middle"
         }
     },
     // 12
     {
         scene: {
-            script: "Now look into the camera and give us your biggest, happiest, and most genuine smile.",   
-            changeMood: "middle"  
+            script: "Now look into the camera and give us your biggest, happiest, and most genuine smile.",
+            changeMood: "middle"
         }
     },
     // 13
     {
         scene: {
-            script: "Did you know that smiling can actually increase your recovery time after stressful activities?",   
-            changeMood: "middle"  
+            script: "Did you know that smiling can actually increase your recovery time after stressful activities?",
+            // 169 participants were instructed to smile while their facial muscles were being manipulated by chopsticks. they were subjected to a series of stress-inducing, multitasking activities all while holding the chopsticks in their mouths. Those with forced smiles held only by the chopsticks also reported more positive feelings than those who didn't smile at all!
+            changeMood: "middle"
         }
     },
     // 14
     {
         scene: {
-            script: "Oh a initSmilingScore? I think you can do way better than that! I think you need some motivation.",   
-            changeMood: "middle"  
+            script: "Weve designed a series of badges to reward you on your progress! Great Your Not a Zombie badge for your resting heart rate of BPM, and a Meh Whatever, on your emotion analysis result of initSmilingScore.",
+            changeMood: "middle"
         }
-    }
+    },
     // 15
-    
+     {
+        scene: {
+            script: "That's a little disappointing. I think you can do way better than that! Most people who apply for Taylor can at least get a doubleInitSmilingScore.",
+            changeMood: "middle"
+        }
+    },
+    // 16
+    {
+        scene: {
+            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Why doent you step into our fitness assessment arena so we can get started?",
+            changeMood: "middle"
+        }
+    },
+    // 17
+    {
+        scene: {
+            script: "Or you can leave now if this sounds too challenging. Youll only be losing the once in a lifetime chance to learn how to be happy at work. Boohoohoo my name is userfirstname and eyem sad all the time boohoohoo.",
+            changeMood: "middle"
+        }
+    },
+    // 18
+    {
+        scene: {
+            script: "Oh sorry ive had a very long day and the cafeteria is out of cat poop coffee.",
+            changeMood: "middle"
+        }
+    },
+    // 19
+    {
+        scene: {
+            script: "I'm so glad to know your up for the challenge! I had a feeling you would be.",
+            changeMood: "middle"
+        }
+    },
+    // add in something about fitbit and stuff
+    // do some calculations here The average Australian takes 9,695 steps per day, the average Japanese 7,168, and the average Swiss 9,650, while the average American takes only 5,117 steps per day.
+    // fitbit jawbone. echo the style of that inaugural qs ted talk.
+
+    // 20
+    {
+        scene: {
+            script: "The game youll be playing is called Browsersize and was made by a promising young upstart on our team who wanted to help all of us stay active while we work. Get it, Browser and Exercize?",
+            changeMood: "middle"
+        }
+    },
+    // 21
+    {
+        scene: {
+            script: "WE ALL KNOW WE NEED TO TAKE BREAKS WHEN WE WORK IN FRONT OF THE COMPUTER. We make excuses like, Oh but Ive got a deadline! Or eyem knee deep in code! Or even worse, I cant stop scrolling on facebook! Ha ha.",
+            changeMood: ""
+        }
+    },
+    // 22
+    {
+        scene: {
+            script: "Studies show that sitting down for more than three hours a day can shorten our lifespans by two years?",
+            changeMood: ""
+        }
+    },
+    // 23
+    {
+        scene: {
+            script: "Follow the little man on the right hand side of the screen, heel show you what to do. Earn a new badge by successfully completing a full stretch.",
+            changeMood: "middle"
+        }
+    },
+    // 24
+    {
+        scene: {
+            script: "That means pressing down on those two white buttons in front of your feet and then come up to the camera and give me a nice and big happy smile.",
+            changeMood: "middle"
+        }
+    },
+    // 25
+    {
+        scene: {
+            script: "Eyell base your assessment on the average of your cumulative Emotion Analysis.",
+            changeMood: "middle"
+        }
+    },
+/*    {
+         My algorithm has been remotely updated. Now you will have to.. <-- Nest reference
+    } */
+
+
     // add stuff about browsercize research (mini breaks and health related stuff) in here.
-   
-    // Give examples about play and gamification are used to make difficult tasks pleasant.      
+
     // My algorithm has been remotely updated. Now you will have to.. <-- Nest
     // Seems like you were active on your pedometer for ___ and youve taken x amount of steps. <-- this can be default for everyone.
     // If you do well on thsi round then we'll go to the EXTENDED AFTERLIFE KARMATIC REVIEW!
-    // 
+    //
 ];
