@@ -6,7 +6,7 @@ var s_dialogue = [
     // 0
     {
         scene: {
-            script: "Welcome applicant! Want to learn the secrets to success and happiness? Step onto the fitness assessment apparatus platform to find out.",
+            script: "Welcome applicant! Doent you Want to learn the secrets to success and happiness? Step onto the fitness assessment apparatus and find out.",
             changeMood: "up"
         }
     },
@@ -77,14 +77,14 @@ var s_dialogue = [
     // 10
     {
         scene: {
-            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended by the  attitude.",
+            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended by my attitude.",
             changeMood: "middle"
         }
     },
     // 11
     {
         scene: {
-            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your finger into Inquiry box so we can get your resting heartrate.",
+            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your finger into the Inquiry apparatus so we can get your resting heartrate.",
             changeMood: "middle"
         }
     },
@@ -106,42 +106,75 @@ var s_dialogue = [
     // 14
     {
         scene: {
-            script: "Weve designed a series of badges to reward you on your progress! Great Your Not a Zombie badge for your resting heart rate of BPM, and a Meh Whatever, on your emotion analysis result of initSmilingScore.",
+            script: "That was a score of initSmilingScore. Eyem a little disappointed. I think you can do way better than that! Most people who apply for Taylor can at least get a doubleInitSmilingScore! Thats okay.",
             changeMood: "middle"
         }
     },
     // 15
-     {
+    {
         scene: {
-            script: "That's a little disappointing. I think you can do way better than that! Most people who apply for Taylor can at least get a doubleInitSmilingScore.",
+            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Put your feet into the taylor fitness assessment arena to learn more about the game!",
             changeMood: "middle"
         }
     },
-    // 16
+    // 16    
     {
         scene: {
-            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Why doent you step into our fitness assessment arena so we can get started?",
+            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem so lazy and sad all the time boohoohoo.",
             changeMood: "middle"
         }
     },
     // 17
     {
         scene: {
-            script: "Or you can leave now if this sounds too challenging. Youll only be losing the once in a lifetime chance to learn how to be happy at work. Boohoohoo my name is userfirstname and eyem sad all the time boohoohoo.",
+            script: "Sorry ive had a very long day and the cafeteria is always out of cat poop coffee. I'm so glad youve decided to stay after all! I had a feeling you would.",
             changeMood: "middle"
         }
     },
     // 18
     {
         scene: {
-            script: "Oh sorry ive had a very long day and the cafeteria is out of cat poop coffee.",
+            script: "The game youll be playing is called Browsersize and was made by a promising young upstart on our team who wanted to help all of us stay active while we work. Get it, Browser and Exercize?",
             changeMood: "middle"
         }
     },
     // 19
     {
         scene: {
-            script: "I'm so glad to know your up for the challenge! I had a feeling you would be.",
+            script: "The goal of the game is to try do as many stretches as you can under one minute. They arent just your lazy, average stretches though.",
+            changeMood: "middle"
+        }
+    },
+    // 20
+    {
+        scene: {
+            script: "Youll only get a point if youve successfully reached down to press both buttons, and then come up to the camera and give me a smile. No smiles, no points.",
+            changeMood: "middle"
+        }
+    },
+    // 21
+    {
+        scene: {
+            script: "Lets do it! You have 1 minute to get the most points as you can. There will be a reward at the end, and it will absolutely not involve grief counseling and black forest cake.",
+            changeMood: "middle"
+        }
+    }
+    
+    
+    /*
+    Examine the diagram in your Fitness Inquiry field
+,
+    // 17
+    {
+        scene: {
+            script: "Sorry ive had a very long day and the cafeteria is always out of cat poop coffee.",
+            changeMood: "middle"
+        }
+    },
+    // 18
+    {
+        scene: {
+            script: "Oh! I'm so glad youve decided to stay after all! I had a feeling you would be.",
             changeMood: "middle"
         }
     },
@@ -149,13 +182,14 @@ var s_dialogue = [
     // do some calculations here The average Australian takes 9,695 steps per day, the average Japanese 7,168, and the average Swiss 9,650, while the average American takes only 5,117 steps per day.
     // fitbit jawbone. echo the style of that inaugural qs ted talk.
 
-    // 20
+    // 19
     {
         scene: {
-            script: "The game youll be playing is called Browsersize and was made by a promising young upstart on our team who wanted to help all of us stay active while we work. Get it, Browser and Exercize?",
+            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem so lazy and sad all the time boohoohoo.",
             changeMood: "middle"
         }
     },
+    
     // 21
     {
         scene: {
@@ -190,10 +224,23 @@ var s_dialogue = [
             script: "Eyell base your assessment on the average of your cumulative Emotion Analysis.",
             changeMood: "middle"
         }
+    }
+*/
+    
+    /*
+{
+        scene: {
+            script: "Weve designed a series of badges to reward you on your progress! Great Your Not a Zombie badge for your resting heart rate of BPM, and a Meh Whatever, on your emotion analysis result of initSmilingScore.",
+            //script: "Weve designed a series of badges to reward you on your progress! Great Your Not a Zombie badge for your resting heart rate of BPM, and a Meh Whatever, on your emotion analysis result of initSmilingScore.",
+            changeMood: "middle"
+        }
     },
+*/
 /*    {
          My algorithm has been remotely updated. Now you will have to.. <-- Nest reference
     } */
+
+    // reveal "USER NAME"
 
 
     // add stuff about browsercize research (mini breaks and health related stuff) in here.

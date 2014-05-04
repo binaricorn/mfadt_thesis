@@ -11,13 +11,14 @@ $(document).ready(function() {
     ctrack.init(pModel);
 
     var user = {
-        firstname: null,
-        lastname: null,
+        firstname: "Fei",
+        lastname: "Liu",
         schoolname: null,
         pictureUrl: null,
         jobtitle: backup_jobtitle,
         jobcompany: backup_jobcompany,
         standing: false,
+        buttonPressed: false,
         passInitSmilingTest: null,
         initSmilingScoreArray: [],
         initSmilingScore: null,
@@ -58,8 +59,6 @@ $(document).ready(function() {
     socket.on("userPresence", function(userPresence) {
           if (userPresence == "1") {
             haveUser();
-
-
           } else if (userPresence == "0") {
               waitingForUser();
           }
@@ -69,21 +68,21 @@ $(document).ready(function() {
 
         botSpeak(sc_dialogue[0]);
         setTimeout(function() {
-            loopPromo(count);
+           // loopPromo(count);
+            onLinkedInLoad();
+            onLinkedInAuth();           
         }, 500);
 
-       $('#submission_form').submit(function(e){
+     /*
+  $('#submission_form').submit(function(e){
            e.preventDefault();
            user.firstname = $('#form_firstName').val();
            user.lastname = $('#form_lastName').val();
            console.log(user.firstname + user.lastname);
-           //if(doLinkedIn == false) {
-             //       doLinkedIn = true;
-                    onLinkedInLoad();
-                    onLinkedInAuth();
-               // }
-           
+           onLinkedInLoad();
+           onLinkedInAuth();           
         });
+*/
 
         console.log("found user");
     }
@@ -102,7 +101,6 @@ $(document).ready(function() {
                     $(".promo .block").eq(count).addClass('slide').css('-webkit-transform', 'translateX(-100%)');
                     $(".promo .block").eq(count + 1).addClass('slide').css('-webkit-transform', 'translateX(0%)');
                 }
-
             }
             $(".promo .block").eq(count).on(transEnd, function(e) {
                 // on the last slide, autofocus the firstname field
@@ -140,27 +138,20 @@ $(document).ready(function() {
         loadVoices();
     };
 
-
-
-
-
-
     function checkInteraction(count) {
         switch(count) {
             case 0:
+
                 hide($('.promo'));
                 show($('.sidebar'));
                 show($('.dashboard-screen'));
-                show($('.fei_voice_visualizer'));
-
-                
 
 
                 for (i = 1; i < 12; i++) {
                     botSpeak(sc_dialogue[i]);
                 }
 
-                sc_dialogue[0].onend = function(event) {
+                sc_dialogue[1].onstart = function(event) {
                     $('.dashboard, .sidebar').removeClass('hide').addClass('show');
                     voice_visualizer();
 
@@ -171,7 +162,6 @@ $(document).ready(function() {
                 }
 
                 sc_dialogue[4].onend = function(event) {
-                   // resetAllUsers();
                     $('.block_emotion').removeClass('inactive').addClass('show');
                 }
 
@@ -223,8 +213,9 @@ $(document).ready(function() {
                 var initSmileArray = user.initSmilingScoreArray;
                 user.initSmilingScore = Math.max.apply(Math, initSmileArray);
                 user.initSmilingScore = user.initSmilingScore * 100;
+                user.initSmilingScore = Math.ceil(user.initSmilingScore * 10) / 10;
                 user.doubleInitSmilingScore = user.initSmilingScore * 2;
-                console.log(user.initSmilingScore + " double: " + user.initSmilingScore);
+                console.log(user.initSmilingScore + " double: " + user.doubleInitSmilingScore);
 
                 botSpeak(sc_dialogue[13]);
                 sc_dialogue[13].onstart = function() {
@@ -232,20 +223,57 @@ $(document).ready(function() {
                 }
                 break;
             case 5:
-                for (i = 14; i < sc_dialogue.length; i++) {
+                for (i = 14; i < 16; i++) {
                     botSpeak(sc_dialogue[i]);
+                }
+                
+                sc_dialogue[14].onstart = function() {
+                    $('.initSmilingScore').text(user.initSmilingScore);
+                    // the graph should be drawn so that the largest # is the the double, and the goal of the user is to get closer to that amount
                 }
 
                 sc_dialogue[14].onend = function() {
                     $('.block_fitness').removeClass('inactive').addClass('show');
                 }
-
-                // when the browsercize game starts
-                sc_dialogue[20].onstart = function() {
-                    $('.block_fitness').replaceWith('<img src="img/stretch-blur2.gif"/>');
+                
+                sc_dialogue[15].onstart = function() {
+                    checkInteraction(6);   
                 }
-
                 break;
+            case 6:
+                socket.on("userStanding", function(userLeftFoot, userRightFoot) {
+                    console.log(userLeftFoot);
+                        if(userLeftFoot > highVal && userRightFoot > highVal && user.standing == false) {
+                            user.standing = true;
+                            console.log("user is standing at the rihgt place");
+                            checkInteraction(7);
+                        }
+                    });
+                break;
+            case 7:
+                botSpeak(sc_dialogue[16]);
+                botSpeak(sc_dialogue[17]);
+                botSpeak(sc_dialogue[18]);
+                sc_dialogue[18].onstart = function() {
+                    $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif"/></span>');
+                }
+                botSpeak(sc_dialogue[19]);                
+                botSpeak(sc_dialogue[20]);
+                botSpeak(sc_dialogue[21]);
+                sc_dialogue[21].onend = function() {
+                    checkInteraction(8);
+                }
+            case 8:
+                socket.on("userButtonsPressed", function(userLeftButton) {
+                        console.log(userLeftButton);
+                        if(userLeftButton == 1 && user.buttonPressed == false) {
+                            user.buttonPressed = true;
+                            console.log("pressed a button! check for smile!");
+                        }
+                        
+                });
+                break;
+                
             }
     }
 
@@ -302,34 +330,41 @@ $(document).ready(function() {
       function displayPeopleSearch(peopleSearch) {
           var peopleSearchDiv = document.getElementById("peoplesearch");
           var members = peopleSearch.people.values;
-          console.log(members[member]);
+          if (members != null) {
+            
+            console.log(members[member]);
 
-          for (var member in members) {
+              for (var member in members) {
 
-              console.log(members[member].pictureUrl);
+                  console.log(members[member].pictureUrl);
 
-              if (members[member].positions._total != 0) {
-                  user.jobcompany = members[member].positions.values[0].company.name;
-                  user.jobtitle = members[member].positions.values[0].title;
+                  if (members[member].positions._total != 0) {
+                      user.jobcompany = members[member].positions.values[0].company.name;
+                      user.jobtitle = members[member].positions.values[0].title;
 
-              } else {
-                  console.log("no position data");
-                  user.jobcompany = backup_jobcompany;
-                  user.jobtitle = backup_jobtitle;
-              }
+                  } else {
+                      console.log("no position data");
+                      user.jobcompany = backup_jobcompany;
+                      user.jobtitle = backup_jobtitle;
+                  }
 
-              console.log(user.jobtitle);
+                  console.log(user.jobtitle);
 
 
-              if (members[member].pictureUrl != undefined) {
-                  user.pictureUrl = members[member].pictureUrl;
-              } else {
-                  user.pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
-              }
+                  if (members[member].pictureUrl != undefined) {
+                      user.pictureUrl = members[member].pictureUrl;
+                  } else {
+                      user.pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
+                  }
 
-              checkInteraction(0);
-
-            }
+                }
+          } else {
+                console.log("cannot find person on Linkedin");
+                user.jobcompany = backup_jobcompany;
+                user.jobtitle = backup_jobtitle; 
+          }
+          
+          checkInteraction(0);
     }
 
 
@@ -500,10 +535,12 @@ $(document).ready(function() {
         width = 400 - margin.left - margin.right,
         height = 100 - margin.top - margin.bottom;
     var barWidth = 30;
+    
     var formatPercent = d3.format(".0%");
     var x = d3.scale.linear().domain([0, ec.getEmotions().length]).range([margin.left, width + margin.left]);
     var y = d3.scale.linear().domain([0, 1]).range([0, height]);
     var svg = d3.select("#emotion_chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+
     svg.selectAll("rect").
     data(emotionData).
     enter().
@@ -582,25 +619,6 @@ $(document).ready(function() {
 
     function analyzeSmileInitialData(smileScore) {
         user.initSmilingScoreArray.push(smileScore);
-        /*
-if (user.initSmilingScore > 0.2 && user.passInitSmilingTest == false) {
-                user.passInitSmilingTest = true;
-                checkInteraction(4);
-        }
-*/
-
-        /*
-if (smileScore > 0.02 && smileScore < 0.60 && user.passInitSmilingTest == false) {
-            // use requestframeanimation here instead of increasing the count like that...
-            smiling1Level1Counter++;
-            console.log(smiling1Level1Counter);
-            if (smiling1Level1Counter > 245) { // smiling for 30 seconds
-               user.passInitSmilingTest = true;
-               user.initSmilingScore = smileScore;
-               checkInteraction(5);
-            }
-        }
-*/
 
     }
 
