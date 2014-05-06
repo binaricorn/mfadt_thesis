@@ -106,14 +106,14 @@ var s_dialogue = [
     // 14
     {
         scene: {
-            script: "That was a score of initSmilingScore. Eyem a little disappointed. I think you can do way better than that! Most people who apply for Taylor can at least get a doubleInitSmilingScore! Thats okay.",
+            script: "That was a score of initSmilingScore. Eyem a little disappointed. I think you can do way better than that! You should really be aiming for at least a doubleInitSmilingScore!",
             changeMood: "middle"
         }
     },
     // 15
     {
         scene: {
-            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Put your feet into the taylor fitness assessment arena to learn more about the game!",
+            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Put your feet into the taylor fitness assessment arena to take the first step towards healthiness!",
             changeMood: "middle"
         }
     },
@@ -127,7 +127,7 @@ var s_dialogue = [
     // 17
     {
         scene: {
-            script: "Sorry ive had a very long day and the cafeteria is always out of cat poop coffee. I'm so glad youve decided to stay after all! I had a feeling you would.",
+            script: "Thank god. I'm so glad youve decided to stay after all! I had a feeling you would. Eyem so Sorry about earlier, ive had a very long day and the cafeteria is always out of cat poop coffee.",
             changeMood: "middle"
         }
     },
@@ -141,7 +141,7 @@ var s_dialogue = [
     // 19
     {
         scene: {
-            script: "The goal of the game is to try do as many stretches as you can under one minute. They arent just your lazy, average stretches though.",
+            script: "The goal of the game is to try do as many toe touching stretches as you can under one minute. They arent just your lazy, average stretches though.",
             changeMood: "middle"
         }
     },

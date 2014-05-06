@@ -19,9 +19,10 @@ $(document).ready(function() {
         jobcompany: backup_jobcompany,
         standing: false,
         buttonPressed: false,
-        passInitSmilingTest: null,
+        passInitSmilingTest: false,
         initSmilingScoreArray: [],
         initSmilingScore: null,
+        globalSmileScore: null,
         doubleInitSmilingScore: null,
         getUserPulse: false,
         BPM: null
@@ -29,13 +30,15 @@ $(document).ready(function() {
 
     var doLinkedIn = false;
 
-    var highVal = 800;
+    var highVal = 0;
 
     var audioElem = $('#audioplay').get(0);
     if (audioElem) audioElem.volume = 0.1;
 
     var sc_dialogue = [];
     var sc_promo = [];
+    
+    var completedStretches = 0;
 
     var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
 
@@ -49,6 +52,8 @@ $(document).ready(function() {
 
     /* Animation between screens */
     var b = $('.promo .block').length;
+    
+    var count = -1;
 
     for (i = 0; i < b; i++) {
         $(".promo .block").eq(i).css('-webkit-transform', 'translateX(' + i * 100 + '%)');
@@ -68,13 +73,13 @@ $(document).ready(function() {
 
         botSpeak(sc_dialogue[0]);
         setTimeout(function() {
-           // loopPromo(count);
-            onLinkedInLoad();
-            onLinkedInAuth();           
+/*             loopPromo(count);   */
+           onLinkedInLoad();
+           onLinkedInAuth();         
         }, 500);
 
-     /*
-  $('#submission_form').submit(function(e){
+       /*
+$('#submission_form').submit(function(e){
            e.preventDefault();
            user.firstname = $('#form_firstName').val();
            user.lastname = $('#form_lastName').val();
@@ -117,8 +122,7 @@ $(document).ready(function() {
 
     }
 
-    var b = $('.block').length;
-    var count = -1;
+   
 
     //////////////////////////////////////////////////////////////// Voice
 
@@ -146,7 +150,6 @@ $(document).ready(function() {
                 show($('.sidebar'));
                 show($('.dashboard-screen'));
 
-
                 for (i = 1; i < 12; i++) {
                     botSpeak(sc_dialogue[i]);
                 }
@@ -162,24 +165,25 @@ $(document).ready(function() {
                 }
 
                 sc_dialogue[4].onend = function(event) {
-                    $('.block_emotion').removeClass('inactive').addClass('show');
+                    $('.sidebar ul li').eq(1).removeClass('highlight');
+                    $('.sidebar ul li').eq(2).addClass('highlight');
+                    $('.block_inquiry, .block_fitness, .block_emotion').removeClass('inactive').addClass('show');
                 }
 
                 sc_dialogue[6].onstart = function(event) {
-                    $('.block_emotion').removeClass('show').addClass('inactive');
-                  //  $('.dashboard_bottom, .sidebar, .profile').removeClass('show').addClass('hide');
+                    $('.block_inquiry, .block_fitness, .block_emotion').removeClass('show').addClass('inactive');
                 }
 
                 sc_dialogue[11].onstart = function(event) {
                     $('.block_inquiry').removeClass('inactive').addClass('show');
-                  //  $('.dashboard_bottom, .sidebar, .profile').removeClass('hide').addClass('show');
-                   checkInteraction(1);
+                    checkInteraction(1);
                 }
+                
+
                 break;
             case 1:
                 socket.on("userHeartRate", function(BPM) {
                     if (BPM == "\r") {
-                        console.log("!= BPM reading");
                     } else {
                         BPM = BPM.replace("B", "");
 
@@ -209,21 +213,14 @@ $(document).ready(function() {
                 }, 10000);
                 break;
             case 4:
-                console.log(user.initSmilingScoreArray);
-                var initSmileArray = user.initSmilingScoreArray;
-                user.initSmilingScore = Math.max.apply(Math, initSmileArray);
-                user.initSmilingScore = user.initSmilingScore * 100;
-                user.initSmilingScore = Math.ceil(user.initSmilingScore * 10) / 10;
-                user.doubleInitSmilingScore = user.initSmilingScore * 2;
-                console.log(user.initSmilingScore + " double: " + user.doubleInitSmilingScore);
-
+                doSmileMath(); // passInitSmilingTest = true
                 botSpeak(sc_dialogue[13]);
                 sc_dialogue[13].onstart = function() {
                     checkInteraction(5);
                 }
                 break;
             case 5:
-                for (i = 14; i < 16; i++) {
+                for (i = 14; i < 17; i++) {
                     botSpeak(sc_dialogue[i]);
                 }
                 
@@ -236,27 +233,33 @@ $(document).ready(function() {
                     $('.block_fitness').removeClass('inactive').addClass('show');
                 }
                 
-                sc_dialogue[15].onstart = function() {
+                sc_dialogue[15].onend = function() {
+                    $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif"/></span>');
+                }
+                
+                sc_dialogue[16].onstart = function() {
                     checkInteraction(6);   
                 }
                 break;
             case 6:
                 socket.on("userStanding", function(userLeftFoot, userRightFoot) {
-                    console.log(userLeftFoot);
-                        if(userLeftFoot > highVal && userRightFoot > highVal && user.standing == false) {
-                            user.standing = true;
-                            console.log("user is standing at the rihgt place");
-                            checkInteraction(7);
-                        }
-                    });
+                    if(userLeftFoot > highVal && userRightFoot > highVal && user.standing == false) {
+                        user.standing = true;
+                        console.log("user is standing at the rihgt place");
+                        checkInteraction(7);
+                    }
+                });
                 break;
             case 7:
-                botSpeak(sc_dialogue[16]);
+                $('.sidebar ul li').eq(2).removeClass('highlight');
+                $('.sidebar ul li').eq(3).addClass('highlight');
+                hide($('.block_inquiry'));
+                hide($('.block_fitness'));
+                show($('.block_browsercize'));
+                $('.block_emotion').css('position','absolute').css('top','2%').css('right','2%');
+                
                 botSpeak(sc_dialogue[17]);
                 botSpeak(sc_dialogue[18]);
-                sc_dialogue[18].onstart = function() {
-                    $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif"/></span>');
-                }
                 botSpeak(sc_dialogue[19]);                
                 botSpeak(sc_dialogue[20]);
                 botSpeak(sc_dialogue[21]);
@@ -264,17 +267,44 @@ $(document).ready(function() {
                     checkInteraction(8);
                 }
             case 8:
+                /*
+enableCamera();
+                startVideoTracking();
+*/
+                $('.block_emotion').removeClass('inactive').addClass('show');
                 socket.on("userButtonsPressed", function(userLeftButton) {
-                        console.log(userLeftButton);
-                        if(userLeftButton == 1 && user.buttonPressed == false) {
-                            user.buttonPressed = true;
-                            console.log("pressed a button! check for smile!");
-                        }
+                    if(userLeftButton == 1) {
+                        console.log("Pressed button");
+                        user.buttonPressed = true;
                         
-                });
+                }
+
+                    if(user.buttonPressed == true) {
+                        waitingForButtonPressSmile();
+                    }   
+                    
+                });             
                 break;
                 
             }
+    }
+    
+    function waitingForButtonPressSmile() {
+        if (user.globalSmileScore > 0.3) {
+            user.buttonPressed = false;   
+            completedStretches++;
+            
+        }
+        console.log("you've done " + completedStretches + " stretches yay!");
+    }
+    
+    function doSmileMath() {
+        var initSmileArray = user.initSmilingScoreArray;
+        user.initSmilingScore = Math.max.apply(Math, initSmileArray);
+        user.initSmilingScore = user.initSmilingScore * 100;
+        user.initSmilingScore = Math.ceil(user.initSmilingScore * 10) / 10;
+        user.doubleInitSmilingScore = user.initSmilingScore * 2;
+        console.log(user.initSmilingScore + " double: " + user.doubleInitSmilingScore);
     }
 
     function displayUser() {
@@ -299,8 +329,6 @@ $(document).ready(function() {
             return voice.name == "Google UK English Female";
         })[0];
 
-        console.log(user.jobtitle);
-
         str.text = str.text.replace(/userfirstname/g, user.firstname);
         str.text = str.text.replace(/userlastname/g, user.lastname);
         str.text = str.text.replace(/jobtitle/g, user.jobtitle);
@@ -320,7 +348,6 @@ $(document).ready(function() {
           IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "pictureUrl", "educations").params({
               "first-name": user.firstname,
               "last-name": user.lastname,
-              //"school-name": user.schoolname,
               "picture-url": "",
               "count" : 1
           }).result(displayPeopleSearch).error(displayPeopleSearchErrors);
@@ -332,11 +359,8 @@ $(document).ready(function() {
           var members = peopleSearch.people.values;
           if (members != null) {
             
-            console.log(members[member]);
 
               for (var member in members) {
-
-                  console.log(members[member].pictureUrl);
 
                   if (members[member].positions._total != 0) {
                       user.jobcompany = members[member].positions.values[0].company.name;
@@ -347,8 +371,6 @@ $(document).ready(function() {
                       user.jobcompany = backup_jobcompany;
                       user.jobtitle = backup_jobtitle;
                   }
-
-                  console.log(user.jobtitle);
 
 
                   if (members[member].pictureUrl != undefined) {
@@ -619,6 +641,7 @@ $(document).ready(function() {
 
     function analyzeSmileInitialData(smileScore) {
         user.initSmilingScoreArray.push(smileScore);
+        user.globalSmileScore = smileScore;
 
     }
 
