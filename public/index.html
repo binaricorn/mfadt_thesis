@@ -78,11 +78,12 @@
             </ul>
         </div>
 
-        <section class="option-hide"><select name="voice" id="voice"></select> <!--
-<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
-                   <source src="audio/yacht2.m4a" />  
-                </audio> 
---></section>
+        <section class="option-hide">
+            <select name="voice" id="voice"></select> 
+            <audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
+                <source src="audio/yacht2.m4a" />  
+            </audio> 
+        </section>
         <!-- <section expiration date> -->
 
         <section class="dashboard-screen dashboard hide">
@@ -98,36 +99,61 @@
                 <div class="clear"></div>
             </section>
 
+            <div class="video_container_game">
+                <video id="videoel_game" width="400" height="300" preload="auto" loop></video> <canvas id="overlay_game" width="400" height="300"></canvas>
+                <div class="emotion_graph_game"></div>
+                       <!--
+ <div id="emotion_container">
+                            <div id='emotion_chart'></div>
+                        </div>
+-->
+                <div id="controls" style="display:none">
+                    <input class="smile_btn" type="button" value="wait, loading video" disabled="disabled" id="startbutton">
+                </div>
+            </div>
+                    
             <section class="dashboard_bottom">
                 <article class="block_browsercize hide">
-                    <div class="super">Super</div>
-                    <div class="mediocre">Mediocre</div>
-                    <div class="subpar">Sub-par</div>
-                    <div class="browsercize_gif"><img src="img/stretch-blur2.gif"/></div>
-                    <div class="block"></div>
+                    <div id="countdown"></div>
+                    
+                    
+                    <div class="browsercize_container">
+                        <div class="super">Super</div>
+                        <div class="mediocre">Mediocre</div>
+                        <div class="subpar">Sub-par</div>
+                        <div class="browsercize_score_container">
+                            <img class="browsercize_gif" src="img/stretch-blur2.gif"/>
+                            <div class="browsercize_score">0</div>
+                        </div>
+
+                    </div>
                     
                 </article>
                 <article class="block_fitness inactive">
                     <h2>Fitness</h2>
                     <p class="block"><span class="icon icon-run-borderless centered"></span></p>
+                    <div class="fitness_graph"></div>
                 </article>
                 <article class="block_emotion inactive">
                     <h2>Emotion</h2>
-                    <p class="block"><span class="icon icon-smile centered"></span><br><span class="initSmilingScore"></span></p>
+                    <p class="block"><span class="icon icon-smile centered"></span><br>
+                    <div class="emotion_graph"></div>
+                    <span class="initSmilingScore"></span></p>
                     <div class="video_container">
-                        <video id="videoel" width="400" height="300" preload="auto" loop></video> <canvas id="overlay" width="400" height="300"></canvas>
-                        <div id="emotion_container">
-                            <div id='emotion_chart'></div>
-                        </div>
-                        <div id="controls">
+                        <video id="videoel" width="400" height="300" preload="auto" loop></video> <canvas id="overlay" width="400" height="300"></canvas>                        
+                        <div id="controls" style="display:none">
                             <input class="smile_btn" type="button" value="wait, loading video" disabled="disabled" id="startbutton">
                         </div>
                     </div>
-                    
-                    </article>
+                    <div id="emotion_container">
+                        <div id='emotion_chart'></div>
+                    </div>                 
+    
+                </article>
                 <article class="block_inquiry inactive">
                     <h2>Inquiry</h2>
-                    <p class="block"><span class="icon icon-heart-borderless centered"></span><br><span class="resting_bpm"></span></p>                    
+                    <p class="block"><span class="icon icon-heart-borderless centered"></span><br><span class="resting_bpm"></span></p> 
+                    <div class="inquiry_graph"></div>                   
                 </article>
 
                 <div class="clear"></div>

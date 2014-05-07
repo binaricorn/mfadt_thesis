@@ -272,45 +272,82 @@ h2 {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100% !important;
+    width: 96% !important;
+    margin: 2%;
+    background: #fb7466;
     height: 55%;
+}
+
+.browsercize_container {
+    padding: 2%;
+    background: #fb7466;
+    height: 80%;
+    position: relative;
+}
+
+.browsercize_score_container {
+    width: 117px;
+    height: 10%;
+    position: absolute;
+    bottom: 0;
+    left: 48%;
+    -webkit-transition: height 0.1s;
+}
+
+.browsercize_score {
+    width: 100%;
+    height: 62%;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    background-color: #ce321e;
+    font-size: 3em;
+    text-align: center;
+}
+
+#countdown {
+    top: 0;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    margin-left: -25%;
+    position: absolute;
+    z-index: 100000;
+}
+
+img.browsercize_gif  {
+    width: 117px; 
+    height: 162px;       
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .super {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 3%;
+    left: 3%;
+    width: 96%;
     border-bottom: 1px solid #fff;
 }
 
 .mediocre {
     position: absolute;
     top: 42.5%;
-    left: 0;
-    width: 100%;
+    left: 3%;
+    width: 96%;
     border-bottom: 1px solid #fff;
 }
 
 .subpar {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    bottom: 3%;
+    left: 3%;
+    width: 96%;
     border-bottom: 1px solid #fff;
 }
 
-.browsercize_gif {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 117px;
-    height: 120px;    
-}
 
-.browsercize_gif:img {
-    width: 117px;    
-}
 
 .block {
 	text-align:center;
@@ -381,10 +418,23 @@ input[type="submit"] {
 }
 
 #emotion_container {
-	width:600px;
-	position: absolute;
-	top: 20px;
+    position: absolute;
+    top: 32%;
+    -webkit-transform: rotate(90deg);
+    margin-left: -27px;
+   
 }
+
+.emotion_graph, .emotion_graph_game, .fitness_graph, .inquiry_graph {
+    width: 0px;
+    height: 30px;
+    background-color: #ce321e;
+    position: absolute;
+    bottom: 2%; 
+    -webkit-transition: width 0.1s;
+}
+
+
 
 #emotion_icons {
 	height:50px;
@@ -399,16 +449,17 @@ input[type="submit"] {
 	margin-left:35px;
 }
 
-#emotion_chart,#emotion_icons {
+#emotion_chart {
 	margin:0 auto;
-	width:400px;
-}
-
-#icon1,#icon2,#icon3,#icon4,#icon5,#icon6 {
-	visibility:hidden;
 }
 
 .video_container {
     position: relative;
     overflow: hidden;
+}
+
+.video_container_game {
+    position: relative;
+    overflow: hidden;
+    display: none;
 }

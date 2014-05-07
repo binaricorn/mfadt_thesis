@@ -1,15 +1,12 @@
 $(document).ready(function() {
-
     var vid = document.getElementById('videoel');
     var overlay = document.getElementById('overlay');
     var overlayCC = overlay.getContext('2d'); //check and set up video/webcam
-
     vid.addEventListener('canplay', enablestart, false); // setup of emotion detection
     var ctrack = new clm.tracker({
         useWebGL: true
     });
     ctrack.init(pModel);
-
     var user = {
         firstname: "Fei",
         lastname: "Liu",
@@ -27,58 +24,41 @@ $(document).ready(function() {
         getUserPulse: false,
         BPM: null
     }
-
     var doLinkedIn = false;
-
     var highVal = 0;
-
     var audioElem = $('#audioplay').get(0);
-    if (audioElem) audioElem.volume = 0.1;
-
+    if (audioElem) audioElem.volume = 0.2;
     var sc_dialogue = [];
     var sc_promo = [];
-    
-    var completedStretches = 0;
-
+    var completedStretches = 1;
     var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
-
     for (i = 0; i < s_dialogue.length; i++) {
         sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
     }
-
     for (i = 0; i < s_promo.length; i++) {
         sc_promo[i] = new SpeechSynthesisUtterance(s_promo[i].scene.script);
-    }
-
-    /* Animation between screens */
+    } /* Animation between screens */
     var b = $('.promo .block').length;
-    
     var count = -1;
-
     for (i = 0; i < b; i++) {
         $(".promo .block").eq(i).css('-webkit-transform', 'translateX(' + i * 100 + '%)');
     }
-
     var socket = io.connect("/");
-
     socket.on("userPresence", function(userPresence) {
-          if (userPresence == "1") {
+        if (userPresence == "1") {
             haveUser();
-          } else if (userPresence == "0") {
-              waitingForUser();
-          }
-      });
+        } else if (userPresence == "0") {
+            waitingForUser();
+        }
+    });
 
     function haveUser() {
-
-        botSpeak(sc_dialogue[0]);
-        setTimeout(function() {
-/*             loopPromo(count);   */
-           onLinkedInLoad();
-           onLinkedInAuth();         
+        //botSpeak(sc_dialogue[0]);
+        setTimeout(function() { /*             loopPromo(count);   */
+            onLinkedInLoad();
+            onLinkedInAuth();
         }, 500);
-
-       /*
+/*
 $('#submission_form').submit(function(e){
            e.preventDefault();
            user.firstname = $('#form_firstName').val();
@@ -88,7 +68,6 @@ $('#submission_form').submit(function(e){
            onLinkedInAuth();           
         });
 */
-
         console.log("found user");
     }
 
@@ -96,36 +75,27 @@ $('#submission_form').submit(function(e){
         console.log("waiting");
     }
 
-
     function loopPromo(count) {
-        if (count < (s_promo.length)-1) {
+        if (count < (s_promo.length) - 1) {
             count++;
             botSpeak(sc_promo[count]);
             sc_promo[count].onend = function(event) {
-                if (count < (s_promo.length)-1) {
+                if (count < (s_promo.length) - 1) {
                     $(".promo .block").eq(count).addClass('slide').css('-webkit-transform', 'translateX(-100%)');
                     $(".promo .block").eq(count + 1).addClass('slide').css('-webkit-transform', 'translateX(0%)');
                 }
             }
             $(".promo .block").eq(count).on(transEnd, function(e) {
                 // on the last slide, autofocus the firstname field
-                if(count == 5) {
+                if (count == 5) {
                     $('input#form_firstName').replaceWith('<input type="text" id="form_firstName" placeholder="First name" value="" autofocus/>');
-
                 }
                 $(".promo .block").eq(count).off(transEnd);
-                    loopPromo(count);
-
+                loopPromo(count);
             });
         }
-
-
     }
-
-   
-
     //////////////////////////////////////////////////////////////// Voice
-
     var voiceSelect = document.getElementById('voice');
     var audioElem = $('#audioplay').get(0);
 
@@ -143,161 +113,186 @@ $('#submission_form').submit(function(e){
     };
 
     function checkInteraction(count) {
-        switch(count) {
-            case 0:
-
-                hide($('.promo'));
-                show($('.sidebar'));
-                show($('.dashboard-screen'));
-
-                for (i = 1; i < 12; i++) {
-                    botSpeak(sc_dialogue[i]);
-                }
-
-                sc_dialogue[1].onstart = function(event) {
-                    $('.dashboard, .sidebar').removeClass('hide').addClass('show');
-                    voice_visualizer();
-
-                }
-
-                sc_dialogue[3].onend = function(event) {
-                    displayUser();
-                }
-
-                sc_dialogue[4].onend = function(event) {
-                    $('.sidebar ul li').eq(1).removeClass('highlight');
-                    $('.sidebar ul li').eq(2).addClass('highlight');
-                    $('.block_inquiry, .block_fitness, .block_emotion').removeClass('inactive').addClass('show');
-                }
-
-                sc_dialogue[6].onstart = function(event) {
-                    $('.block_inquiry, .block_fitness, .block_emotion').removeClass('show').addClass('inactive');
-                }
-
-                sc_dialogue[11].onstart = function(event) {
-                    $('.block_inquiry').removeClass('inactive').addClass('show');
-                    checkInteraction(1);
-                }
-                
-
-                break;
-            case 1:
-                socket.on("userHeartRate", function(BPM) {
-                    if (BPM == "\r") {
-                    } else {
-                        BPM = BPM.replace("B", "");
-
-                            if(BPM > 50 && BPM < 105 && user.getUserPulse == false) {
-                                user.getUserPulse = true;
-                                console.log("use this BPM: " + BPM);
-                                user.BPM = BPM;
-                                checkInteraction(2);
-                            }
-                    }
-
-                });
-                break;
-            case 2:
-                $('.block_emotion').removeClass('inactive').addClass('show');
-                botSpeak(sc_dialogue[12]);
-                sc_dialogue[12].onstart = function() {
-                    enableCamera();
-                    checkInteraction(3);
-                }
-                $('.resting_bpm').text('Resting BPM: ' + user.BPM);
-                break;
-            case 3:
-                startVideoTracking();
-                setTimeout(function() {
-                    checkInteraction(4);
-                }, 10000);
-                break;
-            case 4:
-                doSmileMath(); // passInitSmilingTest = true
-                botSpeak(sc_dialogue[13]);
-                sc_dialogue[13].onstart = function() {
-                    checkInteraction(5);
-                }
-                break;
-            case 5:
-                for (i = 14; i < 17; i++) {
-                    botSpeak(sc_dialogue[i]);
-                }
-                
-                sc_dialogue[14].onstart = function() {
-                    $('.initSmilingScore').text(user.initSmilingScore);
-                    // the graph should be drawn so that the largest # is the the double, and the goal of the user is to get closer to that amount
-                }
-
-                sc_dialogue[14].onend = function() {
-                    $('.block_fitness').removeClass('inactive').addClass('show');
-                }
-                
-                sc_dialogue[15].onend = function() {
-                    $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif"/></span>');
-                }
-                
-                sc_dialogue[16].onstart = function() {
-                    checkInteraction(6);   
-                }
-                break;
-            case 6:
-                socket.on("userStanding", function(userLeftFoot, userRightFoot) {
-                    if(userLeftFoot > highVal && userRightFoot > highVal && user.standing == false) {
-                        user.standing = true;
-                        console.log("user is standing at the rihgt place");
-                        checkInteraction(7);
-                    }
-                });
-                break;
-            case 7:
-                $('.sidebar ul li').eq(2).removeClass('highlight');
-                $('.sidebar ul li').eq(3).addClass('highlight');
-                hide($('.block_inquiry'));
-                hide($('.block_fitness'));
-                show($('.block_browsercize'));
-                $('.block_emotion').css('position','absolute').css('top','2%').css('right','2%');
-                
-                botSpeak(sc_dialogue[17]);
-                botSpeak(sc_dialogue[18]);
-                botSpeak(sc_dialogue[19]);                
-                botSpeak(sc_dialogue[20]);
-                botSpeak(sc_dialogue[21]);
-                sc_dialogue[21].onend = function() {
-                    checkInteraction(8);
-                }
-            case 8:
-                /*
-enableCamera();
-                startVideoTracking();
-*/
-                $('.block_emotion').removeClass('inactive').addClass('show');
-                socket.on("userButtonsPressed", function(userLeftButton) {
-                    if(userLeftButton == 1) {
-                        console.log("Pressed button");
-                        user.buttonPressed = true;
-                        
-                }
-
-                    if(user.buttonPressed == true) {
-                        waitingForButtonPressSmile();
-                    }   
-                    
-                });             
-                break;
-                
+        switch (count) {
+        case 0:
+            hide($('.promo'));
+            show($('.sidebar'));
+            show($('.dashboard-screen'));
+            /*
+for (i = 1; i < 12; i++) {
+                botSpeak(sc_dialogue[i]);
             }
+            sc_dialogue[1].onstart = function(event) {
+                $('.dashboard, .sidebar').removeClass('hide').addClass('show');
+                voice_visualizer();
+            }
+            sc_dialogue[3].onend = function(event) {
+                displayUser();
+            }
+            sc_dialogue[4].onend = function(event) {
+                $('.sidebar ul li').eq(1).removeClass('highlight');
+                $('.sidebar ul li').eq(2).addClass('highlight');
+                $('.block_inquiry, .block_fitness, .block_emotion').removeClass('inactive').addClass('show');
+            }
+            sc_dialogue[6].onstart = function(event) {
+                $('.block_inquiry, .block_fitness, .block_emotion').removeClass('show').addClass('inactive');
+            }
+            sc_dialogue[11].onstart = function(event) {
+                $('.block_inquiry').removeClass('inactive').addClass('show');
+                checkInteraction(2);
+            }
+*/
+            checkInteraction(3);
+            break;
+        case 1:
+            socket.on("userHeartRate", function(BPM) {
+                if (BPM == "\r") {} else {
+                    BPM = BPM.replace("B", "");
+                    if (BPM > 50 && BPM < 105 && user.getUserPulse == false) {
+                        user.getUserPulse = true;
+                        console.log("use this BPM: " + BPM);
+                        user.BPM = BPM;
+                        checkInteraction(2);
+                    }
+                }
+            });
+            break;
+        case 2:
+            $('.block_emotion').removeClass('inactive').addClass('show');
+            botSpeak(sc_dialogue[12]);
+            sc_dialogue[12].onstart = function() {
+                enableCamera();
+                checkInteraction(3);
+            }
+            $('.resting_bpm').text('Resting BPM: ' + user.BPM);
+            break;
+        case 3:
+            enableCamera();
+            hide($('.icon-smile'));
+            startVideoTracking();
+            setTimeout(function() {
+                checkInteraction(4);
+            }, 5000);
+            break;
+        case 4:
+            
+            botSpeak(sc_dialogue[13]);
+            sc_dialogue[13].onstart = function() {
+                doSmileMath(); // passInitSmilingTest = true
+                hide($('#overlay'));
+                hide($('#emotion_container'));
+                checkInteraction(5);
+            }
+            break;
+        case 5:
+            for (i = 14; i < 17; i++) {
+                botSpeak(sc_dialogue[i]);
+            }
+            sc_dialogue[14].onstart = function() {
+                
+                // the graph should be drawn so that the largest # is the the double, and the goal of the user is to get closer to that amount
+            }
+            sc_dialogue[14].onend = function() {
+                $('.block_fitness').removeClass('inactive').addClass('show');
+                hide($('.overlay'));
+            }
+            sc_dialogue[15].onstart = function() {
+                $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif"/></span>');
+            }
+            sc_dialogue[16].onend = function() {
+                checkInteraction(6);
+            }
+            break;
+        case 6:
+            socket.on("userStanding", function(userLeftFoot, userRightFoot) {
+                if (userLeftFoot > highVal && userRightFoot > highVal && user.standing == false) {
+                    user.standing = true;
+                    console.log("user is standing at the rihgt place");
+                    checkInteraction(7);
+                }
+            });
+            break;
+        case 7:
+            
+            $('.sidebar ul li').eq(1).removeClass('highlight');
+            $('.sidebar ul li').eq(2).removeClass('highlight');
+            $('.sidebar ul li').eq(3).addClass('highlight');
+            hide($('.block_inquiry'));
+            hide($('.block_fitness'));
+            show($('#overlay'));
+            $('.block_emotion').css('position','static').removeClass('inactive').addClass('show');
+            $('.initSmilingScore, .block_emotion h2').css('display','none');
+            $('.block_emotion').css('background','none');
+            $('.video_container').css({
+                'position' : 'absolute',
+                'overflow' : 'hidden',
+                'top' : '2%',
+                'right' : '2%',
+                'width' : '350px'
+                
+            });
+            
+            show($('#emotion_container'));
+            $('#emotion_container').css({
+                'position' : 'absolute',
+                'top' : '5.4%',
+                'right': '0.5%' 
+            });
+            show($('.block_browsercize'));
+            botSpeak(sc_dialogue[17]);
+            botSpeak(sc_dialogue[18]);
+            botSpeak(sc_dialogue[19]);
+            botSpeak(sc_dialogue[20]);
+            botSpeak(sc_dialogue[21]);
+            sc_dialogue[21].onend = function() {
+                checkInteraction(8);
+                countdown();
+            }
+        case 8:
+            
+            socket.on("userButtonsPressed", function(userLeftButton) {
+                if (userLeftButton == 1) {
+                    console.log("Pressed button");
+                    user.buttonPressed = true;
+                }
+                if (user.buttonPressed == true) {
+                    waitingForButtonPressSmile();
+                }
+            });
+            break;
+        }
     }
-    
+
     function waitingForButtonPressSmile() {
         if (user.globalSmileScore > 0.3) {
-            user.buttonPressed = false;   
+            user.buttonPressed = false;
             completedStretches++;
-            
+
         }
-        console.log("you've done " + completedStretches + " stretches yay!");
+        $('.browsercize_score').text(completedStretches);
+        $('.browsercize_score_container').css('height', (completedStretches*5) + '%');
+//        console.log("you've done " + completedStretches + " stretches yay!");
+        
     }
     
+    function countdown() {
+        var seconds = 61;
+        
+        function tick() {
+            seconds--;
+            $('#countdown').text("00:" + seconds);
+/*             counter.innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(seconds); */
+            if( seconds > 0 ) {
+                setTimeout(tick, 1000);
+            } else {
+                /* alert("Game over"); */
+            }
+        }
+        tick();
+    }
+
+
+
     function doSmileMath() {
         var initSmileArray = user.initSmilingScoreArray;
         user.initSmilingScore = Math.max.apply(Math, initSmileArray);
@@ -305,30 +300,31 @@ enableCamera();
         user.initSmilingScore = Math.ceil(user.initSmilingScore * 10) / 10;
         user.doubleInitSmilingScore = user.initSmilingScore * 2;
         console.log(user.initSmilingScore + " double: " + user.doubleInitSmilingScore);
+        $('.emotion_graph').css('width', user.initSmilingScore + 'px');
+        $('.initSmilingScore').text(user.initSmilingScore);
+        /* $('.emotion_graph').css('width', user.initSmilingScore*100 + 'px'); */
+        
+       // console.log( "($('.block_emotion').width() / 100) * " + user.initSmilingScore + " = " + ($('.block_emotion').width() / 100) * user.initSmilingScore);
     }
 
     function displayUser() {
-
         $('.profile_photo').html('<img src="' + user.pictureUrl + '"/>');
         $('.profile_title .name').html(user.firstname + " " + user.lastname);
         $('.profile_title .title').text(user.jobtitle + " at " + user.jobcompany);
-
     }
 
     function hide(elem) {
-        $(elem).removeClass('show').addClass('hide').css('display','none');
+        $(elem).removeClass('show').addClass('hide').css('display', 'none');
     }
 
     function show(elem) {
-        $(elem).removeClass('hide').addClass('show').css('display','block');;
+        $(elem).removeClass('hide').addClass('show').css('display', 'block');;
     }
 
     function botSpeak(str) {
-
         str.voice = speechSynthesis.getVoices().filter(function(voice) {
             return voice.name == "Google UK English Female";
         })[0];
-
         str.text = str.text.replace(/userfirstname/g, user.firstname);
         str.text = str.text.replace(/userlastname/g, user.lastname);
         str.text = str.text.replace(/jobtitle/g, user.jobtitle);
@@ -338,74 +334,61 @@ enableCamera();
         str.text = str.text.replace(/userBPM/g, user.BPM);
         speechSynthesis.speak(str);
     }
-
     //////////////////////////////////////////////////////////////// Linkedin API
 
-      function onLinkedInLoad() {
-          IN.Event.on(IN, "auth", onLinkedInAuth);
-      }
-      function onLinkedInAuth() {
-          IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "pictureUrl", "educations").params({
-              "first-name": user.firstname,
-              "last-name": user.lastname,
-              "picture-url": "",
-              "count" : 1
-          }).result(displayPeopleSearch).error(displayPeopleSearchErrors);
-
-
-      }
-      function displayPeopleSearch(peopleSearch) {
-          var peopleSearchDiv = document.getElementById("peoplesearch");
-          var members = peopleSearch.people.values;
-          if (members != null) {
-            
-
-              for (var member in members) {
-
-                  if (members[member].positions._total != 0) {
-                      user.jobcompany = members[member].positions.values[0].company.name;
-                      user.jobtitle = members[member].positions.values[0].title;
-
-                  } else {
-                      console.log("no position data");
-                      user.jobcompany = backup_jobcompany;
-                      user.jobtitle = backup_jobtitle;
-                  }
-
-
-                  if (members[member].pictureUrl != undefined) {
-                      user.pictureUrl = members[member].pictureUrl;
-                  } else {
-                      user.pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
-                  }
-
-                }
-          } else {
-                console.log("cannot find person on Linkedin");
-                user.jobcompany = backup_jobcompany;
-                user.jobtitle = backup_jobtitle; 
-          }
-          
-          checkInteraction(0);
+    function onLinkedInLoad() {
+        IN.Event.on(IN, "auth", onLinkedInAuth);
     }
 
+    function onLinkedInAuth() {
+        IN.API.PeopleSearch().fields("firstName", "lastName", "positions", "pictureUrl", "educations").params({
+            "first-name": user.firstname,
+            "last-name": user.lastname,
+            "picture-url": "",
+            "count": 1
+        }).result(displayPeopleSearch).error(displayPeopleSearchErrors);
+    }
+
+    function displayPeopleSearch(peopleSearch) {
+        var peopleSearchDiv = document.getElementById("peoplesearch");
+        var members = peopleSearch.people.values;
+        if (members != null) {
+            for (var member in members) {
+                if (members[member].positions._total != 0) {
+                    user.jobcompany = members[member].positions.values[0].company.name;
+                    user.jobtitle = members[member].positions.values[0].title;
+                } else {
+                    console.log("no position data");
+                    user.jobcompany = backup_jobcompany;
+                    user.jobtitle = backup_jobtitle;
+                }
+                if (members[member].pictureUrl != undefined) {
+                    user.pictureUrl = members[member].pictureUrl;
+                } else {
+                    user.pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
+                }
+            }
+        } else {
+            console.log("cannot find person on Linkedin");
+            user.jobcompany = backup_jobcompany;
+            user.jobtitle = backup_jobtitle;
+        }
+        checkInteraction(0);
+    }
 
     function displayPeopleSearchErrors(error) {
         console.log("error, let's move on");
-    }
-
-
-
-    /* Rainbow Worm via http://mbostock.github.io/protovis/ex/segmented.html */
+    } /* Rainbow Worm via http://mbostock.github.io/protovis/ex/segmented.html */
 
     function voice_visualizer() {
         var margin = {
-        top: 100,
-        right: 100,
-        bottom: 100,
-        left: 100
+            top: 100,
+            right: 100,
+            bottom: 100,
+            left: 100
         },
-            width = 700 - margin.left - margin.right, // 600 - 200
+            width = 700 - margin.left - margin.right,
+            // 600 - 200
             height = 200 - margin.top - margin.bottom; // 200 - 200
         var x = d3.scale.linear().domain([0, 5.9]).range([0, width]);
         var y = d3.scale.linear().domain([-1, 1]).range([height, 0]);
@@ -421,8 +404,7 @@ enableCamera();
         var path = svg.selectAll("path").data(quad(points)).enter().append("path").style("fill", function(d) {
             // control mood by changing color and speed
             return d3.hsl(z(d[1].value), 1, 0.8);
-        })
-        /* .style("stroke", "#EC6052"); */
+        }) /* .style("stroke", "#EC6052"); */
         var t0 = Date.now();
         d3.timer(function() {
             var dt = (Date.now() - t0) * .0005;
@@ -487,7 +469,6 @@ enableCamera();
         }
     }
 
-
     function enablestart() {
         var startbutton = document.getElementById('startbutton');
         startbutton.value = "start";
@@ -545,24 +526,25 @@ enableCamera();
             updateData(er);
         }
     }
+    
+    var videoContainerWidth = $('.video_container').width();
+    console.log("video container width: " + videoContainerWidth);
     var ec = new emotionClassifier();
     ec.init(emotionModel);
     var emotionData = ec.getBlank(); // d3 code for barchart
     var margin = {
-        top: 20,
-        right: 20,
-        bottom: 10,
-        left: 40
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
     },
         width = 400 - margin.left - margin.right,
-        height = 100 - margin.top - margin.bottom;
+        height = videoContainerWidth - margin.top - margin.bottom;
     var barWidth = 30;
-    
     var formatPercent = d3.format(".0%");
     var x = d3.scale.linear().domain([0, ec.getEmotions().length]).range([margin.left, width + margin.left]);
     var y = d3.scale.linear().domain([0, 1]).range([0, height]);
     var svg = d3.select("#emotion_chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
-
     svg.selectAll("rect").
     data(emotionData).
     enter().
@@ -577,24 +559,24 @@ enableCamera();
         return y(datum.value);
     }).
     attr("width", barWidth).
-    attr("fill", "#2d578b");
-
+    attr("fill", "#ce321e");
     //Text labels for emotion values
-    svg.selectAll("text.labels").
+    /*
+svg.selectAll("text.labels").
     data(emotionData).
     enter().
     append("svg:text").
     attr("x", function(datum, index) {
-    return x(index) + barWidth;
+        return x(index) + barWidth;
     }).
     attr("y", function(datum) {
-    return height - y(datum.value);
+        return height - y(datum.value);
     }).
     attr("dx", -barWidth / 2).
     attr("dy", "1.2em").
     attr("text-anchor", "middle").
     text(function(datum) {
-    return datum.value;
+        return datum.value;
     }).
     attr("fill", "white").
     attr("class", "labels");
@@ -602,48 +584,44 @@ enableCamera();
     data(emotionData).
     enter().append("svg:text").
     attr("x", function(datum, index) {
-    return x(index) + barWidth;
+        return x(index) + barWidth;
     }).
     attr("y", height).
     attr("dx", -barWidth / 2).
     attr("text-anchor", "middle").
     attr("style", "font-size: 12").
     text(function(datum) {
-    return datum.emotion;
+        return datum.emotion;
     }).
     attr("transform", "translate(0, 18)").
     attr("class", "yAxis");
+*/
 
     function updateData(data) {
         // update
         var rects = svg.selectAll("rect").data(data).attr("y", function(datum) {
-            return height - y(datum.value);
+//                console.log(datum);
+                //console.log(datum.emotionData);
+                if (datum.emotion == "happy") {
+                    return height - y(datum.value);
+                    console.log(datum.value);
+                }
+            
         }).attr("height", function(datum) {
-            return y(datum.value);
+            if (datum.emotion == "happy") {
+                return y(datum.value);
+            }
         });
-       var texts = svg.selectAll("text.labels").data(data).attr("y", function(datum) {
-        return height - y(datum.value);
-        }).text(function(datum) {
-        return datum.value.toFixed(1);
-        });
-
         var smileScore = data[3].value;
-
         analyzeSmileInitialData(smileScore);
-
         // enter
         rects.enter().append("svg:rect");
-        texts.enter().append("svg:text");
         // exit
         rects.exit().remove();
-        texts.exit().remove();
     }
 
     function analyzeSmileInitialData(smileScore) {
         user.initSmilingScoreArray.push(smileScore);
         user.globalSmileScore = smileScore;
-
     }
-
-
 });

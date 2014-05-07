@@ -84,7 +84,7 @@ var s_dialogue = [
     // 11
     {
         scene: {
-            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your finger into the Inquiry apparatus so we can get your resting heartrate.",
+            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your index finger into the Inquiry apparatus so i can get your resting heartrate.",
             changeMood: "middle"
         }
     },
@@ -106,7 +106,7 @@ var s_dialogue = [
     // 14
     {
         scene: {
-            script: "That was a score of initSmilingScore. Eyem a little disappointed. I think you can do way better than that! You should really be aiming for at least a doubleInitSmilingScore!",
+            script: "Your average smile score is initSmilingScore. Eyem a little disappointed. I think you can do way better than that! You should really be aiming for at least a doubleInitSmilingScore!",
             changeMood: "middle"
         }
     },
@@ -120,7 +120,7 @@ var s_dialogue = [
     // 16    
     {
         scene: {
-            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem so lazy and sad all the time boohoohoo.",
+            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem unhappy with my life but eyem too lazy to change it boohoohoo.",
             changeMood: "middle"
         }
     },
