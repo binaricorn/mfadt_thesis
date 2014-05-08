@@ -8,10 +8,10 @@ $(document).ready(function() {
     });
     ctrack.init(pModel);
     var user = {
-        firstname: "Fei",
-        lastname: "Liu",
+        firstname: "Bryan",
+        lastname: "Ma",
         schoolname: null,
-        pictureUrl: null,
+        pictureUrl: backup_pictureUrl,
         jobtitle: backup_jobtitle,
         jobcompany: backup_jobcompany,
         standing: false,
@@ -19,6 +19,8 @@ $(document).ready(function() {
         passInitSmilingTest: false,
         initSmilingScoreArray: [],
         initSmilingScore: null,
+        globalFrownScore: null,
+        globalFrownScoreArray: [],
         globalSmileScore: null,
         doubleInitSmilingScore: null,
         getUserPulse: false,
@@ -27,11 +29,14 @@ $(document).ready(function() {
     var doLinkedIn = false;
     var highVal = 0;
     var audioElem = $('#audioplay').get(0);
-    if (audioElem) audioElem.volume = 0.2;
+    if (audioElem) audioElem.volume = 0.3;
     var sc_dialogue = [];
     var sc_promo = [];
     var completedStretches = 1;
     var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
+    var initSmileArray = [];
+    var frownScoreArray = [];
+
     for (i = 0; i < s_dialogue.length; i++) {
         sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
     }
@@ -54,9 +59,13 @@ $(document).ready(function() {
 
     function haveUser() {
         //botSpeak(sc_dialogue[0]);
-        setTimeout(function() { /*             loopPromo(count);   */
-            onLinkedInLoad();
+        setTimeout(function() { /*             
+        loopPromo(count);   */
+            /*
+onLinkedInLoad();
             onLinkedInAuth();
+*/
+        checkInteraction(0);
         }, 500);
 /*
 $('#submission_form').submit(function(e){
@@ -118,8 +127,7 @@ $('#submission_form').submit(function(e){
             hide($('.promo'));
             show($('.sidebar'));
             show($('.dashboard-screen'));
-            /*
-for (i = 1; i < 12; i++) {
+            for (i = 1; i < 12; i++) {
                 botSpeak(sc_dialogue[i]);
             }
             sc_dialogue[1].onstart = function(event) {
@@ -141,8 +149,6 @@ for (i = 1; i < 12; i++) {
                 $('.block_inquiry').removeClass('inactive').addClass('show');
                 checkInteraction(2);
             }
-*/
-            checkInteraction(3);
             break;
         case 1:
             socket.on("userHeartRate", function(BPM) {
@@ -172,10 +178,9 @@ for (i = 1; i < 12; i++) {
             startVideoTracking();
             setTimeout(function() {
                 checkInteraction(4);
-            }, 5000);
+            }, 10000);
             break;
         case 4:
-            
             botSpeak(sc_dialogue[13]);
             sc_dialogue[13].onstart = function() {
                 doSmileMath(); // passInitSmilingTest = true
@@ -183,21 +188,19 @@ for (i = 1; i < 12; i++) {
                 hide($('#emotion_container'));
                 checkInteraction(5);
             }
+            
             break;
         case 5:
+            
             for (i = 14; i < 17; i++) {
                 botSpeak(sc_dialogue[i]);
-            }
-            sc_dialogue[14].onstart = function() {
-                
-                // the graph should be drawn so that the largest # is the the double, and the goal of the user is to get closer to that amount
             }
             sc_dialogue[14].onend = function() {
                 $('.block_fitness').removeClass('inactive').addClass('show');
                 hide($('.overlay'));
             }
             sc_dialogue[15].onstart = function() {
-                $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif"/></span>');
+                $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif" class="stretch-gif"/></span>');
             }
             sc_dialogue[16].onend = function() {
                 checkInteraction(6);
@@ -228,29 +231,35 @@ for (i = 1; i < 12; i++) {
                 'overflow' : 'hidden',
                 'top' : '2%',
                 'right' : '2%',
-                'width' : '350px'
+                'width' : '400px'
                 
             });
             
             show($('#emotion_container'));
             $('#emotion_container').css({
                 'position' : 'absolute',
-                'top' : '5.4%',
-                'right': '0.5%' 
+                'top' : '32%',
+                'right': '132px' 
             });
+            hide('.browsercize_score_container');
+            hide('.emotion_graph');
             show($('.block_browsercize'));
             botSpeak(sc_dialogue[17]);
             botSpeak(sc_dialogue[18]);
             botSpeak(sc_dialogue[19]);
             botSpeak(sc_dialogue[20]);
             botSpeak(sc_dialogue[21]);
-            sc_dialogue[21].onend = function() {
+            botSpeak(sc_dialogue[22]);
+            sc_dialogue[22].onend = function() {
                 checkInteraction(8);
+                $('#audioplay').replaceWith('<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" ><source id="audiosrc" src="audio/clowns.mp3" /></audio>'); 
                 countdown();
+                show('.browsercize_score_container');
             }
         case 8:
             
             socket.on("userButtonsPressed", function(userLeftButton) {
+                
                 if (userLeftButton == 1) {
                     console.log("Pressed button");
                     user.buttonPressed = true;
@@ -260,23 +269,47 @@ for (i = 1; i < 12; i++) {
                 }
             });
             break;
+        case 9:
+            
+
+            doFrownMath();
+            botSpeak(sc_dialogue[23]);
+            sc_dialogue[23].onstart = function() {
+                $('#audioplay').replaceWith('<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" ><source id="audiosrc" src="audio/yacht2.m4a" /></audio>');      
+                if (audioElem) audioElem.volume = 0.3;           
+                getFrownMath();
+            }
+            
+            sc_dialogue[23].onend = function() {
+                checkInteraction(10);
+            }
+            break;
+        case 10:
+            botSpeak(sc_dialogue[24]);
+            botSpeak(sc_dialogue[25]);
+            sc_dialogue[25].onstart = function() {
+                show($('.calculating'));
+                $('.block_browsercize, .block_emotion').removeClass('show').addClass('inactive');
+                $('.block_fitness').removeClass('hide').addClass('inactive');
+            }
+            botSpeak(sc_dialogue[26]);
+            //hide($('.calculating'));
+            break;
         }
     }
 
     function waitingForButtonPressSmile() {
-        if (user.globalSmileScore > 0.3) {
+        if (user.globalSmileScore > 0.4) {
             user.buttonPressed = false;
             completedStretches++;
-
+            console.log(user.globalSmileScore);
         }
         $('.browsercize_score').text(completedStretches);
-        $('.browsercize_score_container').css('height', (completedStretches*5) + '%');
-//        console.log("you've done " + completedStretches + " stretches yay!");
-        
+        $('.browsercize_score_container').css('height', (completedStretches*5) + '%');        
     }
     
     function countdown() {
-        var seconds = 61;
+        var seconds = 121;
         
         function tick() {
             seconds--;
@@ -285,7 +318,11 @@ for (i = 1; i < 12; i++) {
             if( seconds > 0 ) {
                 setTimeout(tick, 1000);
             } else {
-                /* alert("Game over"); */
+                seconds = 0;
+                if (seconds == 0) {
+                    checkInteraction(9);    
+                }
+                
             }
         }
         tick();
@@ -294,17 +331,26 @@ for (i = 1; i < 12; i++) {
 
 
     function doSmileMath() {
-        var initSmileArray = user.initSmilingScoreArray;
+        initSmileArray = user.initSmilingScoreArray;
         user.initSmilingScore = Math.max.apply(Math, initSmileArray);
         user.initSmilingScore = user.initSmilingScore * 100;
         user.initSmilingScore = Math.ceil(user.initSmilingScore * 10) / 10;
         user.doubleInitSmilingScore = user.initSmilingScore * 2;
         console.log(user.initSmilingScore + " double: " + user.doubleInitSmilingScore);
+        
         $('.emotion_graph').css('width', user.initSmilingScore + 'px');
         $('.initSmilingScore').text(user.initSmilingScore);
-        /* $('.emotion_graph').css('width', user.initSmilingScore*100 + 'px'); */
-        
-       // console.log( "($('.block_emotion').width() / 100) * " + user.initSmilingScore + " = " + ($('.block_emotion').width() / 100) * user.initSmilingScore);
+    }
+    
+    function doFrownMath() {
+        frownScoreArray = user.globalFrownScoreArray;
+    }
+    
+    function getFrownMath() {
+        user.globalFrownScore = Math.max.apply(Math, frownScoreArray);
+        user.globalFrownScore = user.globalFrownScore * 100;
+        user.globalFrownScore = Math.ceil(user.globalFrownScore * 10) / 10;
+        console.log("frown score: " + user.globalFrownScore);
     }
 
     function displayUser() {
@@ -378,6 +424,9 @@ for (i = 1; i < 12; i++) {
 
     function displayPeopleSearchErrors(error) {
         console.log("error, let's move on");
+        user.jobcompany = backup_jobcompany;
+        user.jobtitle = backup_jobtitle;
+        checkInteraction(0);
     } /* Rainbow Worm via http://mbostock.github.io/protovis/ex/segmented.html */
 
     function voice_visualizer() {
@@ -527,8 +576,8 @@ for (i = 1; i < 12; i++) {
         }
     }
     
-    var videoContainerWidth = $('.video_container').width();
-    console.log("video container width: " + videoContainerWidth);
+    //var videoContainerWidth = $('.video_container').width();
+   // console.log("video container width: " + videoContainerWidth);
     var ec = new emotionClassifier();
     ec.init(emotionModel);
     var emotionData = ec.getBlank(); // d3 code for barchart
@@ -538,82 +587,39 @@ for (i = 1; i < 12; i++) {
         bottom: 0,
         left: 0
     },
-        width = 400 - margin.left - margin.right,
-        height = videoContainerWidth - margin.top - margin.bottom;
+        width = 300,
+        height = 30;
     var barWidth = 30;
     var formatPercent = d3.format(".0%");
-    var x = d3.scale.linear().domain([0, ec.getEmotions().length]).range([margin.left, width + margin.left]);
-    var y = d3.scale.linear().domain([0, 1]).range([0, height]);
+    
+    // Limit the drawing of the X axis to only the "happy" emotion
+    var x = d3.scale.linear().domain([0, 1]).range([0, width]);
+    var y = d3.scale.linear().domain([3, 3]).range([margin.left, 400]);
     var svg = d3.select("#emotion_chart").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
     svg.selectAll("rect").
     data(emotionData).
     enter().
     append("svg:rect").
-    attr("x", function(datum, index) {
-        return x(index);
+    attr("x", 0).
+    attr("y", 0).
+    attr("width", function(datum) {
+        return x(datum.value);
     }).
-    attr("y", function(datum) {
-        return height - y(datum.value);
-    }).
-    attr("height", function(datum) {
-        return y(datum.value);
-    }).
-    attr("width", barWidth).
+    attr("height", barWidth).
     attr("fill", "#ce321e");
-    //Text labels for emotion values
-    /*
-svg.selectAll("text.labels").
-    data(emotionData).
-    enter().
-    append("svg:text").
-    attr("x", function(datum, index) {
-        return x(index) + barWidth;
-    }).
-    attr("y", function(datum) {
-        return height - y(datum.value);
-    }).
-    attr("dx", -barWidth / 2).
-    attr("dy", "1.2em").
-    attr("text-anchor", "middle").
-    text(function(datum) {
-        return datum.value;
-    }).
-    attr("fill", "white").
-    attr("class", "labels");
-    svg.selectAll("text.yAxis").
-    data(emotionData).
-    enter().append("svg:text").
-    attr("x", function(datum, index) {
-        return x(index) + barWidth;
-    }).
-    attr("y", height).
-    attr("dx", -barWidth / 2).
-    attr("text-anchor", "middle").
-    attr("style", "font-size: 12").
-    text(function(datum) {
-        return datum.emotion;
-    }).
-    attr("transform", "translate(0, 18)").
-    attr("class", "yAxis");
-*/
 
     function updateData(data) {
+       // console.log(data[3].value);
         // update
-        var rects = svg.selectAll("rect").data(data).attr("y", function(datum) {
-//                console.log(datum);
-                //console.log(datum.emotionData);
-                if (datum.emotion == "happy") {
-                    return height - y(datum.value);
-                    console.log(datum.value);
-                }
+        var rects = svg.selectAll("rect").data(data).attr("width", function(datum) {
+                datum = data[3].value;
+                return x(datum);
             
-        }).attr("height", function(datum) {
-            if (datum.emotion == "happy") {
-                return y(datum.value);
-            }
         });
         var smileScore = data[3].value;
+        var frownScore = data[1].value;
         analyzeSmileInitialData(smileScore);
+        analyzeFrownData(frownScore);
         // enter
         rects.enter().append("svg:rect");
         // exit
@@ -623,5 +629,9 @@ svg.selectAll("text.labels").
     function analyzeSmileInitialData(smileScore) {
         user.initSmilingScoreArray.push(smileScore);
         user.globalSmileScore = smileScore;
+    }
+    
+    function analyzeFrownData(frownScore) {
+        user.globalFrownScoreArray.push(frownScore);
     }
 });

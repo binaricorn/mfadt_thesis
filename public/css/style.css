@@ -301,18 +301,19 @@ h2 {
     position: absolute;
     left: 0;
     background-color: #ce321e;
-    font-size: 3em;
+    font-size: 90%;
+    font-family: 'Static', sans-serif;
     text-align: center;
 }
 
 #countdown {
     top: 0;
-    width: 50px;
-    height: 50px;
     left: 50%;
-    margin-left: -25%;
     position: absolute;
     z-index: 100000;
+    font-size: 3em;
+    font-family: 'Static', sans-serif;
+    border: 3px solid #fff;
 }
 
 img.browsercize_gif  {
@@ -347,7 +348,14 @@ img.browsercize_gif  {
     border-bottom: 1px solid #fff;
 }
 
-
+.calculating {
+    height: 45%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    position: absolute;
+}
 
 .block {
 	text-align:center;
@@ -417,12 +425,9 @@ input[type="submit"] {
 	height:300px;
 }
 
-#emotion_container {
+#emotion_container, .emotion_graph {
     position: absolute;
-    top: 32%;
-    -webkit-transform: rotate(90deg);
-    margin-left: -27px;
-   
+    bottom: 25%;   
 }
 
 .emotion_graph, .emotion_graph_game, .fitness_graph, .inquiry_graph {
@@ -430,10 +435,19 @@ input[type="submit"] {
     height: 30px;
     background-color: #ce321e;
     position: absolute;
-    bottom: 2%; 
+    bottom: 25%; 
     -webkit-transition: width 0.1s;
 }
 
+.initSmilingScore {
+    position: absolute;
+    bottom: 25%; 
+    right: 0;
+}
+
+.stretch-gif {
+    width: 200px;
+}
 
 
 #emotion_icons {
@@ -462,4 +476,57 @@ input[type="submit"] {
     position: relative;
     overflow: hidden;
     display: none;
+}
+
+.ball1 {
+    background-color: rgba(0,0,0,0);
+    border: 5px solid #fff;
+    opacity: 1;
+    border-top: 5px solid rgba(0,0,0,0);
+    border-left: 5px solid rgba(0,0,0,0);
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    -webkit-animation: spin .7s infinite linear;
+}
+
+@-moz-keyframes spin {
+    0% {
+        -moz-transform: rotate(0deg);
+    }
+
+    100% {
+        -moz-transform: rotate(360deg);
+    };
+}
+
+@-moz-keyframes spinoff {
+    0% {
+        -moz-transform: rotate(0deg);
+    }
+
+    100% {
+        -moz-transform: rotate(-360deg);
+    };
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    };
+}
+
+@-webkit-keyframes spinoff {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(-360deg);
+    };
 }

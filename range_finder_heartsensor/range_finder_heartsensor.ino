@@ -98,7 +98,7 @@ void loop(){
     haveUser();
   }
   
-  delay(10);                             //  take a break
+  delay(250);                             //  take a break
 }
 
 void waitingForUser() {

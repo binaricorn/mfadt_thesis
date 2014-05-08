@@ -80,8 +80,9 @@
 
         <section class="option-hide">
             <select name="voice" id="voice"></select> 
+           
             <audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" >  
-                <source src="audio/yacht2.m4a" />  
+                <source id="audiosrc" src="audio/yacht2.m4a" />  
             </audio> 
         </section>
         <!-- <section expiration date> -->
@@ -113,6 +114,7 @@
             </div>
                     
             <section class="dashboard_bottom">
+                <section class="calculating hide"><div><p>Running diagnostics on your F.E.I...</p><br><p class="ball1"></p></div></section>
                 <article class="block_browsercize hide">
                     <div id="countdown"></div>
                     
@@ -136,9 +138,9 @@
                 </article>
                 <article class="block_emotion inactive">
                     <h2>Emotion</h2>
-                    <p class="block"><span class="icon icon-smile centered"></span><br>
+                    <p class="block"><span class="icon icon-smile centered"></span></p>
                     <div class="emotion_graph"></div>
-                    <span class="initSmilingScore"></span></p>
+                    <span class="initSmilingScore"></span>
                     <div class="video_container">
                         <video id="videoel" width="400" height="300" preload="auto" loop></video> <canvas id="overlay" width="400" height="300"></canvas>                        
                         <div id="controls" style="display:none">

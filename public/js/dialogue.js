@@ -2,18 +2,20 @@ var backup_jobtitle = "Some designer";
 var backup_jobcompany = "Some company";
 var backup_pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
 
+// self monitoring..
+
 var s_dialogue = [
     // 0
     {
         scene: {
-            script: "Welcome applicant! Doent you Want to learn the secrets to success and happiness? Step onto the fitness assessment apparatus and find out.",
+            script: "Welcome applicant! Are you tired of feeling unhealthy, unproductive, and unhappy at work? Step onto the Taylor Health assessment apparatus to learn about a company that makes your, happiness and wellbeing, its number one priority.",
             changeMood: "up"
         }
     },
     // 1
     {
         scene: {
-            script: "I hope youve enjoyed your tour of the office. I am your specially Taylored fitness emotion inquiry. You can just refer to me as Faye.",
+            script: "I hope youve enjoyed your time at the show. Thank you again for taking an interest in Taylor Health. I am your specially Taylored fitness emotion inquiry. You can just refer to me as Faye.",
 /*              This testing session is absolutely monitored and recorded for quality assurance. */
             changeMood: "up"
         }
@@ -49,21 +51,22 @@ var s_dialogue = [
     // 6
     {
         scene: {
-            script: "I cant give you a proper assessment in this case.",
+            script: "I cant give you a proper assessment in this case. How am I supposed to gauge your pain threshold without it?",
             changeMood: "down"
         }
     },
     // 7
     {
         scene: {
-            script: "But your resumay looked great so eyell make an exception. Lets just create a profile now, itll only take a few minutes.",
+            script: "Just know that eyem making an exception because your resumay looked great. Lets just create a profile now, itll only take a few minutes.",
             changeMood: "up"
         }
     },
     // 8
     {
         scene: {
-            script: "Data log 01 userfirstname userlastname has agreed to a completely scientific measurement of emotional and physical fitness and Taylor Health reserves the right to use this data as just cause for early termination.",
+            script: "Data log 01. You, userfirstname userlastname, have allowed Taylor Health to create an employment profile that contains data on your emotional and physical fitness aptitude. Taylor Health reserves the right to use this data for predictive analysis.",
+            /* script: "Data log 01 userfirstname userlastname has agreed to a completely scientific measurement of emotional and physical fitness and Taylor Health reserves the right to use this data as just cause for termination.", */
             changeMood: "up"
         }
     },
@@ -113,21 +116,21 @@ var s_dialogue = [
     // 15
     {
         scene: {
-            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Put your feet into the taylor fitness assessment arena to take the first step towards healthiness!",
+            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Put both feet into the taylor fitness assessment arena and remain there for the duration of this test.", // in case you can't find it, it's the blinky thing thats shaped like feet
             changeMood: "middle"
         }
     },
     // 16    
     {
         scene: {
-            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem unhappy with my life but eyem too lazy to change it boohoohoo.",
+            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem unhappy with my life but eyem too lazy to change it.",
             changeMood: "middle"
         }
     },
     // 17
     {
         scene: {
-            script: "Thank god. I'm so glad youve decided to stay after all! I had a feeling you would. Eyem so Sorry about earlier, ive had a very long day and the cafeteria is always out of cat poop coffee.",
+            script: "Thank god. I'm so glad youve decided to stay after all! I had a feeling you would. Eyem so Sorry about earlier, ive had a very long day and the cafeteria is always out of double shot espresso.",
             changeMood: "middle"
         }
     },
@@ -141,7 +144,7 @@ var s_dialogue = [
     // 19
     {
         scene: {
-            script: "The goal of the game is to try do as many toe touching stretches as you can under one minute. They arent just your lazy, average stretches though.",
+            script: "The goal of the game is to try to do as many toe touching stretches as you can under one minute.",
             changeMood: "middle"
         }
     },
@@ -155,41 +158,53 @@ var s_dialogue = [
     // 21
     {
         scene: {
-            script: "Lets do it! You have 1 minute to get the most points as you can. There will be a reward at the end, and it will absolutely not involve grief counseling and black forest cake.",
+            script: "You need to get as many points as you can in two minutes. From there we will tally up your scores and determine if you are the right fit for our team.", // something punitive
             changeMood: "middle"
         }
-    }
-    
+    },
+    // 22
+    {
+        scene: {
+            script: "Ready, set, go! Goodluck! By the way, you like really fast, panic inducing music, doent you? I find it always helps me get in the mood to burn some calories.",
+            changeMood: "middle"
+        }
+    },
+    // 23
+    {
+        scene: {
+            script: "Wasnt that fun? Wonder how that Google Employee got a sore face from smiling? Imagine how much fun youll have playing Browsercize twenty four seven, 356 days a year!",
+            changeMood: "middle"
+        }
+    },
+    // 24
+    {
+        scene: {
+             script: "Now, put your finger into the Inquiry box again so we can compare your heart rate before and after physical activity.",
+            changeMood: "middle"
+        }
+    },
+    // 25
+    {
+        scene: {
+            script: "Running fitness emotion inquiry diagnosis for userfirstname.",
+            changeMood: "middle"
+        }
+    },
+    // 26
+    {
+        scene: {
+            script: "Okay, eyem sending your assessment results to a human staff member who can review it.",
+            changeMood: "middle"
+        }
+    },
     
     /*
     Examine the diagram in your Fitness Inquiry field
-,
-    // 17
-    {
-        scene: {
-            script: "Sorry ive had a very long day and the cafeteria is always out of cat poop coffee.",
-            changeMood: "middle"
-        }
-    },
-    // 18
-    {
-        scene: {
-            script: "Oh! I'm so glad youve decided to stay after all! I had a feeling you would be.",
-            changeMood: "middle"
-        }
-    },
+    
     // add in something about fitbit and stuff
     // do some calculations here The average Australian takes 9,695 steps per day, the average Japanese 7,168, and the average Swiss 9,650, while the average American takes only 5,117 steps per day.
     // fitbit jawbone. echo the style of that inaugural qs ted talk.
 
-    // 19
-    {
-        scene: {
-            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem so lazy and sad all the time boohoohoo.",
-            changeMood: "middle"
-        }
-    },
-    
     // 21
     {
         scene: {
