@@ -8,13 +8,14 @@ $(document).ready(function() {
     });
     ctrack.init(pModel);
     var user = {
-        firstname: "Bryan",
-        lastname: "Ma",
+        firstname: "Kyle",
+        lastname: "Li",
         schoolname: null,
         pictureUrl: backup_pictureUrl,
         jobtitle: backup_jobtitle,
         jobcompany: backup_jobcompany,
         standing: false,
+        here: false,
         buttonPressed: false,
         passInitSmilingTest: false,
         initSmilingScoreArray: [],
@@ -24,18 +25,23 @@ $(document).ready(function() {
         globalSmileScore: null,
         doubleInitSmilingScore: null,
         getUserPulse: false,
-        BPM: null
+        BPM: null,
+        completedStretches: null,
+        employability: null,
+        improvement: null
     }
     var doLinkedIn = false;
-    var highVal = 0;
+    var highVal = -1;
     var audioElem = $('#audioplay').get(0);
-    if (audioElem) audioElem.volume = 0.3;
+    if (audioElem) audioElem.volume = 0.1;
     var sc_dialogue = [];
     var sc_promo = [];
-    var completedStretches = 1;
+    var completedStretches = 0;
     var transEnd = "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd";
     var initSmileArray = [];
     var frownScoreArray = [];
+
+    var socket = io.connect("/"); 
 
     for (i = 0; i < s_dialogue.length; i++) {
         sc_dialogue[i] = new SpeechSynthesisUtterance(s_dialogue[i].scene.script);
@@ -44,31 +50,21 @@ $(document).ready(function() {
         sc_promo[i] = new SpeechSynthesisUtterance(s_promo[i].scene.script);
     } /* Animation between screens */
     var b = $('.promo .block').length;
+    var results_li = $('.dashboard-results ul li').length;
     var count = -1;
-    for (i = 0; i < b; i++) {
-        $(".promo .block").eq(i).css('-webkit-transform', 'translateX(' + i * 100 + '%)');
-    }
-    var socket = io.connect("/");
-    socket.on("userPresence", function(userPresence) {
-        if (userPresence == "1") {
-            haveUser();
-        } else if (userPresence == "0") {
-            waitingForUser();
-        }
-    });
+    
+    
+    checkInteraction(0);
+
 
     function haveUser() {
-        //botSpeak(sc_dialogue[0]);
-        setTimeout(function() { /*             
-        loopPromo(count);   */
-            /*
-onLinkedInLoad();
-            onLinkedInAuth();
-*/
-        checkInteraction(0);
+        botSpeak(sc_dialogue[0]); 
+        setTimeout(function() {            
+            loopPromo(count);  
         }, 500);
-/*
-$('#submission_form').submit(function(e){
+        
+       
+        $('#submission_form').submit(function(e){
            e.preventDefault();
            user.firstname = $('#form_firstName').val();
            user.lastname = $('#form_lastName').val();
@@ -76,12 +72,12 @@ $('#submission_form').submit(function(e){
            onLinkedInLoad();
            onLinkedInAuth();           
         });
-*/
+
         console.log("found user");
     }
 
     function waitingForUser() {
-        console.log("waiting");
+        $(".promo .block").eq(0).css('-webkit-transform', 'translateX(0)');
     }
 
     function loopPromo(count) {
@@ -95,8 +91,9 @@ $('#submission_form').submit(function(e){
                 }
             }
             $(".promo .block").eq(count).on(transEnd, function(e) {
+                console.log(count);
                 // on the last slide, autofocus the firstname field
-                if (count == 5) {
+                if (count == 2) {
                     $('input#form_firstName').replaceWith('<input type="text" id="form_firstName" placeholder="First name" value="" autofocus/>');
                 }
                 $(".promo .block").eq(count).off(transEnd);
@@ -124,91 +121,122 @@ $('#submission_form').submit(function(e){
     function checkInteraction(count) {
         switch (count) {
         case 0:
-            hide($('.promo'));
-            show($('.sidebar'));
-            show($('.dashboard-screen'));
-            for (i = 1; i < 12; i++) {
+            for (i = 0; i < b; i++) {
+               $(".promo .block").eq(i).css('-webkit-transform', 'translateX(' + i * 100 + '%)');
+            }
+
+            show($('.promo'));
+            hide($('.dashboard-results'));
+
+            waitingForUser();
+            
+            socket.on("userPresence", function(userPresence) {
+                if (userPresence == "1" && user.here == false) {
+                    user.here = true;
+                    haveUser();
+                } 
+            });
+            break;
+        case 1:
+
+            enableCamera();
+            for (i = 1; i < 9; i++) {
                 botSpeak(sc_dialogue[i]);
             }
-            sc_dialogue[1].onstart = function(event) {
-                $('.dashboard, .sidebar').removeClass('hide').addClass('show');
-                voice_visualizer();
-            }
+            show($('.sidebar'));
+            show($('.dashboard-screen'));
+            hide($('.dashboard-results'));
+            hide($('.promo'));
+            hide($('.calculating'));
+            hide($('.dashboard-results'));
+            hide($('.browsercize_container'));
+            hide($('#countdown'));            
+            hide($('.video_container'));
+            hide($('.browsercize_score'));
+            voice_visualizer();
+            
             sc_dialogue[3].onend = function(event) {
                 displayUser();
             }
+                        
             sc_dialogue[4].onend = function(event) {
                 $('.sidebar ul li').eq(1).removeClass('highlight');
                 $('.sidebar ul li').eq(2).addClass('highlight');
                 $('.block_inquiry, .block_fitness, .block_emotion').removeClass('inactive').addClass('show');
             }
-            sc_dialogue[6].onstart = function(event) {
-                $('.block_inquiry, .block_fitness, .block_emotion').removeClass('show').addClass('inactive');
-            }
-            sc_dialogue[11].onstart = function(event) {
+
+            sc_dialogue[8].onstart = function(event) {
                 $('.block_inquiry').removeClass('inactive').addClass('show');
+                
+            }
+
+            sc_dialogue[8].onend = function(event) {
                 checkInteraction(2);
             }
-            break;
-        case 1:
-            socket.on("userHeartRate", function(BPM) {
-                if (BPM == "\r") {} else {
-                    BPM = BPM.replace("B", "");
-                    if (BPM > 50 && BPM < 105 && user.getUserPulse == false) {
-                        user.getUserPulse = true;
-                        console.log("use this BPM: " + BPM);
-                        user.BPM = BPM;
-                        checkInteraction(2);
-                    }
-                }
-            });
+
             break;
         case 2:
-            $('.block_emotion').removeClass('inactive').addClass('show');
-            botSpeak(sc_dialogue[12]);
-            sc_dialogue[12].onstart = function() {
-                enableCamera();
-                checkInteraction(3);
-            }
-            $('.resting_bpm').text('Resting BPM: ' + user.BPM);
+            socket.on("userHeartRate", function(BPM) {
+                        setTimeout(function() {  
+                            if (BPM != "\r" && user.getUserPulse == false) {
+                                user.getUserPulse = true;
+                                BPM = BPM.replace("B", "");
+
+                                if (BPM > 60 && BPM < 100) {
+                                        
+                                        console.log("use this BPM: " + BPM);
+                                        user.BPM = BPM;
+                                        
+                                } else {
+                                        user.BPM = 77;
+                                }
+                                checkInteraction(3);
+                            }
+                            
+
+                        }, 4000);
+                        
+                });
             break;
         case 3:
-            enableCamera();
+            $('.resting_bpm').text(user.BPM);
+            $('.inquiry_graph').css('width', user.BPM + 'px');
+            botSpeak(sc_dialogue[9]);
+            sc_dialogue[9].onstart = function() {
+                checkInteraction(4);
+            }
+            break;
+        case 4:
+            show($('.video_container'));
             hide($('.icon-smile'));
             startVideoTracking();
             setTimeout(function() {
-                checkInteraction(4);
-            }, 10000);
-            break;
-        case 4:
-            botSpeak(sc_dialogue[13]);
-            sc_dialogue[13].onstart = function() {
                 doSmileMath(); // passInitSmilingTest = true
                 hide($('#overlay'));
                 hide($('#emotion_container'));
                 checkInteraction(5);
-            }
-            
+                
+            }, 10000);
             break;
         case 5:
-            
-            for (i = 14; i < 17; i++) {
+            for (i = 10; i < 13; i++) {
                 botSpeak(sc_dialogue[i]);
             }
-            sc_dialogue[14].onend = function() {
+
+            sc_dialogue[10].onstart= function() {
                 $('.block_fitness').removeClass('inactive').addClass('show');
-                hide($('.overlay'));
+                hide($('#overlay'));
+                hide($('.video_container'));
+                $('.icon-smile').removeClass('hide').addClass('show').css('display', 'inline-block');
             }
-            sc_dialogue[15].onstart = function() {
-                $('.block_fitness .block').replaceWith('<span class="icon centered"><img src="img/stretch-blur2.gif" class="stretch-gif"/></span>');
-            }
-            sc_dialogue[16].onend = function() {
+
+            sc_dialogue[12].onend = function() {
                 checkInteraction(6);
             }
             break;
         case 6:
             socket.on("userStanding", function(userLeftFoot, userRightFoot) {
-                if (userLeftFoot > highVal && userRightFoot > highVal && user.standing == false) {
+                if (userLeftFoot >= highVal && userRightFoot >= highVal && user.standing == false) {
                     user.standing = true;
                     console.log("user is standing at the rihgt place");
                     checkInteraction(7);
@@ -216,52 +244,31 @@ $('#submission_form').submit(function(e){
             });
             break;
         case 7:
-            
-            $('.sidebar ul li').eq(1).removeClass('highlight');
-            $('.sidebar ul li').eq(2).removeClass('highlight');
-            $('.sidebar ul li').eq(3).addClass('highlight');
-            hide($('.block_inquiry'));
-            hide($('.block_fitness'));
-            show($('#overlay'));
-            $('.block_emotion').css('position','static').removeClass('inactive').addClass('show');
-            $('.initSmilingScore, .block_emotion h2').css('display','none');
-            $('.block_emotion').css('background','none');
-            $('.video_container').css({
-                'position' : 'absolute',
-                'overflow' : 'hidden',
-                'top' : '2%',
-                'right' : '2%',
-                'width' : '400px'
-                
-            });
-            
-            show($('#emotion_container'));
-            $('#emotion_container').css({
-                'position' : 'absolute',
-                'top' : '32%',
-                'right': '132px' 
-            });
-            hide('.browsercize_score_container');
-            hide('.emotion_graph');
-            show($('.block_browsercize'));
-            botSpeak(sc_dialogue[17]);
-            botSpeak(sc_dialogue[18]);
-            botSpeak(sc_dialogue[19]);
-            botSpeak(sc_dialogue[20]);
-            botSpeak(sc_dialogue[21]);
-            botSpeak(sc_dialogue[22]);
-            sc_dialogue[22].onend = function() {
-                checkInteraction(8);
-                $('#audioplay').replaceWith('<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" ><source id="audiosrc" src="audio/clowns.mp3" /></audio>'); 
-                countdown();
-                show('.browsercize_score_container');
+            for (i = 13; i < 18; i++) {
+                botSpeak(sc_dialogue[i]);
             }
+
+            sc_dialogue[13].onstart = function() {
+                hide($('#fei_voice_visualizer'));
+                $('.sidebar ul li').eq(1).removeClass('highlight');
+                $('.sidebar ul li').eq(2).removeClass('highlight');
+                $('.sidebar ul li').eq(3).addClass('highlight');
+                displayBrowsercize();
+            }
+
+            sc_dialogue[17].onend = function() {
+                show($('#countdown'));
+                show($('.browsercize_score'));
+                $('#audioplay').replaceWith('<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" ><source id="audiosrc" src="audio/clowns.mp3" /></audio>');       
+                if (audioElem) audioElem.volume = 0.2;
+                checkInteraction(8);
+                countdown();
+
+            }
+            break;
         case 8:
-            
             socket.on("userButtonsPressed", function(userLeftButton) {
-                
-                if (userLeftButton == 1) {
-                    console.log("Pressed button");
+                if (userLeftButton == 1 && user.buttonPressed == false) {
                     user.buttonPressed = true;
                 }
                 if (user.buttonPressed == true) {
@@ -270,53 +277,145 @@ $('#submission_form').submit(function(e){
             });
             break;
         case 9:
-            
+            $('#audioplay').remove();
 
-            doFrownMath();
-            botSpeak(sc_dialogue[23]);
-            sc_dialogue[23].onstart = function() {
-                $('#audioplay').replaceWith('<audio id="audioplay" loop="loop" autoplay="autoplay" controls="controls" ><source id="audiosrc" src="audio/yacht2.m4a" /></audio>');      
-                if (audioElem) audioElem.volume = 0.3;           
-                getFrownMath();
+            for (i = 18; i < sc_dialogue.length; i++) {
+                botSpeak(sc_dialogue[i]);
             }
-            
-            sc_dialogue[23].onend = function() {
+
+            sc_dialogue[18].onstart = function() {
+                $('.sidebar ul li').eq(3).removeClass('highlight');
+                $('.sidebar ul li').eq(4).addClass('highlight');
+                hideBrowsercize();
+                
+            }
+
+            sc_dialogue[20].onstart = function() {
+                doFrownMath();
+            }
+
+            sc_dialogue[21].onstart = function() {
                 checkInteraction(10);
             }
             break;
         case 10:
-            botSpeak(sc_dialogue[24]);
-            botSpeak(sc_dialogue[25]);
-            sc_dialogue[25].onstart = function() {
-                show($('.calculating'));
-                $('.block_browsercize, .block_emotion').removeClass('show').addClass('inactive');
-                $('.block_fitness').removeClass('hide').addClass('inactive');
-            }
-            botSpeak(sc_dialogue[26]);
-            //hide($('.calculating'));
+            $('.sidebar ul li').eq(4).removeClass('highlight');
+            $('.sidebar ul li').eq(5).addClass('highlight');
+            setTimeout(function() {
+                showDashboardResults();
+                checkInteraction(11);
+            }, 250);
+
+
+            break;
+        case 11:
+            // user.here = false;
+            // setTimeout(function() {
+            //     checkInteraction(0);
+            // }, 10000);
             break;
         }
     }
-
-    function waitingForButtonPressSmile() {
-        if (user.globalSmileScore > 0.4) {
-            user.buttonPressed = false;
-            completedStretches++;
-            console.log(user.globalSmileScore);
+    
+    function showDashboardResults() {
+        show($('.dashboard-results'));
+        hide($('.dashboard'));
+        hide($('.sidebar'));
+        for (i = 0; i < results_li; i++) {
+           $('.dashboard-results ul li').eq(i).removeClass('hide').addClass('show');
         }
-        $('.browsercize_score').text(completedStretches);
-        $('.browsercize_score_container').css('height', (completedStretches*5) + '%');        
+ 
+        user.employability = ((user.initSmilingScore / user.globalFrownScore) / 2.5);
+        user.employability = user.employability * 100;        
+        user.employability = Math.ceil(user.employability * 10) / 10;
+        user.improvement = user.employability / 5.5;
+        user.improvement = Math.ceil(user.improvement * 10) / 10;
+        console.log(user.improvement);
+        $('.employability').text(user.employability + '%');
+        $('.improvement').text("Your Employability Average increased by: " + user.improvement + '%');
+        $('.negativity p').text(user.globalFrownScore);
     }
     
+    function hideBrowsercize() {
+        $('#emotion_container').removeClass('browsercize_emotion_container');
+        $('#emotion_chart').removeClass('browsercize_emotion_chart');
+        show($('#fei_voice_visualizer'));
+        show($('.calculating'));
+
+        hide($('#countdown'));
+        hide($('.browsercize_container'));
+        hide($('.block_emotion'));
+        hide($('.block_browsercize'));
+        hide($('.video_container'));
+    }
+
+    function displayBrowsercize() {
+        hide($('.block_inquiry'));
+        hide($('.block_fitness'));
+        hide($('.icon-smile'));
+        
+        show($('#overlay'));
+        show($('.video_container'));
+
+        $('.block_emotion').css('position','static').removeClass('inactive').addClass('show');
+        $('.initSmilingScore, .block_emotion h2').css('display','none');
+        $('.block_emotion').css('background','none');
+        $('.video_container').css({
+            'position' : 'absolute',
+            'overflow' : 'hidden',
+            'top' : '2%',
+            'right' : '2%',
+            'width' : '400px'
+                
+        });
+        show($('#emotion_container'));
+        show($('.browsercize_container'));
+        show($('.browsercize_score_container'));
+        hide($('.emotion_graph'));
+        show($('.block_browsercize'));
+
+        $('#emotion_container').addClass('browsercize_emotion_container');
+        $('#emotion_chart').addClass('browsercize_emotion_chart');
+
+        $('img.browsercize_gif').css({
+            'top': '-45.5%',
+            'left': '-100%'
+        });
+
+        
+    }
+
+    function waitingForButtonPressSmile() {
+        
+        if (user.globalSmileScore > 0.7 && user.buttonPressed == true) {
+            $('.emotion_chart_goal').css({
+                'background-color': '#fcff00',
+            });
+            user.buttonPressed = false;
+            completedStretches++;
+        //     console.log(user.globalSmileScore);
+        } else {
+            $('.emotion_chart_goal').css('background', '#ce321e');
+        }
+        $('.browsercize_score').text(completedStretches);
+        user.completedStretches = completedStretches;
+        if (completedStretches > 1) {
+            $('.browsercize_score').css('height', (completedStretches * 3) + '%');            
+        }
+        
+    }
+    
+    
     function countdown() {
-        var seconds = 121;
+        var seconds = 61;
         
         function tick() {
             seconds--;
             $('#countdown').text("00:" + seconds);
-/*             counter.innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(seconds); */
-            if( seconds > 0 ) {
+            if (seconds < 10) $('#countdown').text("00:" + "0" + seconds);
+            if ( seconds > 0 ) {
                 setTimeout(tick, 1000);
+                waitingForButtonPressSmile();
             } else {
                 seconds = 0;
                 if (seconds == 0) {
@@ -343,20 +442,18 @@ $('#submission_form').submit(function(e){
     }
     
     function doFrownMath() {
+        
         frownScoreArray = user.globalFrownScoreArray;
-    }
-    
-    function getFrownMath() {
         user.globalFrownScore = Math.max.apply(Math, frownScoreArray);
         user.globalFrownScore = user.globalFrownScore * 100;
         user.globalFrownScore = Math.ceil(user.globalFrownScore * 10) / 10;
-        console.log("frown score: " + user.globalFrownScore);
+        // console.log("frown score: " + user.globalFrownScore);
     }
+    
 
     function displayUser() {
         $('.profile_photo').html('<img src="' + user.pictureUrl + '"/>');
         $('.profile_title .name').html(user.firstname + " " + user.lastname);
-        $('.profile_title .title').text(user.jobtitle + " at " + user.jobcompany);
     }
 
     function hide(elem) {
@@ -378,6 +475,7 @@ $('#submission_form').submit(function(e){
         str.text = str.text.replace(/initSmilingScore/g, user.initSmilingScore);
         str.text = str.text.replace(/doubleInitSmilingScore/g, user.doubleInitSmilingScore);
         str.text = str.text.replace(/userBPM/g, user.BPM);
+        str.text = str.text.replace(/completedStretches/g, user.completedStretches);
         speechSynthesis.speak(str);
     }
     //////////////////////////////////////////////////////////////// Linkedin API
@@ -400,26 +498,35 @@ $('#submission_form').submit(function(e){
         var members = peopleSearch.people.values;
         if (members != null) {
             for (var member in members) {
-                if (members[member].positions._total != 0) {
+                console.log(members[member]);
+                if (members[member].firstName != "private") {
+                    if (members[member].positions._total != 0) {
                     user.jobcompany = members[member].positions.values[0].company.name;
                     user.jobtitle = members[member].positions.values[0].title;
+                    } else {
+                        console.log("no position data");
+                        user.jobcompany = backup_jobcompany;
+                        user.jobtitle = backup_jobtitle;
+                    }
+                    if (members[member].pictureUrl != undefined) {
+                        user.pictureUrl = members[member].pictureUrl;
+                    } else {
+                        user.pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
+                    }
                 } else {
-                    console.log("no position data");
                     user.jobcompany = backup_jobcompany;
                     user.jobtitle = backup_jobtitle;
+                    user.pictureUrl = backup_pictureUrl;
+                    console.log("private so set to backup");
                 }
-                if (members[member].pictureUrl != undefined) {
-                    user.pictureUrl = members[member].pictureUrl;
-                } else {
-                    user.pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
-                }
+                
             }
         } else {
             console.log("cannot find person on Linkedin");
             user.jobcompany = backup_jobcompany;
             user.jobtitle = backup_jobtitle;
         }
-        checkInteraction(0);
+        checkInteraction(1);
     }
 
     function displayPeopleSearchErrors(error) {
@@ -449,7 +556,7 @@ $('#submission_form').submit(function(e){
                 1: y(Math.sin(t))
             };
         });
-        var svg = d3.select(".fei_voice_visualizer").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg = d3.select("#fei_voice_visualizer").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         var path = svg.selectAll("path").data(quad(points)).enter().append("path").style("fill", function(d) {
             // control mood by changing color and speed
             return d3.hsl(z(d[1].value), 1, 0.8);
@@ -576,8 +683,6 @@ $('#submission_form').submit(function(e){
         }
     }
     
-    //var videoContainerWidth = $('.video_container').width();
-   // console.log("video container width: " + videoContainerWidth);
     var ec = new emotionClassifier();
     ec.init(emotionModel);
     var emotionData = ec.getBlank(); // d3 code for barchart
@@ -587,9 +692,9 @@ $('#submission_form').submit(function(e){
         bottom: 0,
         left: 0
     },
-        width = 300,
-        height = 30;
-    var barWidth = 30;
+        width = 376,
+        height = 100;
+    var barWidth = 100;
     var formatPercent = d3.format(".0%");
     
     // Limit the drawing of the X axis to only the "happy" emotion
@@ -609,7 +714,6 @@ $('#submission_form').submit(function(e){
     attr("fill", "#ce321e");
 
     function updateData(data) {
-       // console.log(data[3].value);
         // update
         var rects = svg.selectAll("rect").data(data).attr("width", function(datum) {
                 datum = data[3].value;

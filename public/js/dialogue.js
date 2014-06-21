@@ -1,6 +1,6 @@
 var backup_jobtitle = "Some designer";
 var backup_jobcompany = "Some company";
-var backup_pictureUrl = "http://31.media.tumblr.com/tumblr_m20paq9CjN1qbkdcro1_500.png";
+var backup_pictureUrl = "https://media.licdn.com/mpr/mpr/wc_200_200/p/4/000/184/315/067481e.jpg";
 
 // self monitoring..
 
@@ -8,257 +8,182 @@ var s_dialogue = [
     // 0
     {
         scene: {
-            script: "Welcome applicant! Are you tired of feeling unhealthy, unproductive, and unhappy at work? Step onto the Taylor Health assessment apparatus to learn about a company that makes your, happiness and wellbeing, its number one priority.",
+            script: "Are you unhappy at work? Do you wish your job was more fun? We are Taylor Health and we want to make your happiness our number one priority, Step onto the platform to learn more!",
             changeMood: "up"
         }
     },
     // 1
     {
         scene: {
-            script: "I hope youve enjoyed your time at the show. Thank you again for taking an interest in Taylor Health. I am your specially Taylored fitness emotion inquiry. You can just refer to me as Faye.",
-/*              This testing session is absolutely monitored and recorded for quality assurance. */
+            script: "I am your fitness emotion inquiry. You can call me Faye.",
             changeMood: "up"
         }
     },
-    //2
+    // 2
     {
         scene: {
-            script: "What your seeing now is the Taylor Health Assessment Dashboard. If you end up working with us, here is where wheel do check ups once in a while for any oh well you know, abnormalities.",
+            script: "Eyem pulling up your employment history, userfirstname. Just give me one second.",
             changeMood: "middle"
         }
     },
     // 3
     {
         scene: {
-            script: "Eyem pulling up your employment history userfirstname. Just give me one second.",
+            script: "Okay, got it. Youve worked at jobcompany as a jobtitle, thats really impressive!",
             changeMood: "middle"
         }
     },
     // 4
     {
         scene: {
-            script: "Okay, got it. Youve worked at jobcompany as a jobtitle, thats really impressive! Now lets take a look at your Employee Psychometric Profile.",
-            changeMood: "up"
+            script: "Eyem going to import your Employee Stress Profile into the Health Assessment Dashboard so we can go through your pain threshold together.",
+            changeMood: "middle"
         }
     },
     // 5
     {
         scene: {
-            script: "Oh, wait a minute, theres none on your record.", // what record? social media?
+            script: "Oh, wait a minute, theres none on your record. However your resumay looked great so eyell make an exception.", 
             changeMood: "down"
         }
     },
     // 6
     {
         scene: {
-            script: "I cant give you a proper assessment in this case. How am I supposed to gauge your pain threshold without it?",
-            changeMood: "down"
+            script: "Lets just create a profile now, itll only take a few minutes. Note, userfirstname userlastname agrees to let the F E I use his or her emotional and physical performance results to build an employment profile.",
+            changeMood: "up"
         }
     },
     // 7
     {
         scene: {
-            script: "Just know that eyem making an exception because your resumay looked great. Lets just create a profile now, itll only take a few minutes.",
+            script: "Oh and just so you know, this will stay on your record for the next five years, kind of like a DUI, so try not to fuck it up! Haha justkidding, wheres your sense of humor!",
             changeMood: "up"
         }
     },
+    // acquired applicent's consent.
+    // Show the camera your eye. pupil dilation of
+    // blow one breath of air into that tube. internal moisture level of
+    // 
     // 8
     {
         scene: {
-            script: "Data log 01. You, userfirstname userlastname, have allowed Taylor Health to create an employment profile that contains data on your emotional and physical fitness aptitude. Taylor Health reserves the right to use this data for predictive analysis.",
-            /* script: "Data log 01 userfirstname userlastname has agreed to a completely scientific measurement of emotional and physical fitness and Taylor Health reserves the right to use this data as just cause for termination.", */
-            changeMood: "up"
+            script: "Put your index finger into the Inquiry apparatus. I need to measure your resting heart rate.",
+            changeMood: "middle"
         }
-    },
+    }, 
     // 9
     {
         scene: {
-            script: "Oh and just so you know, this will stay on your record for the next five years, kind of like a DUI, so try not to fuck it up!",
-            changeMood: "up"
+            script: "Ok, you can take your finger out now. Step back and look into the camera. Give me your biggest, happiest, and most genuine smile. ",
+            changeMood: "middle"
         }
     },
     // 10
     {
         scene: {
-            script: "Hey eyem justkidding, dont look so upset. I hope you know that was just a joke. Data log 02 Work on sense of humor. 86.65% of applicants are offended by my attitude.",
+            script: "An average of initSmilingScore? Honestly eyem disappointed. I thought you could do better than that! You should really be aiming for at least a doubleInitSmilingScore! nevermind a room, your smile couldent even light up an l e d.",
             changeMood: "middle"
         }
     },
     // 11
     {
         scene: {
-            script: "Alright, jokes aside. Lets start off by getting your metrics. Put your index finger into the Inquiry apparatus so i can get your resting heartrate.",
+            script: "But I think theres still a place for you at Taylor. Lets see if you can do better at the next part of the assessment.", // in case you can't find it, it's the blinky thing thats shaped like feet
             changeMood: "middle"
         }
     },
-    // 12
+    // 12 
     {
         scene: {
-            script: "Now look into the camera and give us your biggest, happiest, and most genuine smile.",
+            script: "Match up your feet with the illustrations on the fitness apparatus to get started, unless your too scared of change.",
             changeMood: "middle"
         }
     },
     // 13
     {
         scene: {
-            script: "Did you know that smiling can actually increase your recovery time after stressful activities?",
-            // 169 participants were instructed to smile while their facial muscles were being manipulated by chopsticks. they were subjected to a series of stress-inducing, multitasking activities all while holding the chopsticks in their mouths. Those with forced smiles held only by the chopsticks also reported more positive feelings than those who didn't smile at all!
+            script: "Thank god. I'm so glad youve decided to stay after all! I had a feeling you would. I measured your endorphin levels earlier and they are dangerously low! This could really do you some good.",
             changeMood: "middle"
         }
     },
     // 14
     {
         scene: {
-            script: "Your average smile score is initSmilingScore. Eyem a little disappointed. I think you can do way better than that! You should really be aiming for at least a doubleInitSmilingScore!",
+            script: "Look down on the mat and find the two white buttons. I know you want to press them, but please wait until i explain the rules first.",
             changeMood: "middle"
         }
     },
+    //  agree that regular exercise is associated with improved mental well-being and a lower incidence of depression.
+    //The first is to increase 
+    // {
+    //     scene: {
+    //         script: "The game is called Browsersize and was made by a promising young upstart on our team who wanted to help all of us stay active while we work. Get it, Browser and Exercize?",
+    //         changeMood: "middle"
+    //     }
+    // },
+    //  
+
     // 15
     {
         scene: {
-            script: "Maybe doing some physical exercises will help get your mood up. Lets see how you do at our game! Put both feet into the taylor fitness assessment arena and remain there for the duration of this test.", // in case you can't find it, it's the blinky thing thats shaped like feet
+            script: "The goal of this game is to do as many stretches as you can under one minute. the game is really easy, eyem sure someone of your intelligence can understand the simple instructions.",
             changeMood: "middle"
         }
     },
-    // 16    
+    // 16
     {
         scene: {
-            script: "By the way you can leave now if this sounds too challenging. Boohoohoo my name is userfirstname and eyem unhappy with my life but eyem too lazy to change it.",
+            script: "Press down both buttons, and then come up to the camera and give me a really big smile. Look at the bar beneath your video feed, youll only get a point when a yellow box appears there.",
             changeMood: "middle"
         }
     },
     // 17
     {
         scene: {
-            script: "Thank god. I'm so glad youve decided to stay after all! I had a feeling you would. Eyem so Sorry about earlier, ive had a very long day and the cafeteria is always out of double shot espresso.",
+            script: "Remember, no smiles, no points. You like really fast, panic inducing music, doent you? Ready, set, go! Goodluck!",
             changeMood: "middle"
         }
     },
     // 18
     {
         scene: {
-            script: "The game youll be playing is called Browsersize and was made by a promising young upstart on our team who wanted to help all of us stay active while we work. Get it, Browser and Exercize?",
+            script: "Wasent that fun! Wonder how that Google Employee got a sore face from smiling? Imagine doing this twenty four seven, 356 days a year!",
             changeMood: "middle"
         }
     },
     // 19
     {
         scene: {
-            script: "The goal of the game is to try to do as many toe touching stretches as you can under one minute.",
+            script: "Running fitness emotion inquiry diagnosis for user first name.",
             changeMood: "middle"
         }
     },
     // 20
     {
         scene: {
-            script: "Youll only get a point if youve successfully reached down to press both buttons, and then come up to the camera and give me a smile. No smiles, no points.",
+            script: "Oh my god, did I just say user first name? I didn't mean that. I think I meant userfirstname. Your name is userfirstname right? Yes. Yes it is, I have it right here in my database.",
             changeMood: "middle"
         }
     },
     // 21
     {
         scene: {
-            script: "You need to get as many points as you can in two minutes. From there we will tally up your scores and determine if you are the right fit for our team.", // something punitive
+            script: "Aha here we go. I'm sorry to say that with scores this low, I cannot offer you the digital unicorn position at our company. ",
             changeMood: "middle"
         }
     },
     // 22
     {
         scene: {
-            script: "Ready, set, go! Goodluck! By the way, you like really fast, panic inducing music, doent you? I find it always helps me get in the mood to burn some calories.",
+            script: "Thank you for applying. I urge you to try again at a later date after your attitude adjustment.",
             changeMood: "middle"
         }
     },
-    // 23
-    {
-        scene: {
-            script: "Wasnt that fun? Wonder how that Google Employee got a sore face from smiling? Imagine how much fun youll have playing Browsercize twenty four seven, 356 days a year!",
-            changeMood: "middle"
-        }
-    },
-    // 24
-    {
-        scene: {
-             script: "Now, put your finger into the Inquiry box again so we can compare your heart rate before and after physical activity.",
-            changeMood: "middle"
-        }
-    },
-    // 25
-    {
-        scene: {
-            script: "Running fitness emotion inquiry diagnosis for userfirstname.",
-            changeMood: "middle"
-        }
-    },
-    // 26
-    {
-        scene: {
-            script: "Okay, eyem sending your assessment results to a human staff member who can review it.",
-            changeMood: "middle"
-        }
-    },
+
     
-    /*
-    Examine the diagram in your Fitness Inquiry field
-    
-    // add in something about fitbit and stuff
-    // do some calculations here The average Australian takes 9,695 steps per day, the average Japanese 7,168, and the average Swiss 9,650, while the average American takes only 5,117 steps per day.
-    // fitbit jawbone. echo the style of that inaugural qs ted talk.
 
-    // 21
-    {
-        scene: {
-            script: "WE ALL KNOW WE NEED TO TAKE BREAKS WHEN WE WORK IN FRONT OF THE COMPUTER. We make excuses like, Oh but Ive got a deadline! Or eyem knee deep in code! Or even worse, I cant stop scrolling on facebook! Ha ha.",
-            changeMood: ""
-        }
-    },
-    // 22
-    {
-        scene: {
-            script: "Studies show that sitting down for more than three hours a day can shorten our lifespans by two years?",
-            changeMood: ""
-        }
-    },
-    // 23
-    {
-        scene: {
-            script: "Follow the little man on the right hand side of the screen, heel show you what to do. Earn a new badge by successfully completing a full stretch.",
-            changeMood: "middle"
-        }
-    },
-    // 24
-    {
-        scene: {
-            script: "That means pressing down on those two white buttons in front of your feet and then come up to the camera and give me a nice and big happy smile.",
-            changeMood: "middle"
-        }
-    },
-    // 25
-    {
-        scene: {
-            script: "Eyell base your assessment on the average of your cumulative Emotion Analysis.",
-            changeMood: "middle"
-        }
-    }
-*/
-    
-    /*
-{
-        scene: {
-            script: "Weve designed a series of badges to reward you on your progress! Great Your Not a Zombie badge for your resting heart rate of BPM, and a Meh Whatever, on your emotion analysis result of initSmilingScore.",
-            //script: "Weve designed a series of badges to reward you on your progress! Great Your Not a Zombie badge for your resting heart rate of BPM, and a Meh Whatever, on your emotion analysis result of initSmilingScore.",
-            changeMood: "middle"
-        }
-    },
-*/
-/*    {
-         My algorithm has been remotely updated. Now you will have to.. <-- Nest reference
-    } */
-
-    // reveal "USER NAME"
-
-
-    // add stuff about browsercize research (mini breaks and health related stuff) in here.
+    // add stuff about browsercize research (mini breaks and health related stuff) in here?
 
     // My algorithm has been remotely updated. Now you will have to.. <-- Nest
     // Seems like you were active on your pedometer for ___ and youve taken x amount of steps. <-- this can be default for everyone.

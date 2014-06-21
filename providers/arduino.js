@@ -46,20 +46,13 @@ module.exports = {
                 BPM = 0;
             }
             
-            
-            if (userPresence == 0 && absent == false) {
-                socket.emit("userPresence", data);
-                absent = true;
-            } else if (userPresence == 1 && present == false) {
+                
                 socket.emit("userPresence", data.a);
-                present = true;
-            }
-            
-            if (present == true) {
                 socket.emit("userStanding", data.b, data.c);
                 socket.emit("userButtonsPressed", data.d, data.e);
                 socket.emit("userHeartRate", BPM);
-            }
+            
+            
             
             
             
